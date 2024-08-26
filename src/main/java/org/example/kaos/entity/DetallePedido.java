@@ -1,12 +1,12 @@
 package org.example.kaos.entity;
 
-public class detallePedido {
+public class DetallePedido {
     private int id;
     private int pedidoId;
     private int menuId;
     private int cantidad;
 
-    public detallePedido(int cantidad, int menuId, int pedidoId, int id) {
+    public DetallePedido(int cantidad, int menuId, int pedidoId, int id) {
         this.cantidad = cantidad;
         this.menuId = menuId;
         this.pedidoId = pedidoId;
@@ -47,7 +47,7 @@ public class detallePedido {
 
     @Override
     public String toString() {
-        return "detallePedido{" +
+        return "DetallePedido{" +
                 "id=" + id +
                 ", pedidoId=" + pedidoId +
                 ", menuId=" + menuId +

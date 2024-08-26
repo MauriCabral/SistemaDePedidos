@@ -17,12 +17,12 @@ import java.util.Optional;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.kaos.dao.hamburguesaDAO;
-import org.example.kaos.entity.hamburgusa;
-import org.example.kaos.manager.controllerManager;
-import org.example.kaos.entity.toppings;
+import org.example.kaos.entity.Hamburgusa;
+import org.example.kaos.manager.ControllerManager;
+import org.example.kaos.entity.Toppings;
 import java.util.List;
 
-public class pedidoController {
+public class PedidoController {
 
     private final hamburguesaDAO hamburguesaDAO = new hamburguesaDAO();
     @FXML
@@ -69,7 +69,7 @@ public class pedidoController {
         Button sourceButton = (Button) event.getSource();
         String menuCode = (String) sourceButton.getUserData();
 
-        hamburgusa selectedMenu = hamburguesaDAO.getMenuByCode(menuCode);
+        Hamburgusa selectedMenu = hamburguesaDAO.getMenuByCode(menuCode);
 
         if (selectedMenu != null) {
             openDetalleWindow(selectedMenu.getNombre());
@@ -82,11 +82,11 @@ public class pedidoController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/detalle.fxml"));
             Pane detallePane = loader.load();
 
-            detalleController detalleController = loader.getController();
+            DetalleController detalleController = loader.getController();
 
             detalleController.setDetalle(menuNombre);
 
-            controllerManager.getInstance().setPedidoController(this);
+            ControllerManager.getInstance().setPedidoController(this);
 
             Stage detalleStage = new Stage();
             detalleStage.setTitle("Detalle");
@@ -105,7 +105,7 @@ public class pedidoController {
         rightPane.setVisible(false);
     }
 
-    public void actualizarDetalles(String nombre, String tipo, int cantidad, double precio, List<toppings> toppingsList) {
+    public void actualizarDetalles(String nombre, String tipo, int cantidad, double precio, List<Toppings> toppingsList) {
         VBox vBox = new VBox(5);
         vBox.setPadding(new Insets(5, 0, 0, 0));
         vBox.setPadding(new Insets(5, 0, 0, 0));
@@ -119,7 +119,7 @@ public class pedidoController {
         if (toppingsList != null && !toppingsList.isEmpty()) {
             VBox toppingsBox = new VBox(5);
             toppingsBox.setPadding(new Insets(5, 0, 0, 10));
-            for (toppings topping : toppingsList) {
+            for (Toppings topping : toppingsList) {
                 int precioTop = (int) Math.round(topping.getPrecio());
                 Label toppingLabel = new Label("Extra: " + topping.getNombre() + ": ($" + precioTop + ")");
                 toppingsBox.getChildren().add(toppingLabel);

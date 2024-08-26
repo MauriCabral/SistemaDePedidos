@@ -1,12 +1,12 @@
 package org.example.kaos.dao;
 
-import org.example.kaos.entity.toppings;
+import org.example.kaos.entity.Toppings;
 
 import java.sql.*;
 
 public class toppingsDAO {
-    public static toppings getToppingById(int toppingId) throws SQLException {
-        String query = "SELECT nombre, precio FROM toppings WHERE id = ?";
+    public static Toppings getToppingById(int toppingId) throws SQLException {
+        String query = "SELECT nombre, precio FROM Toppings WHERE id = ?";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -16,7 +16,7 @@ public class toppingsDAO {
             if (rs.next()) {
                 String nombre = rs.getString("nombre");
                 double precio = rs.getDouble("precio");
-                return new toppings(toppingId, nombre, precio);
+                return new Toppings(toppingId, nombre, precio);
             } else {
                 return null;
             }

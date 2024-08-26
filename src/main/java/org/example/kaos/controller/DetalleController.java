@@ -8,10 +8,10 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.kaos.dao.tipoHamburguesaDAO;
 import org.example.kaos.dao.toppingsDAO;
-import org.example.kaos.entity.hamburguesaTipo;
+import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.dao.hamburguesaTipoDAO;
-import org.example.kaos.entity.toppings;
-import org.example.kaos.manager.controllerManager;
+import org.example.kaos.entity.Toppings;
+import org.example.kaos.manager.ControllerManager;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class detalleController implements Initializable {
+public class DetalleController implements Initializable {
     public Button btnPedidoRapido;
     @FXML
     private Label nombre;
@@ -82,7 +82,7 @@ public class detalleController implements Initializable {
         String nombreProducto = nombre.getText();
         double precioProducto = obtenerPrecio(tipo, cantidad);
 
-        List<toppings> toppingsList = getSelectedToppings();
+        List<Toppings> toppingsList = getSelectedToppings();
 
         if (precioProducto != -1) {
             actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingsList);
@@ -92,7 +92,7 @@ public class detalleController implements Initializable {
     }
 
     private double obtenerPrecio(String tipo, int cantidad) {
-        hamburguesaTipo hamburguesaTipo = hamburguesaTipoDAO.getHamburguesaTipo(nombre.getText(), tipo);
+        HamburguesaTipo hamburguesaTipo = hamburguesaTipoDAO.getHamburguesaTipo(nombre.getText(), tipo);
         if (hamburguesaTipo != null) {
             double precioBase = hamburguesaTipo.getPrecios();
             System.out.println(nombre.getText() + " (x" + cantidad + ") " + "$ " + precioBase);
@@ -101,12 +101,12 @@ public class detalleController implements Initializable {
         return -1;
     }
 
-    private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<toppings> toppingsList) {
-        pedidoController pedidoCtrl = controllerManager.getInstance().getPedidoController();
+    private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<Toppings> toppingsList) {
+        PedidoController pedidoCtrl = ControllerManager.getInstance().getPedidoController();
         if (pedidoCtrl != null) {
             Platform.runLater(() -> pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingsList));
         } else {
-            System.out.println("Controlador de pedido no encontrado.");
+            System.out.println("Controlador de Pedido no encontrado.");
         }
     }
 
@@ -127,8 +127,8 @@ public class detalleController implements Initializable {
         txtCambiarSalsa.setVisible(cmbCambiarSalsa.isSelected());
     }
 
-    private List<toppings> getSelectedToppings() {
-        List<toppings> toppingsList = new ArrayList<>();
+    private List<Toppings> getSelectedToppings() {
+        List<Toppings> toppingsList = new ArrayList<>();
         toppingsDAO toppingDAO = new toppingsDAO();
 
         try {
@@ -140,7 +140,7 @@ public class detalleController implements Initializable {
             if (cmbCebollaCrisp.isSelected()) toppingsList.add(toppingsDAO.getToppingById(6));
             if (cmbTomateConf.isSelected()) toppingsList.add(toppingsDAO.getToppingById(7));
             if (cmbCambiarSalsa.isSelected() && !txtCambiarSalsa.getText().isEmpty()) {
-                toppingsList.add(new toppings(8, "Salsa: " + txtCambiarSalsa.getText(), 0.0));
+                toppingsList.add(new Toppings(8, "Salsa: " + txtCambiarSalsa.getText(), 0.0));
             }
         } catch (SQLException e) {
             e.printStackTrace();

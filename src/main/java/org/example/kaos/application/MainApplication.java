@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class mainApplication extends Application {
-    private static final Logger logger = Logger.getLogger(mainApplication.class.getName());
+public class MainApplication extends Application {
+    private static final Logger logger = Logger.getLogger(MainApplication.class.getName());
 
     public static void main(String[] args) {
         launch();
@@ -19,7 +19,7 @@ public class mainApplication extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(mainApplication.class.getResource("/org/example/kaos/window/main.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/kaos/window/main.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 1000, 600);
 
             scene.setOnMouseClicked((MouseEvent event) -> {
@@ -40,7 +40,7 @@ public class mainApplication extends Application {
     }
 
     private void openNewWindow() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(mainApplication.class.getResource("/org/example/kaos/window/pedido.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/kaos/window/pedido.fxml"));
         Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
         Stage newStage = new Stage();
         newStage.setTitle("Pedidos");

@@ -1,6 +1,6 @@
 package org.example.kaos.controller;
 
-public class mainController {
+public class MainController {
 //    @FXML
 //    private Label welcomeText;
 //

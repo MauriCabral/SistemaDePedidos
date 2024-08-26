@@ -2,13 +2,13 @@ package org.example.kaos.entity;
 
 import java.time.LocalDateTime;
 
-public class pedido {
+public class Pedido {
     private int id;
     private String clienteNombre;
     private String direccion;
     private LocalDateTime fecha;
 
-    public pedido(String clienteNombre, String direccion, int id, LocalDateTime fecha) {
+    public Pedido(String clienteNombre, String direccion, int id, LocalDateTime fecha) {
         this.clienteNombre = clienteNombre;
         this.direccion = direccion;
         this.id = id;
@@ -49,7 +49,7 @@ public class pedido {
 
     @Override
     public String toString() {
-        return "pedido{" +
+        return "Pedido{" +
                 "id=" + id +
                 ", clienteNombre='" + clienteNombre + '\'' +
                 ", direccion='" + direccion + '\'' +

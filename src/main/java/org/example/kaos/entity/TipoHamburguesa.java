@@ -1,10 +1,10 @@
 package org.example.kaos.entity;
 
-public class tipoHamburguesa {
+public class TipoHamburguesa {
     private int id;
     private String tipo;
 
-    public tipoHamburguesa(int id, String tipo) {
+    public TipoHamburguesa(int id, String tipo) {
         this.id = id;
         this.tipo = tipo;
     }
@@ -27,7 +27,7 @@ public class tipoHamburguesa {
 
     @Override
     public String toString() {
-        return "tipoHamburguesa{" +
+        return "TipoHamburguesa{" +
                 "id=" + id +
                 ", tipo='" + tipo + '\'' +
                 '}';

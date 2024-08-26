@@ -1,4 +1,4 @@
 package org.example.kaos.application;
 
-public class pedidoApplication {
+public class PedidoApplication {
 }
