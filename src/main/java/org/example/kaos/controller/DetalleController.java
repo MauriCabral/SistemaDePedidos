@@ -34,7 +34,7 @@ public class DetalleController implements Initializable {
     @FXML
     private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf, cmbCambiarSalsa;
     @FXML
-    private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, cmbCambiarSalsa1;
+    private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
     @FXML
     private TextField txtCambiarSalsa;
 
@@ -82,13 +82,8 @@ public class DetalleController implements Initializable {
         String nombreProducto = nombre.getText();
         double precioProducto = obtenerPrecio(tipo, cantidad);
 
-        List<Toppings> toppingsList = getSelectedToppings();
-
-        if (precioProducto != -1) {
-            actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingsList);
-        } else {
-            mostrarError();
-        }
+        List<Toppings> toppingsList = getSelectedExtraToppings();
+        actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingsList);
     }
 
     private double obtenerPrecio(String tipo, int cantidad) {
@@ -103,6 +98,9 @@ public class DetalleController implements Initializable {
 
     private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<Toppings> toppingsList) {
         PedidoController pedidoCtrl = ControllerManager.getInstance().getPedidoController();
+        for (Toppings topping : toppingsList) {
+            System.out.println("Topping: " + topping.getNombre() + ", Precio: " + topping.getPrecio());
+        }
         if (pedidoCtrl != null) {
             Platform.runLater(() -> pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingsList));
         } else {
@@ -110,36 +108,44 @@ public class DetalleController implements Initializable {
         }
     }
 
-//    public void setPedidoStage(Stage stage) {
-//        this.pedidoStage = stage;
-//    }
-
-    private void mostrarError() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText("Error al calcular el precio.");
-        alert.showAndWait();
-    }
-
     @FXML
     private void cambiarSalsaCheckBox() {
         txtCambiarSalsa.setVisible(cmbCambiarSalsa.isSelected());
     }
 
-    private List<Toppings> getSelectedToppings() {
+    private List<Toppings> getSelectedExtraToppings() {
         List<Toppings> toppingsList = new ArrayList<>();
 
         try {
-            if (cmbCheddar.isSelected()) toppingsList.add(toppingsDAO.getToppingById(1));
-            if (cmbBacon.isSelected()) toppingsList.add(toppingsDAO.getToppingById(2));
-            if (cmbLechuga.isSelected()) toppingsList.add(toppingsDAO.getToppingById(3));
-            if (cmbTomate.isSelected()) toppingsList.add(toppingsDAO.getToppingById(4));
-            if (cmbCebolla.isSelected()) toppingsList.add(toppingsDAO.getToppingById(5));
-            if (cmbCebollaCrisp.isSelected()) toppingsList.add(toppingsDAO.getToppingById(6));
-            if (cmbTomateConf.isSelected()) toppingsList.add(toppingsDAO.getToppingById(7));
+            if (cmbCheddar.isSelected()) toppingsList.add(toppingsDAO.getToppingById(1, true));
+            if (cmbBacon.isSelected()) toppingsList.add(toppingsDAO.getToppingById(2, true));
+            if (cmbLechuga.isSelected()) toppingsList.add(toppingsDAO.getToppingById(3, true));
+            if (cmbTomate.isSelected()) toppingsList.add(toppingsDAO.getToppingById(4, true));
+            if (cmbCebolla.isSelected()) toppingsList.add(toppingsDAO.getToppingById(5, true));
+            if (cmbCebollaCrisp.isSelected()) toppingsList.add(toppingsDAO.getToppingById(6, true));
+            if (cmbTomateConf.isSelected()) toppingsList.add(toppingsDAO.getToppingById(7, true));
             if (cmbCambiarSalsa.isSelected() && !txtCambiarSalsa.getText().isEmpty()) {
-                toppingsList.add(new Toppings(8, "Salsa: " + txtCambiarSalsa.getText(), 0.0));
+                toppingsList.add(new Toppings(8, "Salsa " + txtCambiarSalsa.getText()));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return toppingsList;
+    }
+
+    private List<Toppings> getSelectedQuitarToppings() {
+        List<Toppings> toppingsList = new ArrayList<>();
+
+        try {
+            if (cmbCheddar1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(1, false));
+            if (cmbBacon1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(2, false));
+            if (cmbLechuga1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(3, false));
+            if (cmbTomate1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(4, false));
+            if (cmbCebolla1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(5, false));
+            if (cmbCebollaCrisp1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(6, false));
+            if (cmbTomateConf1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(7, false));
+            if (quitarSalsa.isSelected() && !txtCambiarSalsa.getText().isEmpty()) {
+                toppingsList.add(new Toppings(8, "Salsa " + txtCambiarSalsa.getText()));
             }
         } catch (SQLException e) {
             e.printStackTrace();

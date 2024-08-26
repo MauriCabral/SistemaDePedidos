@@ -34,10 +34,6 @@ public class PedidoController {
     @FXML
     private Pane rightPane;
     @FXML
-    private Label insertarPedido;
-    @FXML
-    private Label insertarPrecio;
-    @FXML
     private VBox detallePedidos;
 
     @FXML
@@ -111,8 +107,7 @@ public class PedidoController {
     public void actualizarDetalles(String nombre, String tipo, int cantidad, double precio, List<Toppings> toppingsList) {
         VBox vBox = new VBox(5);
         vBox.setPadding(new Insets(5, 0, 0, 0));
-        vBox.setPadding(new Insets(5, 0, 0, 0));
-        HBox pedidoBox = new HBox(10);
+        HBox pedidoBox = new HBox(5);
         Label pedidoLabel = new Label("(x" + cantidad + ") " + nombre + " " + tipo);
         Label precioLabel = new Label(String.format("$%d", (int) precio));
         Region spacer = new Region();
@@ -123,9 +118,15 @@ public class PedidoController {
             VBox toppingsBox = new VBox(5);
             toppingsBox.setPadding(new Insets(5, 0, 0, 10));
             for (Toppings topping : toppingsList) {
-                int precioTop = (int) Math.round(topping.getPrecio());
-                Label toppingLabel = new Label("Extra: " + topping.getNombre() + ": ($" + precioTop + ")");
-                toppingsBox.getChildren().add(toppingLabel);
+                if (topping.getPrecio() != null) {
+                    int precioTop = (int) Math.round(topping.getPrecio());
+                    Label toppingLabel = new Label("Extra: " + topping.getNombre() + " ($" + precioTop + ")");
+                    toppingsBox.getChildren().add(toppingLabel);
+                }
+                else {
+                    Label toppingLabel = new Label("Extra: " + topping.getNombre());
+                    toppingsBox.getChildren().add(toppingLabel);
+                }
             }
             vBox.getChildren().add(toppingsBox);
         }
