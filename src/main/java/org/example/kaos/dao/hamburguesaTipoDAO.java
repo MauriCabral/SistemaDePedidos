@@ -5,10 +5,7 @@ import org.example.kaos.entity.hamburguesaTipo;
 
 public class hamburguesaTipoDAO {
     public hamburguesaTipo getHamburguesaTipo(String nombre, String tipo) {
-        String sql = "SELECT * FROM hamburguesa_tipo ht\n" +
-                "INNER JOIN hamburguesa h ON h.id = ht.hamburguesa_id\n" +
-                "INNER JOIN tipo_hamburguesa th ON th.id = ht.tipo_id\n" +
-                "WHERE h.nombre = ? AND th.tipo = ?";
+        String sql = "SELECT * FROM hamburguesa_tipo ht INNER JOIN hamburguesa h ON h.id = ht.hamburguesa_id INNER JOIN tipo_hamburguesa th ON th.id = ht.tipo_id WHERE h.nombre = ? AND th.tipo = ?";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)){
 

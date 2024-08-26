@@ -24,7 +24,7 @@ import java.util.List;
 
 public class pedidoController {
 
-    private hamburguesaDAO hamburguesaDAO = new hamburguesaDAO();
+    private final hamburguesaDAO hamburguesaDAO = new hamburguesaDAO();
     @FXML
     private Button exitButton, cbButton;
     @FXML

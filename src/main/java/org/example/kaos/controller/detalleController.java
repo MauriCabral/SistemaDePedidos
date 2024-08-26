@@ -4,11 +4,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ComboBox;
-import javafx.event.ActionEvent;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.kaos.dao.tipoHamburguesaDAO;
 import org.example.kaos.dao.toppingsDAO;
@@ -16,7 +12,6 @@ import org.example.kaos.entity.hamburguesaTipo;
 import org.example.kaos.dao.hamburguesaTipoDAO;
 import org.example.kaos.entity.toppings;
 import org.example.kaos.manager.controllerManager;
-import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -25,6 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class detalleController implements Initializable {
+    public Button btnPedidoRapido;
     @FXML
     private Label nombre;
     @FXML
@@ -32,8 +28,8 @@ public class detalleController implements Initializable {
     private int count = 1;
     @FXML
     private ComboBox<String> comboBoxTipo;
-    private tipoHamburguesaDAO typeDAO = new tipoHamburguesaDAO();
-    private hamburguesaTipoDAO hamburguesaTipoDAO = new hamburguesaTipoDAO();
+    private final tipoHamburguesaDAO typeDAO = new tipoHamburguesaDAO();
+    private final hamburguesaTipoDAO hamburguesaTipoDAO = new hamburguesaTipoDAO();
     private Stage pedidoStage;
     @FXML
     private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf, cmbCambiarSalsa;
@@ -49,7 +45,7 @@ public class detalleController implements Initializable {
     }
 
     @FXML
-    private void handleComboBoxAction(ActionEvent event) {
+    private void handleComboBoxAction() {
         String selectedType = comboBoxTipo.getValue();
         System.out.println("Selected type: " + selectedType);
     }
@@ -80,7 +76,7 @@ public class detalleController implements Initializable {
     }
 
     @FXML
-    private void pedidoRapido(ActionEvent event) {
+    private void pedidoRapido() {
         String tipo = comboBoxTipo.getValue();
         int cantidad = count;
         String nombreProducto = nombre.getText();
@@ -91,7 +87,7 @@ public class detalleController implements Initializable {
         if (precioProducto != -1) {
             actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingsList);
         } else {
-            mostrarError("Error al calcular el precio.");
+            mostrarError();
         }
     }
 
@@ -114,25 +110,21 @@ public class detalleController implements Initializable {
         }
     }
 
-    public void setPedidoStage(Stage stage) {
-        this.pedidoStage = stage;
-    }
+//    public void setPedidoStage(Stage stage) {
+//        this.pedidoStage = stage;
+//    }
 
-    private void mostrarError(String mensaje) {
+    private void mostrarError() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(null);
-        alert.setContentText(mensaje);
+        alert.setContentText("Error al calcular el precio.");
         alert.showAndWait();
     }
 
     @FXML
-    private void cambiarSalsaCheckBox(ActionEvent event) {
-        if (cmbCambiarSalsa.isSelected()) {
-            txtCambiarSalsa.setVisible(true);
-        } else {
-            txtCambiarSalsa.setVisible(false);
-        }
+    private void cambiarSalsaCheckBox() {
+        txtCambiarSalsa.setVisible(cmbCambiarSalsa.isSelected());
     }
 
     private List<toppings> getSelectedToppings() {
@@ -140,13 +132,13 @@ public class detalleController implements Initializable {
         toppingsDAO toppingDAO = new toppingsDAO();
 
         try {
-            if (cmbCheddar.isSelected()) toppingsList.add(toppingDAO.getToppingById(1)); // Asume ID
-            if (cmbBacon.isSelected()) toppingsList.add(toppingDAO.getToppingById(2));
-            if (cmbLechuga.isSelected()) toppingsList.add(toppingDAO.getToppingById(3));
-            if (cmbTomate.isSelected()) toppingsList.add(toppingDAO.getToppingById(4));
-            if (cmbCebolla.isSelected()) toppingsList.add(toppingDAO.getToppingById(5));
-            if (cmbCebollaCrisp.isSelected()) toppingsList.add(toppingDAO.getToppingById(6));
-            if (cmbTomateConf.isSelected()) toppingsList.add(toppingDAO.getToppingById(7));
+            if (cmbCheddar.isSelected()) toppingsList.add(toppingsDAO.getToppingById(1)); // Asume ID
+            if (cmbBacon.isSelected()) toppingsList.add(toppingsDAO.getToppingById(2));
+            if (cmbLechuga.isSelected()) toppingsList.add(toppingsDAO.getToppingById(3));
+            if (cmbTomate.isSelected()) toppingsList.add(toppingsDAO.getToppingById(4));
+            if (cmbCebolla.isSelected()) toppingsList.add(toppingsDAO.getToppingById(5));
+            if (cmbCebollaCrisp.isSelected()) toppingsList.add(toppingsDAO.getToppingById(6));
+            if (cmbTomateConf.isSelected()) toppingsList.add(toppingsDAO.getToppingById(7));
             if (cmbCambiarSalsa.isSelected() && !txtCambiarSalsa.getText().isEmpty()) {
                 toppingsList.add(new toppings(8, "Salsa: " + txtCambiarSalsa.getText(), 0.0));
             }
