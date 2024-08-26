@@ -129,10 +129,9 @@ public class DetalleController implements Initializable {
 
     private List<Toppings> getSelectedToppings() {
         List<Toppings> toppingsList = new ArrayList<>();
-        toppingsDAO toppingDAO = new toppingsDAO();
 
         try {
-            if (cmbCheddar.isSelected()) toppingsList.add(toppingsDAO.getToppingById(1)); // Asume ID
+            if (cmbCheddar.isSelected()) toppingsList.add(toppingsDAO.getToppingById(1));
             if (cmbBacon.isSelected()) toppingsList.add(toppingsDAO.getToppingById(2));
             if (cmbLechuga.isSelected()) toppingsList.add(toppingsDAO.getToppingById(3));
             if (cmbTomate.isSelected()) toppingsList.add(toppingsDAO.getToppingById(4));

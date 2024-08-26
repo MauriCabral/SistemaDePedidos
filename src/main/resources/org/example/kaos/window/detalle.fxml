@@ -64,7 +64,7 @@
    <CheckBox fx:id="cmbCebolla1" layoutX="495.0" layoutY="239.0" mnemonicParsing="false" />
    <CheckBox fx:id="cmbCebollaCrisp1" layoutX="495.0" layoutY="264.0" mnemonicParsing="false" />
    <CheckBox fx:id="cmbTomateConf1" layoutX="495.0" layoutY="289.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbCambiarSalsa1" layoutX="495.0" layoutY="314.0" mnemonicParsing="false" onAction="#cambiarSalsaCheckBox" />
+   <CheckBox fx:id="quitarSalsa" layoutX="495.0" layoutY="314.0" mnemonicParsing="false"/>
    <Button fx:id="btnAceptar" layoutX="193.0" layoutY="362.0" mnemonicParsing="false" text="Aceptar" />
    <Button fx:id="btnCancelar" layoutX="344.0" layoutY="362.0" mnemonicParsing="false" text="Cancelar" />
 </AnchorPane>

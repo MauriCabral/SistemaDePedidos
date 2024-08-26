@@ -68,15 +68,18 @@ public class PedidoController {
     private void handleImageButtonClick(ActionEvent event) {
         Button sourceButton = (Button) event.getSource();
         String menuCode = (String) sourceButton.getUserData();
-
-        Hamburgusa selectedMenu = hamburguesaDAO.getMenuByCode(menuCode);
-
+        String res = switch (menuCode) {
+            case "cb", "di", "kk", "kl", "mn", "rm", "tn", "v", "vr" -> menuCode;
+            default -> " ";
+        };
+        Hamburgusa selectedMenu = hamburguesaDAO.getMenuByCode(res);
         if (selectedMenu != null) {
             openDetalleWindow(selectedMenu.getNombre());
         } else {
             System.out.println("Menu no encontrado.");
         }
     }
+
     private void openDetalleWindow(String menuNombre) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/detalle.fxml"));

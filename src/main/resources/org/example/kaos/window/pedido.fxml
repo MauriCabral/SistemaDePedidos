@@ -66,87 +66,95 @@
          <HBox alignment="CENTER" spacing="5.0"/>
       </VBox>
       <Button fx:id="cbButton" layoutX="22.0" layoutY="70.0" onAction="#handleImageButtonClick" userData="cb">
-      <graphic>
-         <ImageView fitHeight="130.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
-            <Image url="@../image/cb.png"/>
-         </ImageView>
-      </graphic>
-      <style>
-         -fx-background-color: transparent; -fx-text-fill: white;
-      </style>
-   </Button>
-      <Button fx:id="diButton" layoutX="172.0" layoutY="203.0" onAction="#handleImageButtonClick" userData="di">
+         <graphic>
+            <ImageView fitHeight="130.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/cb.png"/>
+            </ImageView>
+         </graphic>
+         <style>
+            -fx-background-color: transparent; -fx-text-fill: white;
+         </style>
+      </Button>
+      <Button fx:id="diButton" layoutX="172.0" layoutY="220.0" onAction="#handleImageButtonClick" userData="di">
+         <graphic>
+            <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="179.0" layoutY="233.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/di.png"/>
+            </ImageView>
+         </graphic>
          <style>
             -fx-background-color: transparent; -fx-text-fill: white;
          </style>
       </Button>
       <Button fx:id="kkButton" layoutX="172.0" layoutY="70.0" onAction="#handleImageButtonClick" userData="kk">
+         <graphic>
+            <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="179.0" layoutY="77.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/kk.png"/>
+            </ImageView>
+         </graphic>
          <style>
             -fx-background-color: transparent; -fx-text-fill: white;
          </style>
       </Button>
-      <Button fx:id="klButton" layoutX="22.0" layoutY="203.0" onAction="#handleImageButtonClick" userData="kl">
+      <Button fx:id="klButton" layoutX="22.0" layoutY="220.0" onAction="#handleImageButtonClick" userData="kl">
+         <graphic>
+            <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="29.0" layoutY="233.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/kl.png"/>
+            </ImageView>
+         </graphic>
          <style>
             -fx-background-color: transparent; -fx-text-fill: white;
          </style>
       </Button>
-      <Button fx:id="mnButton" layoutX="323.0" layoutY="203.0" onAction="#handleImageButtonClick" userData="mn">
+      <Button fx:id="mnButton" layoutX="323.0" layoutY="220.0" onAction="#handleImageButtonClick" userData="mn">
+         <graphic>
+            <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="331.0" layoutY="233.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/mn.png"/>
+            </ImageView>
+         </graphic>
          <style>
             -fx-background-color: transparent; -fx-text-fill: white;
          </style>
       </Button>
       <Button fx:id="rmButton" layoutX="323.0" layoutY="70.0" onAction="#handleImageButtonClick" userData="rm">
+         <graphic>
+            <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="331.0" layoutY="77.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/rm.png"/>
+            </ImageView>
+         </graphic>
          <style>
             -fx-background-color: transparent; -fx-text-fill: white;
          </style>
       </Button>
-      <Button fx:id="tnButton" layoutX="22.0" layoutY="333.0" onAction="#handleImageButtonClick" userData="tn">
+      <Button fx:id="tnButton" layoutX="22.0" layoutY="370.0" onAction="#handleImageButtonClick" userData="tn">
+         <graphic>
+            <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="29.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/tn.png"/>
+            </ImageView>
+         </graphic>
          <style>
             -fx-background-color: transparent; -fx-text-fill: white;
          </style>
       </Button>
-      <Button fx:id="vButton" layoutX="323.0" layoutY="333.0" onAction="#handleImageButtonClick" userData="v">
+      <Button fx:id="vButton" layoutX="323.0" layoutY="370.0" onAction="#handleImageButtonClick" userData="v">
+         <graphic>
+            <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="331.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/v.png"/>
+            </ImageView>
+         </graphic>
          <style>
             -fx-background-color: transparent; -fx-text-fill: white;
          </style>
       </Button>
-      <Button fx:id="vrButton" layoutX="172.0" layoutY="333.0" onAction="#handleImageButtonClick" userData="vr">
+      <Button fx:id="vrButton" layoutX="172.0" layoutY="370.0" onAction="#handleImageButtonClick" userData="vr">
+         <graphic>
+            <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/vr.png"/>
+            </ImageView>
+         </graphic>
          <style>
             -fx-background-color: transparent; -fx-text-fill: white;
          </style>
       </Button>
-      <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="29.0" layoutY="390.0" pickOnBounds="true"
-                 preserveRatio="true">
-         <Image url="@../image/tn.png"/>
-      </ImageView>
-      <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="29.0" layoutY="233.0" pickOnBounds="true"
-                 preserveRatio="true">
-         <Image url="@../image/kl.png"/>
-      </ImageView>
-      <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="179.0" layoutY="233.0" pickOnBounds="true"
-                 preserveRatio="true">
-         <Image url="@../image/di.png"/>
-      </ImageView>
-      <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true"
-                 preserveRatio="true">
-         <Image url="@../image/vr.png"/>
-      </ImageView>
-      <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="331.0" layoutY="233.0" pickOnBounds="true"
-                 preserveRatio="true">
-         <Image url="@../image/mn.png"/>
-      </ImageView>
-      <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="331.0" layoutY="390.0" pickOnBounds="true"
-                 preserveRatio="true">
-         <Image url="@../image/v.png"/>
-      </ImageView>
-      <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="331.0" layoutY="77.0" pickOnBounds="true"
-                 preserveRatio="true">
-         <Image url="@../image/rm.png"/>
-      </ImageView>
-      <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="179.0" layoutY="77.0" pickOnBounds="true"
-                 preserveRatio="true">
-         <Image url="@../image/kk.png"/>
-      </ImageView>
       <ImageView fitHeight="24.0" fitWidth="61.0" layoutX="461.0" layoutY="13.0" pickOnBounds="true"
                  preserveRatio="true">
          <Image url="@../image/edit.png"/>
