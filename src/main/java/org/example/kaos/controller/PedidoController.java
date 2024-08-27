@@ -6,12 +6,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.geometry.Insets;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Optional;
 
 import javafx.stage.Modality;
@@ -25,6 +29,7 @@ import java.util.List;
 public class PedidoController {
 
     private final hamburguesaDAO hamburguesaDAO = new hamburguesaDAO();
+    private boolean deleteButtonsVisible = false;
     @FXML
     private Button exitButton, cbButton, deletePedido;
     @FXML
@@ -110,9 +115,23 @@ public class PedidoController {
         HBox pedidoBox = new HBox(5);
         Label pedidoLabel = new Label("(x" + cantidad + ") " + nombre + " " + tipo);
         Label precioLabel = new Label(String.format("$%d", (int) precio));
+        Button deleteButton = new Button();
+        try {
+            Image image = new Image(getClass().getResource("/org/example/kaos/image/trash.png").toExternalForm());
+            ImageView imageView = new ImageView(image);
+            imageView.setFitHeight(12.0);
+            imageView.setFitWidth(12.0);
+            deleteButton.setGraphic(imageView);
+            deleteButton.setVisible(false);
+        } catch (NullPointerException e) {
+            System.out.println("No se pudo cargar la imagen: " + e.getMessage());
+        }
+        deleteButton.setOnAction(event -> {
+            detallePedidos.getChildren().remove(vBox);
+        });
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        pedidoBox.getChildren().addAll(pedidoLabel, spacer, precioLabel);
+        pedidoBox.getChildren().addAll(pedidoLabel, spacer, precioLabel, deleteButton);
         vBox.getChildren().add(pedidoBox);
         if (toppingsList != null && !toppingsList.isEmpty()) {
             VBox toppingsBox = new VBox(5);
@@ -137,6 +156,23 @@ public class PedidoController {
         detallePedidos.getChildren().add(vBox);
     }
 
-    public void deletePedidos(ActionEvent actionEvent) {
+    public void deletePedidos() {
+        deleteButtonsVisible = !deleteButtonsVisible;
+        for (var node : detallePedidos.getChildren()) {
+            if (node instanceof VBox) {
+                VBox vBox = (VBox) node;
+                for (var child : vBox.getChildren()) {
+                    if (child instanceof HBox) {
+                        HBox hBox = (HBox) child;
+                        for (var hboxChild : hBox.getChildren()) {
+                            if (hboxChild instanceof Button) {
+                                Button deleteButton = (Button) hboxChild;
+                                deleteButton.setVisible(deleteButtonsVisible);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
