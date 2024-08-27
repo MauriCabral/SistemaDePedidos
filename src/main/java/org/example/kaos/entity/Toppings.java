@@ -4,17 +4,28 @@ public class Toppings {
     private int id;
     private String nombre;
     private Double precio;
+    private Boolean esExtra;
 
-    public Toppings(int id, String nombre, Double precio) {
+    public Toppings(int id, String nombre, Double precio, Boolean esExtra) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
+        this.esExtra = esExtra;
     }
 
-    public Toppings(int id, String nombre) {
+    public Toppings(int id, String nombre, Boolean esExtra) {
         this.id = id;
         this.nombre = nombre;
         this.precio = null;
+        this.esExtra = esExtra;
+    }
+
+    public boolean esExtra() {
+        return esExtra;
+    }
+
+    public void setExtra(boolean added) {
+        esExtra = added;
     }
 
     public int getId() {

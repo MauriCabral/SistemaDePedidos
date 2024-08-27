@@ -29,7 +29,6 @@
     <Button layoutX="20.0" layoutY="73.0" onAction="#decrementCounter" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="-" />
    <ComboBox fx:id="comboBoxTipo" layoutX="125.0" layoutY="73.0" onAction="#handleComboBoxAction" prefHeight="26.0" prefWidth="130.0" />
     <Label fx:id="precio" layoutX="257.0" layoutY="336.0" text="Precio del Menú" />
-   <Button fx:id="btnPedidoRapido" layoutX="300.0" layoutY="74.0" mnemonicParsing="false" onAction="#pedidoRapido" text="OK" />
    <Label layoutX="19.0" layoutY="112.0" text="Agregar Toppings: " />
    <Label layoutX="32.0" layoutY="139.0" text="Cheddar" />
    <Label layoutX="32.0" layoutY="164.0" text="Bacon" />
@@ -47,24 +46,24 @@
    <CheckBox fx:id="cmbCebollaCrisp" layoutX="139.0" layoutY="264.0" mnemonicParsing="false" />
    <CheckBox fx:id="cmbTomateConf" layoutX="139.0" layoutY="289.0" mnemonicParsing="false" />
    <CheckBox fx:id="cmbCambiarSalsa" layoutX="139.0" layoutY="314.0" mnemonicParsing="false" onAction="#cambiarSalsaCheckBox" />
-   <TextField fx:id="txtCambiarSalsa" layoutX="170.0" layoutY="310.0" text=" " visible="false" />
-   <Label layoutX="370.0" layoutY="112.0" text="Quitar Toppings:" />
-   <Label layoutX="385.0" layoutY="139.0" text="Cheddar" />
-   <Label layoutX="385.0" layoutY="164.0" text="Bacon" />
-   <Label layoutX="385.0" layoutY="189.0" text="Lechuga" />
-   <Label layoutX="385.0" layoutY="214.0" text="Tomate" />
-   <Label layoutX="385.0" layoutY="239.0" text="Cebolla" />
-   <Label layoutX="385.0" layoutY="264.0" text="Cebolla Crispy" />
-   <Label layoutX="385.0" layoutY="289.0" text="Tomate Confitado" />
-   <Label layoutX="385.0" layoutY="314.0" text="Salda" />
-   <CheckBox fx:id="cmbCheddar1" layoutX="495.0" layoutY="139.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbBacon1" layoutX="495.0" layoutY="164.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbLechuga1" layoutX="495.0" layoutY="189.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbTomate1" layoutX="495.0" layoutY="214.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbCebolla1" layoutX="495.0" layoutY="239.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbCebollaCrisp1" layoutX="495.0" layoutY="264.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbTomateConf1" layoutX="495.0" layoutY="289.0" mnemonicParsing="false" />
-   <CheckBox fx:id="quitarSalsa" layoutX="495.0" layoutY="314.0" mnemonicParsing="false"/>
-   <Button fx:id="btnAceptar" layoutX="193.0" layoutY="362.0" mnemonicParsing="false" text="Aceptar" />
+   <TextField fx:id="txtCambiarSalsa" layoutX="170.0" layoutY="310.0" prefHeight="26.0" prefWidth="130.0" text=" " visible="false" />
+   <Label layoutX="309.0" layoutY="112.0" text="Quitar Toppings:" />
+   <Label layoutX="324.0" layoutY="139.0" text="Cheddar" />
+   <Label layoutX="324.0" layoutY="164.0" text="Bacon" />
+   <Label layoutX="324.0" layoutY="189.0" text="Lechuga" />
+   <Label layoutX="324.0" layoutY="214.0" text="Tomate" />
+   <Label layoutX="324.0" layoutY="239.0" text="Cebolla" />
+   <Label layoutX="324.0" layoutY="264.0" text="Cebolla Crispy" />
+   <Label layoutX="324.0" layoutY="289.0" text="Tomate Confitado" />
+   <Label layoutX="324.0" layoutY="314.0" text="Salda" />
+   <CheckBox fx:id="cmbCheddar1" layoutX="434.0" layoutY="139.0" mnemonicParsing="false" />
+   <CheckBox fx:id="cmbBacon1" layoutX="434.0" layoutY="164.0" mnemonicParsing="false" />
+   <CheckBox fx:id="cmbLechuga1" layoutX="434.0" layoutY="189.0" mnemonicParsing="false" />
+   <CheckBox fx:id="cmbTomate1" layoutX="434.0" layoutY="214.0" mnemonicParsing="false" />
+   <CheckBox fx:id="cmbCebolla1" layoutX="434.0" layoutY="239.0" mnemonicParsing="false" />
+   <CheckBox fx:id="cmbCebollaCrisp1" layoutX="434.0" layoutY="264.0" mnemonicParsing="false" />
+   <CheckBox fx:id="cmbTomateConf1" layoutX="434.0" layoutY="289.0" mnemonicParsing="false" />
+   <CheckBox fx:id="quitarSalsa" layoutX="434.0" layoutY="314.0" mnemonicParsing="false" />
+   <Button fx:id="btnAceptar" layoutX="193.0" layoutY="362.0" mnemonicParsing="false" onAction="#aceptarPedido" text="Aceptar" />
    <Button fx:id="btnCancelar" layoutX="344.0" layoutY="362.0" mnemonicParsing="false" text="Cancelar" />
 </AnchorPane>

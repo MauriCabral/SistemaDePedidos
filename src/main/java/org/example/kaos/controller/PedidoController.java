@@ -26,7 +26,7 @@ public class PedidoController {
 
     private final hamburguesaDAO hamburguesaDAO = new hamburguesaDAO();
     @FXML
-    private Button exitButton, cbButton;
+    private Button exitButton, cbButton, deletePedido;
     @FXML
     private Pane leftPanel;
     @FXML
@@ -106,7 +106,7 @@ public class PedidoController {
 
     public void actualizarDetalles(String nombre, String tipo, int cantidad, double precio, List<Toppings> toppingsList) {
         VBox vBox = new VBox(5);
-        vBox.setPadding(new Insets(5, 0, 0, 0));
+        vBox.setPadding(new Insets(2, 8, 0, 8));
         HBox pedidoBox = new HBox(5);
         Label pedidoLabel = new Label("(x" + cantidad + ") " + nombre + " " + tipo);
         Label precioLabel = new Label(String.format("$%d", (int) precio));
@@ -116,20 +116,27 @@ public class PedidoController {
         vBox.getChildren().add(pedidoBox);
         if (toppingsList != null && !toppingsList.isEmpty()) {
             VBox toppingsBox = new VBox(5);
-            toppingsBox.setPadding(new Insets(5, 0, 0, 10));
+            toppingsBox.setPadding(new Insets(5, 0, 0, 0));
             for (Toppings topping : toppingsList) {
-                if (topping.getPrecio() != null) {
-                    int precioTop = (int) Math.round(topping.getPrecio());
-                    Label toppingLabel = new Label("Extra: " + topping.getNombre() + " ($" + precioTop + ")");
-                    toppingsBox.getChildren().add(toppingLabel);
-                }
-                else {
-                    Label toppingLabel = new Label("Extra: " + topping.getNombre());
+                if (topping.esExtra()) {
+                    if (topping.getPrecio() != null) {
+                        int precioTop = (int) Math.round(topping.getPrecio());
+                        Label toppingLabel = new Label("Extra: " + topping.getNombre() + ": ($" + precioTop + ")");
+                        toppingsBox.getChildren().add(toppingLabel);
+                    } else {
+                        Label toppingLabel = new Label("Extra: " + topping.getNombre());
+                        toppingsBox.getChildren().add(toppingLabel);
+                    }
+                } else {
+                    Label toppingLabel = new Label("Sin: " + topping.getNombre());
                     toppingsBox.getChildren().add(toppingLabel);
                 }
             }
             vBox.getChildren().add(toppingsBox);
         }
         detallePedidos.getChildren().add(vBox);
+    }
+
+    public void deletePedidos(ActionEvent actionEvent) {
     }
 }

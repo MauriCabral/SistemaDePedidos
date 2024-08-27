@@ -21,7 +21,7 @@ public class toppingsDAO {
                 if (rs.next()) {
                     String nombre = rs.getString("nombre");
                     double precio = rs.getDouble("precio");
-                    return new Toppings(toppingId, nombre, precio);
+                    return new Toppings(toppingId, nombre, precio, true);
                 } else {
                     return null;
                 }
@@ -29,7 +29,7 @@ public class toppingsDAO {
             else {
                 if (rs.next()) {
                     String nombre = rs.getString("nombre");
-                    return new Toppings(toppingId, nombre);
+                    return new Toppings(toppingId, nombre, false);
                 } else {
                     return null;
                 }
