@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.PedidoController">
-   <AnchorPane fx:id="leftPanel" prefWidth="200.0" style="-fx-background-color: #e9500e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+   <AnchorPane fx:id="leftPanel" prefHeight="600.0" prefWidth="178.0" style="-fx-background-color: #e9500e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
       <VBox alignment="TOP_CENTER" prefHeight="428.0" prefWidth="200.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
          <ImageView fitHeight="28.0" fitWidth="138.0" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -52,7 +52,7 @@
          </Button>
       </VBox>
    </AnchorPane>
-   <Pane fx:id="menuPane" layoutX="204.0" layoutY="14.4" prefHeight="574.0" prefWidth="494.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="204.0" AnchorPane.topAnchor="14.0">
+   <Pane fx:id="menuPane" layoutX="171.8" layoutY="14.4" prefHeight="574.0" prefWidth="488.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="171.8" AnchorPane.topAnchor="14.4">
       <Label layoutX="22.0" layoutY="25.0" text="Menu">
          <font>
             <Font size="24.0" />
@@ -151,17 +151,17 @@
             -fx-background-color: transparent; -fx-text-fill: white;
          </style>
       </Button>
-      <ImageView fitHeight="24.0" fitWidth="61.0" layoutX="461.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="24.0" fitWidth="61.0" layoutX="448.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
          <Image url="@../image/edit.png" />
       </ImageView>
    </Pane>
-   <Pane fx:id="rightPane" layoutX="667.0" layoutY="12.0" prefHeight="576.0" prefWidth="298.0" style="-fx-background-color: #d3d3d3;" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="12.0">
+   <Pane fx:id="rightPane" layoutX="667.0" layoutY="12.0" prefHeight="576.0" prefWidth="336.0" style="-fx-background-color: #d3d3d3;" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="12.0">
       <Label layoutX="9.0" layoutY="14.0" text="Detalle Pedido">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Button fx:id="deletePedido" layoutX="250.0" layoutY="16.0" onAction="#deletePedidos">
+      <Button fx:id="deletePedido" layoutX="300.0" layoutY="16.0" onAction="#deletePedidos">
          <graphic>
             <ImageView fitHeight="14.0" fitWidth="61.0" layoutX="260.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/trash.png" />
@@ -169,9 +169,9 @@
          </graphic>
       </Button>
 
-      <Button layoutX="67.0" layoutY="538.0" mnemonicParsing="false" text="Aceptar" />
-      <Button layoutX="170.0" layoutY="538.0" mnemonicParsing="false" text="Cancelar" />
-      <ScrollPane fitToWidth="true" layoutX="7.0" layoutY="59.0" prefHeight="468.0" prefWidth="285.0" style="-fx-background-color: #d3d3d3;">
+      <Button layoutX="88.0" layoutY="538.0" mnemonicParsing="false" text="Aceptar" />
+      <Button layoutX="191.0" layoutY="538.0" mnemonicParsing="false" text="Cancelar" />
+      <ScrollPane fitToWidth="true" layoutX="7.0" layoutY="59.0" prefHeight="468.0" prefWidth="324.0" style="-fx-background-color: #d3d3d3;">
          <VBox fx:id="detallePedidos" spacing="10.0">
             <HBox prefHeight="3.0" prefWidth="286.0" spacing="10.0" />
          </VBox>

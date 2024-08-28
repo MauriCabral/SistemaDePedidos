@@ -14,21 +14,24 @@ import javafx.scene.control.Label;
 import javafx.geometry.Insets;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.example.kaos.dao.hamburguesaDAO;
+import org.example.kaos.entity.HamburguesaTipo;
+import org.example.kaos.entity.Topping;
+import org.example.kaos.repository.hamburguesaDAO;
+import org.example.kaos.repository.hamburguesaTipoDAO;
 import org.example.kaos.entity.Hamburgusa;
 import org.example.kaos.manager.ControllerManager;
-import org.example.kaos.entity.Toppings;
+
 import java.util.List;
 
 public class PedidoController {
 
     private final hamburguesaDAO hamburguesaDAO = new hamburguesaDAO();
+    private final hamburguesaTipoDAO hamburguesaTipoDAO = new hamburguesaTipoDAO();
     private boolean deleteButtonsVisible = false;
     @FXML
     private Button exitButton, cbButton, deletePedido;
@@ -109,11 +112,32 @@ public class PedidoController {
         rightPane.setVisible(false);
     }
 
-    public void actualizarDetalles(String nombre, String tipo, int cantidad, double precio, List<Toppings> toppingsList) {
+    public void actualizarDetalles(String nombreHamburguesa, String tipoHamburguesa, int cantidad, double precio, List<Topping> toppingList) {
         VBox vBox = new VBox(5);
         vBox.setPadding(new Insets(2, 8, 0, 8));
         HBox pedidoBox = new HBox(5);
-        Label pedidoLabel = new Label("(x" + cantidad + ") " + nombre + " " + tipo);
+
+        HamburguesaTipo hamburguesaTipo = hamburguesaTipoDAO.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa);
+
+        if (hamburguesaTipo == null) {
+            System.out.println("No se encontró el tipo de hamburguesa especificado.");
+            return;
+        }
+        List<Integer> hamburguesaTipos = new ArrayList<>();
+        hamburguesaTipos.add(hamburguesaTipo.getTipo_id());
+
+        List<Topping> toppingSeleccionados = toppingList;
+
+        Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " " + "($" + (int) precio + ")");
+
+        if (toppingList != null && !toppingList.isEmpty()) {
+            for (Topping topping : toppingList) {
+                if (topping.getPrecio() != null) {
+                    precio += topping.getPrecio();
+                }
+            }
+        }
+
         Label precioLabel = new Label(String.format("$%d", (int) precio));
         Button deleteButton = new Button();
         try {
@@ -126,6 +150,8 @@ public class PedidoController {
         } catch (NullPointerException e) {
             System.out.println("No se pudo cargar la imagen: " + e.getMessage());
         }
+//        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, Arrays.asList(new HamburguesaTipo(hamburguesaTipoDAO.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa))), toppingList, precioTotal);
+//        detallesPedidosList.add(detallePedido);
         deleteButton.setOnAction(event -> {
             detallePedidos.getChildren().remove(vBox);
         });
@@ -133,10 +159,10 @@ public class PedidoController {
         HBox.setHgrow(spacer, Priority.ALWAYS);
         pedidoBox.getChildren().addAll(pedidoLabel, spacer, precioLabel, deleteButton);
         vBox.getChildren().add(pedidoBox);
-        if (toppingsList != null && !toppingsList.isEmpty()) {
+        if (toppingList != null && !toppingList.isEmpty()) {
             VBox toppingsBox = new VBox(5);
             toppingsBox.setPadding(new Insets(5, 0, 0, 0));
-            for (Toppings topping : toppingsList) {
+            for (Topping topping : toppingList) {
                 if (topping.esExtra()) {
                     if (topping.getPrecio() != null) {
                         int precioTop = (int) Math.round(topping.getPrecio());

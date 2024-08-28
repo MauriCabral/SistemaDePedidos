@@ -1,19 +1,19 @@
 package org.example.kaos.entity;
 
-public class Toppings {
+public class Topping {
     private int id;
     private String nombre;
     private Double precio;
     private Boolean esExtra;
 
-    public Toppings(int id, String nombre, Double precio, Boolean esExtra) {
+    public Topping(int id, String nombre, Double precio, Boolean esExtra) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
         this.esExtra = esExtra;
     }
 
-    public Toppings(int id, String nombre, Boolean esExtra) {
+    public Topping(int id, String nombre, Boolean esExtra) {
         this.id = id;
         this.nombre = nombre;
         this.precio = null;
@@ -54,7 +54,7 @@ public class Toppings {
 
     @Override
     public String toString() {
-        return "Toppings{" +
+        return "Topping{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", precio=" + precio +

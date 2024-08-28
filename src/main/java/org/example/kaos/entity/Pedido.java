@@ -4,56 +4,67 @@ import java.time.LocalDateTime;
 
 public class Pedido {
     private int id;
-    private String clienteNombre;
+    private String cliente_nombre;
     private String direccion;
-    private LocalDateTime fecha;
+    private LocalDateTime fecha_pedido;
+    private double precio_total;
 
-    public Pedido(String clienteNombre, String direccion, int id, LocalDateTime fecha) {
-        this.clienteNombre = clienteNombre;
-        this.direccion = direccion;
+    public Pedido(int id, String cliente_nombre, String direccion, LocalDateTime fecha_pedido, double precio_total) {
         this.id = id;
-        this.fecha = fecha;
+        this.cliente_nombre = cliente_nombre;
+        this.direccion = direccion;
+        this.fecha_pedido = fecha_pedido;
+        this.precio_total = precio_total;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getClienteNombre() {
-        return clienteNombre;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public LocalDateTime getFecha() {
-        return fecha;
+    public String getCliente_nombre() {
+        return cliente_nombre;
     }
 
     public String getDireccion() {
         return direccion;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public LocalDateTime getFecha_pedido() {
+        return fecha_pedido;
+    }
+
+    public double getPrecio_total() {
+        return precio_total;
+    }
+
+    public void setCliente_nombre(String cliente_nombre) {
+        this.cliente_nombre = cliente_nombre;
     }
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
 
-    public void setClienteNombre(String clienteNombre) {
-        this.clienteNombre = clienteNombre;
+    public void setFecha_pedido(LocalDateTime fecha_pedido) {
+        this.fecha_pedido = fecha_pedido;
     }
 
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
+    public void setPrecio_total(double precio_total) {
+        this.precio_total = precio_total;
     }
 
     @Override
     public String toString() {
         return "Pedido{" +
                 "id=" + id +
-                ", clienteNombre='" + clienteNombre + '\'' +
+                ", cliente_nombre='" + cliente_nombre + '\'' +
                 ", direccion='" + direccion + '\'' +
-                ", fecha=" + fecha +
+                ", fecha_pedido=" + fecha_pedido +
+                ", precio_total=" + precio_total +
                 '}';
     }
 }

@@ -1,4 +1,4 @@
-package org.example.kaos.dao;
+package org.example.kaos.repository;
 
 import org.example.kaos.entity.Hamburgusa;
 

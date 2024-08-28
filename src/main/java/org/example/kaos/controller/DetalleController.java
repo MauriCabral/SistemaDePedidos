@@ -5,11 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import org.example.kaos.dao.tipoHamburguesaDAO;
-import org.example.kaos.dao.toppingsDAO;
+import org.example.kaos.entity.Topping;
+import org.example.kaos.repository.tipoHamburguesaDAO;
+import org.example.kaos.repository.toppingDAO;
 import org.example.kaos.entity.HamburguesaTipo;
-import org.example.kaos.dao.hamburguesaTipoDAO;
-import org.example.kaos.entity.Toppings;
+import org.example.kaos.repository.hamburguesaTipoDAO;
 import org.example.kaos.manager.ControllerManager;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -82,8 +82,8 @@ public class DetalleController implements Initializable {
             showError("Porfavor seleccione un tipo");
         }
         else {
-            List<Toppings> toppingsList = getSelectedToppings();
-            actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingsList);        }
+            List<Topping> toppingList = getSelectedToppings();
+            actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingList);        }
     }
 
     public void showError(String content) {
@@ -103,13 +103,13 @@ public class DetalleController implements Initializable {
         return -1;
     }
 
-    private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<Toppings> toppingsList) {
+    private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<Topping> toppingList) {
         PedidoController pedidoCtrl = ControllerManager.getInstance().getPedidoController();
-        for (Toppings topping : toppingsList) {
+        for (Topping topping : toppingList) {
             System.out.println("Topping: " + topping.getNombre() + ", Precio: " + topping.getPrecio());
         }
         if (pedidoCtrl != null) {
-            Platform.runLater(() -> pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingsList));
+            Platform.runLater(() -> pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingList));
         } else {
             System.out.println("Controlador de Pedido no encontrado.");
         }
@@ -120,34 +120,34 @@ public class DetalleController implements Initializable {
         txtCambiarSalsa.setVisible(cmbCambiarSalsa.isSelected());
     }
 
-    private List<Toppings> getSelectedToppings() {
-        List<Toppings> toppingsList = new ArrayList<>();
+    private List<Topping> getSelectedToppings() {
+        List<Topping> toppingList = new ArrayList<>();
 
         try {
-            if (cmbCheddar.isSelected()) toppingsList.add(toppingsDAO.getToppingById(1, true));
-            if (cmbBacon.isSelected()) toppingsList.add(toppingsDAO.getToppingById(2, true));
-            if (cmbLechuga.isSelected()) toppingsList.add(toppingsDAO.getToppingById(3, true));
-            if (cmbTomate.isSelected()) toppingsList.add(toppingsDAO.getToppingById(4, true));
-            if (cmbCebolla.isSelected()) toppingsList.add(toppingsDAO.getToppingById(5, true));
-            if (cmbCebollaCrisp.isSelected()) toppingsList.add(toppingsDAO.getToppingById(6, true));
-            if (cmbTomateConf.isSelected()) toppingsList.add(toppingsDAO.getToppingById(7, true));
-            if (cmbCheddar1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(1, false));
-            if (cmbBacon1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(2, false));
-            if (cmbLechuga1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(3, false));
-            if (cmbTomate1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(4, false));
-            if (cmbCebolla1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(5, false));
-            if (cmbCebollaCrisp1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(6, false));
-            if (cmbTomateConf1.isSelected()) toppingsList.add(toppingsDAO.getToppingById(7, false));
+            if (cmbCheddar.isSelected()) toppingList.add(toppingDAO.getToppingById(1, true));
+            if (cmbBacon.isSelected()) toppingList.add(toppingDAO.getToppingById(2, true));
+            if (cmbLechuga.isSelected()) toppingList.add(toppingDAO.getToppingById(3, true));
+            if (cmbTomate.isSelected()) toppingList.add(toppingDAO.getToppingById(4, true));
+            if (cmbCebolla.isSelected()) toppingList.add(toppingDAO.getToppingById(5, true));
+            if (cmbCebollaCrisp.isSelected()) toppingList.add(toppingDAO.getToppingById(6, true));
+            if (cmbTomateConf.isSelected()) toppingList.add(toppingDAO.getToppingById(7, true));
+            if (cmbCheddar1.isSelected()) toppingList.add(toppingDAO.getToppingById(1, false));
+            if (cmbBacon1.isSelected()) toppingList.add(toppingDAO.getToppingById(2, false));
+            if (cmbLechuga1.isSelected()) toppingList.add(toppingDAO.getToppingById(3, false));
+            if (cmbTomate1.isSelected()) toppingList.add(toppingDAO.getToppingById(4, false));
+            if (cmbCebolla1.isSelected()) toppingList.add(toppingDAO.getToppingById(5, false));
+            if (cmbCebollaCrisp1.isSelected()) toppingList.add(toppingDAO.getToppingById(6, false));
+            if (cmbTomateConf1.isSelected()) toppingList.add(toppingDAO.getToppingById(7, false));
             if (cmbCambiarSalsa.isSelected() && !txtCambiarSalsa.getText().isEmpty()) {
-                toppingsList.add(new Toppings(8, "Salsa" + txtCambiarSalsa.getText(), true));
+                toppingList.add(new Topping(8, "Salsa" + txtCambiarSalsa.getText(), true));
             }
             if (quitarSalsa.isSelected() && !txtCambiarSalsa.getText().isEmpty()) {
-                toppingsList.add(new Toppings(8, "Salsa", false));
+                toppingList.add(new Topping(8, "Salsa", false));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        toppingsList.sort((t1, t2) -> {
+        toppingList.sort((t1, t2) -> {
             if (t1 == null && t2 == null) {
                 return 0;
             }
@@ -159,6 +159,6 @@ public class DetalleController implements Initializable {
             }
             return Boolean.compare(t2.esExtra(), t1.esExtra());
         });
-        return toppingsList;
+        return toppingList;
     }
 }

@@ -1,17 +1,17 @@
-package org.example.kaos.dao;
+package org.example.kaos.repository;
 
-import org.example.kaos.entity.Toppings;
+import org.example.kaos.entity.Topping;
 
 import java.sql.*;
 
-public class toppingsDAO {
-    public static Toppings getToppingById(int toppingId, Boolean ban) throws SQLException {
+public class toppingDAO {
+    public static Topping getToppingById(int toppingId, Boolean ban) throws SQLException {
         String query = " ";
         if (ban) {
-            query = "SELECT nombre, precio FROM Toppings WHERE id = ?";
+            query = "SELECT nombre, precio FROM Topping WHERE id = ?";
         }
         else {
-            query = "SELECT nombre FROM Toppings WHERE id = ?";}
+            query = "SELECT nombre FROM Topping WHERE id = ?";}
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -21,7 +21,7 @@ public class toppingsDAO {
                 if (rs.next()) {
                     String nombre = rs.getString("nombre");
                     double precio = rs.getDouble("precio");
-                    return new Toppings(toppingId, nombre, precio, true);
+                    return new Topping(toppingId, nombre, precio, true);
                 } else {
                     return null;
                 }
@@ -29,7 +29,7 @@ public class toppingsDAO {
             else {
                 if (rs.next()) {
                     String nombre = rs.getString("nombre");
-                    return new Toppings(toppingId, nombre, false);
+                    return new Topping(toppingId, nombre, false);
                 } else {
                     return null;
                 }
