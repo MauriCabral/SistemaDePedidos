@@ -12,7 +12,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.PedidoController">
+<AnchorPane prefHeight="622.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.PedidoController">
    <AnchorPane fx:id="leftPanel" prefHeight="600.0" prefWidth="178.0" style="-fx-background-color: #e9500e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
       <VBox alignment="TOP_CENTER" prefHeight="428.0" prefWidth="200.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
          <ImageView fitHeight="28.0" fitWidth="138.0" pickOnBounds="true" preserveRatio="true">
@@ -155,7 +155,7 @@
          <Image url="@../image/edit.png" />
       </ImageView>
    </Pane>
-   <Pane fx:id="rightPane" layoutX="667.0" layoutY="12.0" prefHeight="576.0" prefWidth="336.0" style="-fx-background-color: #d3d3d3;" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="12.0">
+   <Pane fx:id="rightPane" layoutX="667.0" layoutY="12.0" prefHeight="604.0" prefWidth="336.0" style="-fx-background-color: #d3d3d3;" AnchorPane.bottomAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="12.0">
       <Label layoutX="9.0" layoutY="14.0" text="Detalle Pedido">
          <font>
             <Font size="20.0" />
@@ -169,12 +169,17 @@
          </graphic>
       </Button>
 
-      <Button layoutX="88.0" layoutY="538.0" mnemonicParsing="false" text="Aceptar" />
-      <Button layoutX="191.0" layoutY="538.0" mnemonicParsing="false" text="Cancelar" />
+      <Button layoutX="87.0" layoutY="564.0" mnemonicParsing="false" text="Aceptar" />
+      <Button layoutX="190.0" layoutY="564.0" mnemonicParsing="false" text="Cancelar" />
       <ScrollPane fitToWidth="true" layoutX="7.0" layoutY="59.0" prefHeight="468.0" prefWidth="324.0" style="-fx-background-color: #d3d3d3;">
          <VBox fx:id="detallePedidos" spacing="10.0">
             <HBox prefHeight="3.0" prefWidth="286.0" spacing="10.0" />
          </VBox>
       </ScrollPane>
+      <Label layoutX="151.0" layoutY="536.0" text="TOTAL" textAlignment="CENTER">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
    </Pane>
 </AnchorPane>

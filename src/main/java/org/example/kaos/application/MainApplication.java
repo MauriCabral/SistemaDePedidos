@@ -20,7 +20,7 @@ public class MainApplication extends Application {
     public void start(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/kaos/window/main.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 1000, 600);
+            Scene scene = new Scene(fxmlLoader.load(), 1000, 620);
 
             scene.setOnMouseClicked((MouseEvent event) -> {
                 try {
@@ -41,7 +41,7 @@ public class MainApplication extends Application {
 
     private void openNewWindow() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/kaos/window/pedido.fxml"));
-        Scene newScene = new Scene(fxmlLoader.load(), 1000, 600);
+        Scene newScene = new Scene(fxmlLoader.load(), 1000, 620);
         Stage newStage = new Stage();
         newStage.setTitle("Pedidos");
         newStage.setScene(newScene);

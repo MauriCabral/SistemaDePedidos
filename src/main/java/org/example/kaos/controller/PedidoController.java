@@ -88,7 +88,8 @@ public class PedidoController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/detalle.fxml"));
             Pane detallePane = loader.load();
-
+//            detallePane.setPrefWidth(178);
+//            detallePane.setPrefHeight(600);
             DetalleController detalleController = loader.getController();
 
             detalleController.setDetalle(menuNombre);
