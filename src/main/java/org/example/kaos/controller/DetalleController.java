@@ -2,9 +2,12 @@ package org.example.kaos.controller;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.tipoHamburguesaDAO;
 import org.example.kaos.repository.toppingDAO;
@@ -13,6 +16,7 @@ import org.example.kaos.repository.hamburguesaTipoDAO;
 import org.example.kaos.manager.ControllerManager;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.Parent;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -31,6 +35,11 @@ public class DetalleController implements Initializable {
     private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
     @FXML
     private TextField txtCambiarSalsa;
+    @FXML
+    private Button btnCancelar, btnAceptar;
+    @FXML
+    private Pane pnlDetalle;
+
     private int count = 1;
     private final tipoHamburguesaDAO typeDAO = new tipoHamburguesaDAO();
     private final hamburguesaTipoDAO hamburguesaTipoDAO = new hamburguesaTipoDAO();
@@ -39,6 +48,7 @@ public class DetalleController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         ObservableList<String> types = typeDAO.getAllTipoHamburguesa();
         comboBoxTipo.setItems(types);
+        btnCancelar.setOnAction(event -> closeWindow());
     }
 
     @FXML
@@ -160,5 +170,13 @@ public class DetalleController implements Initializable {
             return Boolean.compare(t2.esExtra(), t1.esExtra());
         });
         return toppingList;
+    }
+
+    @FXML
+    private void closeWindow() {
+        Stage stage = (Stage) btnCancelar.getScene().getWindow();
+        if (stage != null) {
+            stage.close();
+        }
     }
 }

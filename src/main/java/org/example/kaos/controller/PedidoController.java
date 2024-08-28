@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.hamburguesaDAO;
@@ -33,17 +34,15 @@ public class PedidoController {
     private final hamburguesaDAO hamburguesaDAO = new hamburguesaDAO();
     private final hamburguesaTipoDAO hamburguesaTipoDAO = new hamburguesaTipoDAO();
     private boolean deleteButtonsVisible = false;
+    List<Integer> listPrecio = new ArrayList<>();
     @FXML
     private Button exitButton, cbButton, deletePedido;
     @FXML
-    private Pane leftPanel;
-    @FXML
-    private Pane menuPane;
-    @FXML
-    private Pane rightPane;
+    private Pane leftPanel, menuPane, rightPane;
     @FXML
     private VBox detallePedidos;
-
+    @FXML
+    private Label lblTotal;
     @FXML
     private void handleExitButtonClick() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -125,14 +124,17 @@ public class PedidoController {
             return;
         }
         List<Integer> hamburguesaTipos = new ArrayList<>();
-        hamburguesaTipos.add(hamburguesaTipo.getTipo_id());
+        hamburguesaTipos.add(hamburguesaTipo.getId());
 
-        List<Topping> toppingSeleccionados = toppingList;
+        for (Integer tipo : hamburguesaTipos){
+            System.out.println("Id: " + tipo);
+        }
 
         Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " " + "($" + (int) precio + ")");
 
         if (toppingList != null && !toppingList.isEmpty()) {
             for (Topping topping : toppingList) {
+                System.out.println("Id top: " + topping.getId());
                 if (topping.getPrecio() != null) {
                     precio += topping.getPrecio();
                 }
@@ -140,6 +142,9 @@ public class PedidoController {
         }
 
         Label precioLabel = new Label(String.format("$%d", (int) precio));
+        listPrecio.add((int) precio);
+        actualizarTotal();
+//        System.out.println("Total: " + getPrecioTotalPedido(listPrecio));
         Button deleteButton = new Button();
         try {
             Image image = new Image(getClass().getResource("/org/example/kaos/image/trash.png").toExternalForm());
@@ -151,10 +156,14 @@ public class PedidoController {
         } catch (NullPointerException e) {
             System.out.println("No se pudo cargar la imagen: " + e.getMessage());
         }
-//        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, Arrays.asList(new HamburguesaTipo(hamburguesaTipoDAO.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa))), toppingList, precioTotal);
+//        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1 , precio);
 //        detallesPedidosList.add(detallePedido);
+
+        final int precioFinal = (int) precio;
         deleteButton.setOnAction(event -> {
             detallePedidos.getChildren().remove(vBox);
+            listPrecio.remove((Integer) precioFinal);
+            actualizarTotal();
         });
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -201,5 +210,18 @@ public class PedidoController {
                 }
             }
         }
+    }
+
+    private void actualizarTotal() {
+        int total = getPrecioTotalPedido();
+        lblTotal.setText("TOTAL: $" + total);
+    }
+
+    private int getPrecioTotalPedido() {
+        int precioTotal = 0;
+        for (Integer precio : listPrecio) {
+            precioTotal += precio;
+        }
+        return precioTotal;
     }
 }
