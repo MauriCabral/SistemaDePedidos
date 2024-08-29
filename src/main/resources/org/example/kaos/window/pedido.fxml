@@ -169,7 +169,7 @@
          </graphic>
       </Button>
 
-      <Button layoutX="87.0" layoutY="564.0" mnemonicParsing="false" text="Aceptar" />
+      <Button layoutX="87.0" layoutY="564.0" mnemonicParsing="false" text="Aceptar" onAction="#aceptarPedido"/>
       <Button layoutX="190.0" layoutY="564.0" mnemonicParsing="false" text="Cancelar" />
       <ScrollPane fitToWidth="true" layoutX="7.0" layoutY="59.0" prefHeight="468.0" prefWidth="324.0" style="-fx-background-color: #d3d3d3;">
          <VBox fx:id="detallePedidos" spacing="10.0">

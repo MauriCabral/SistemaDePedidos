@@ -2,6 +2,7 @@ package org.example.kaos.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -26,6 +27,8 @@ import org.example.kaos.repository.hamburguesaDAO;
 import org.example.kaos.repository.hamburguesaTipoDAO;
 import org.example.kaos.entity.Hamburgusa;
 import org.example.kaos.manager.ControllerManager;
+import org.example.kaos.repository.detallePedidoDAO;
+import org.example.kaos.repository.pedidoDAO;
 
 import java.util.List;
 
@@ -34,6 +37,8 @@ public class PedidoController {
     private final hamburguesaDAO hamburguesaDAO = new hamburguesaDAO();
     private final hamburguesaTipoDAO hamburguesaTipoDAO = new hamburguesaTipoDAO();
     private boolean deleteButtonsVisible = false;
+    private List<DetallePedido> detallesPedidosList;
+
     List<Integer> listPrecio = new ArrayList<>();
     @FXML
     private Button exitButton, cbButton, deletePedido;
@@ -110,6 +115,7 @@ public class PedidoController {
     private void initialize() {
         menuPane.setVisible(false);
         rightPane.setVisible(false);
+        detallesPedidosList = new ArrayList<>();
     }
 
     public void actualizarDetalles(String nombreHamburguesa, String tipoHamburguesa, int cantidad, double precio, List<Topping> toppingList) {
@@ -132,9 +138,11 @@ public class PedidoController {
 
         Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " " + "($" + (int) precio + ")");
 
+        List<Integer> toppingIds = new ArrayList<>();
         if (toppingList != null && !toppingList.isEmpty()) {
             for (Topping topping : toppingList) {
                 System.out.println("Id top: " + topping.getId());
+                toppingIds.add(topping.getId());
                 if (topping.getPrecio() != null) {
                     precio += topping.getPrecio();
                 }
@@ -144,7 +152,6 @@ public class PedidoController {
         Label precioLabel = new Label(String.format("$%d", (int) precio));
         listPrecio.add((int) precio);
         actualizarTotal();
-//        System.out.println("Total: " + getPrecioTotalPedido(listPrecio));
         Button deleteButton = new Button();
         try {
             Image image = new Image(getClass().getResource("/org/example/kaos/image/trash.png").toExternalForm());
@@ -156,14 +163,15 @@ public class PedidoController {
         } catch (NullPointerException e) {
             System.out.println("No se pudo cargar la imagen: " + e.getMessage());
         }
-//        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1 , precio);
-//        detallesPedidosList.add(detallePedido);
+        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, hamburguesaTipos, toppingIds, precio);
+        detallesPedidosList.add(detallePedido);
 
         final int precioFinal = (int) precio;
         deleteButton.setOnAction(event -> {
             detallePedidos.getChildren().remove(vBox);
             listPrecio.remove((Integer) precioFinal);
             actualizarTotal();
+            detallesPedidosList.remove(detallePedido);
         });
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -223,5 +231,24 @@ public class PedidoController {
             precioTotal += precio;
         }
         return precioTotal;
+    }
+
+    public void aceptarPedido(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/datoCliente.fxml"));
+            Parent root = loader.load();
+            DatoClienteController controller = loader.getController();
+            Stage stage = new Stage();
+            controller.setStage(stage);
+            stage.setWidth(380);
+            stage.setHeight(250);
+            stage.setTitle("Datos del Cliente");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
