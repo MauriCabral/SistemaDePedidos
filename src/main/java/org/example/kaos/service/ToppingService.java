@@ -44,8 +44,6 @@ public class ToppingService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        // Ordenar los toppings por su prioridad (extras primero)
         toppingList.sort((t1, t2) -> {
             if (t1 == null && t2 == null) return 0;
             if (t1 == null) return 1;

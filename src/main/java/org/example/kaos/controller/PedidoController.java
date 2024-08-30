@@ -1,9 +1,6 @@
 package org.example.kaos.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Button;
@@ -14,12 +11,9 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.geometry.Insets;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import org.example.kaos.application.PedidoApplication;
 import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.HamburguesaTipo;
@@ -27,7 +21,6 @@ import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.entity.Hamburgusa;
-import org.example.kaos.manager.ControllerManager;
 import org.example.kaos.service.PedidoService;
 
 import java.util.List;
@@ -42,9 +35,7 @@ public class PedidoController {
     private PedidoService pedidoService;
 
     @FXML
-    private Button exitButton, cbButton, deletePedido;
-    @FXML
-    private Pane leftPanel, menuPane, rightPane;
+    private Pane menuPane, rightPane;
     @FXML
     private VBox detallePedidos;
     @FXML
