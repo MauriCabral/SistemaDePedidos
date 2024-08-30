@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.example.kaos.entity.TipoPago;
 
-public class tipoPagoDAO {
+public class TipoPagoDAO {
     public List<TipoPago> getAllTipoPago() {
         List<TipoPago> tipoPagos = new ArrayList<>();
         String sql = "SELECT * FROM tipo_pago";

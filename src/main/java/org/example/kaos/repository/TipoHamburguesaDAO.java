@@ -6,7 +6,7 @@ import org.example.kaos.entity.TipoHamburguesa;
 
 import java.sql.*;
 
-public class tipoHamburguesaDAO {
+public class TipoHamburguesaDAO {
     public ObservableList<String> getAllTipoHamburguesa() {
         ObservableList<String> tipos = FXCollections.observableArrayList();
         String sql = "SELECT tipo FROM tipo_hamburguesa";

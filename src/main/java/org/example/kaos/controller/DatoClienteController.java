@@ -5,7 +5,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.kaos.entity.TipoPago;
-import org.example.kaos.repository.tipoPagoDAO;
+import org.example.kaos.repository.TipoPagoDAO;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class DatoClienteController {
     }
 
     private void cargarFormasPago() {
-        tipoPagoDAO formaPagoDAO = new tipoPagoDAO();
+        TipoPagoDAO formaPagoDAO = new TipoPagoDAO();
         List<TipoPago> tipoPagos = formaPagoDAO.getAllTipoPago();
         for (TipoPago tipoPago : tipoPagos) {
             cmbFormaPago.getItems().add(tipoPago.getNombre());

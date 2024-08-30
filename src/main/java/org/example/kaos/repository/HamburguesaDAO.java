@@ -4,7 +4,7 @@ import org.example.kaos.entity.Hamburgusa;
 
 import java.sql.*;
 
-public class hamburguesaDAO {
+public class HamburguesaDAO {
     public Hamburgusa getMenuByCode(String code) {
         String sql = "SELECT * FROM hamburguesa WHERE codigo = ?";
         try (Connection conn = DataBase.getConnection();

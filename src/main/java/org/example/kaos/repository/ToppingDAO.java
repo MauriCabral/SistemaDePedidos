@@ -4,7 +4,7 @@ import org.example.kaos.entity.Topping;
 
 import java.sql.*;
 
-public class toppingDAO {
+public class ToppingDAO {
     public static Topping getToppingById(int toppingId, Boolean ban) throws SQLException {
         String query = " ";
         if (ban) {

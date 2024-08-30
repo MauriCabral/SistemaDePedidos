@@ -3,7 +3,7 @@ package org.example.kaos.repository;
 import java.sql.*;
 import java.time.LocalDateTime;
 
-public class pedidoDAO {
+public class PedidoDAO {
     public int createPedido() {
         String sql = "INSERT INTO pedido (precioTotal, fecha) VALUES (?, ?)";
         try (Connection conn = DataBase.getConnection();

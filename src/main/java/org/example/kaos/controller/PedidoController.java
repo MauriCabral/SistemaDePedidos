@@ -20,26 +20,27 @@ import java.util.Optional;
 
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.example.kaos.application.PedidoApplication;
 import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.Topping;
-import org.example.kaos.repository.hamburguesaDAO;
-import org.example.kaos.repository.hamburguesaTipoDAO;
+import org.example.kaos.repository.HamburguesaDAO;
+import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.entity.Hamburgusa;
 import org.example.kaos.manager.ControllerManager;
-import org.example.kaos.repository.detallePedidoDAO;
-import org.example.kaos.repository.pedidoDAO;
+import org.example.kaos.service.PedidoService;
 
 import java.util.List;
 
 public class PedidoController {
 
-    private final hamburguesaDAO hamburguesaDAO = new hamburguesaDAO();
-    private final hamburguesaTipoDAO hamburguesaTipoDAO = new hamburguesaTipoDAO();
+    private PedidoApplication pedidoApp;
+    private final HamburguesaDAO hamburguesaDAO = new HamburguesaDAO();
+    private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
     private boolean deleteButtonsVisible = false;
     private List<DetallePedido> detallesPedidosList;
+    private PedidoService pedidoService;
 
-    List<Integer> listPrecio = new ArrayList<>();
     @FXML
     private Button exitButton, cbButton, deletePedido;
     @FXML
@@ -48,6 +49,26 @@ public class PedidoController {
     private VBox detallePedidos;
     @FXML
     private Label lblTotal;
+
+    List<Integer> listPrecio = new ArrayList<>();
+
+    @FXML
+    private void initialize() {
+        menuPane.setVisible(false);
+        rightPane.setVisible(false);
+        detallesPedidosList = new ArrayList<>();
+    }
+
+    public PedidoController() {}
+
+    public void setPedidoApp(PedidoApplication pedidoApp) {
+        this.pedidoApp = pedidoApp;
+    }
+
+    public void setPedidoService(PedidoService pedidoService) {
+        this.pedidoService = pedidoService;
+    }
+
     @FXML
     private void handleExitButtonClick() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -82,40 +103,10 @@ public class PedidoController {
         };
         Hamburgusa selectedMenu = hamburguesaDAO.getMenuByCode(res);
         if (selectedMenu != null) {
-            openDetalleWindow(selectedMenu.getNombre());
+            pedidoApp.openDetalleWindow(selectedMenu.getNombre());
         } else {
             System.out.println("Menu no encontrado.");
         }
-    }
-
-    private void openDetalleWindow(String menuNombre) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/detalle.fxml"));
-            Pane detallePane = loader.load();
-//            detallePane.setPrefWidth(178);
-//            detallePane.setPrefHeight(600);
-            DetalleController detalleController = loader.getController();
-
-            detalleController.setDetalle(menuNombre);
-
-            ControllerManager.getInstance().setPedidoController(this);
-
-            Stage detalleStage = new Stage();
-            detalleStage.setTitle("Detalle");
-            detalleStage.initModality(Modality.APPLICATION_MODAL);
-            detalleStage.initOwner(leftPanel.getScene().getWindow());
-            detalleStage.setScene(new Scene(detallePane));
-            detalleStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void initialize() {
-        menuPane.setVisible(false);
-        rightPane.setVisible(false);
-        detallesPedidosList = new ArrayList<>();
     }
 
     public void actualizarDetalles(String nombreHamburguesa, String tipoHamburguesa, int cantidad, double precio, List<Topping> toppingList) {
@@ -234,21 +225,31 @@ public class PedidoController {
     }
 
     public void aceptarPedido(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/datoCliente.fxml"));
-            Parent root = loader.load();
-            DatoClienteController controller = loader.getController();
-            Stage stage = new Stage();
-            controller.setStage(stage);
-            stage.setWidth(380);
-            stage.setHeight(250);
-            stage.setTitle("Datos del Cliente");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
+        pedidoApp.openDatoClienteWindow();
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void cancelarPedido(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmación de Cancelación");
+        alert.setHeaderText(null);
+        alert.setContentText("¿Está seguro de que desea cancelar el pedido?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            if (pedidoService != null) {
+                pedidoService.getDetallesPedidosList().clear();
+            } else {
+                System.out.println("PedidoService no está inicializado.");
+            }
+            detallesPedidosList.clear();
+            listPrecio.clear();
+            actualizarTotal();
+            detallePedidos.getChildren().clear();
+            Alert info = new Alert(Alert.AlertType.INFORMATION);
+            info.setTitle("Pedido Cancelado");
+            info.setHeaderText(null);
+            info.setContentText("El pedido ha sido cancelado.");
+            info.showAndWait();
         }
     }
 }

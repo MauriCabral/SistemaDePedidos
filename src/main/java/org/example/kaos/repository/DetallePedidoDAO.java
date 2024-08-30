@@ -4,7 +4,7 @@ import org.example.kaos.entity.DetallePedido;
 import java.util.List;
 import java.sql.*;
 
-public class detallePedidoDAO {
+public class DetallePedidoDAO {
     public void insertDetallePedido(List<DetallePedido> detallesPedidosList, int idPedido) {
         String sql = "INSERT INTO detalle_pedido (idPedido, cantidad, hamburguesaTipoId, precioUnitario) VALUES (?, ?, ?, ?)";
         try (Connection conn = DataBase.getConnection();

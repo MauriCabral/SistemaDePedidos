@@ -4,7 +4,7 @@ import java.sql.*;
 
 import org.example.kaos.entity.HamburguesaTipo;
 
-public class hamburguesaTipoDAO {
+public class HamburguesaTipoDAO {
     public HamburguesaTipo getHamburguesaTipo(String nombre, String tipo) {
         String sql = "SELECT * FROM hamburguesa_tipo ht INNER JOIN hamburguesa h ON h.id = ht.hamburguesa_id INNER JOIN tipo_hamburguesa th ON th.id = ht.tipo_id WHERE h.nombre = ? AND th.tipo = ?";
         try (Connection conn = DataBase.getConnection();

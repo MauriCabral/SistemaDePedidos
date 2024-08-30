@@ -2,21 +2,19 @@ package org.example.kaos.controller;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.example.kaos.entity.Topping;
-import org.example.kaos.repository.tipoHamburguesaDAO;
-import org.example.kaos.repository.toppingDAO;
+import org.example.kaos.repository.TipoHamburguesaDAO;
+import org.example.kaos.repository.ToppingDAO;
 import org.example.kaos.entity.HamburguesaTipo;
-import org.example.kaos.repository.hamburguesaTipoDAO;
+import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.manager.ControllerManager;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.Parent;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -39,16 +37,18 @@ public class DetalleController implements Initializable {
     private Button btnCancelar, btnAceptar;
     @FXML
     private Pane pnlDetalle;
-
+    @FXML
+    private Label counterLabel;
+    
+    private Stage stage;
     private int count = 1;
-    private final tipoHamburguesaDAO typeDAO = new tipoHamburguesaDAO();
-    private final hamburguesaTipoDAO hamburguesaTipoDAO = new hamburguesaTipoDAO();
+    private final TipoHamburguesaDAO typeDAO = new TipoHamburguesaDAO();
+    private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
 
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
-        ObservableList<String> types = typeDAO.getAllTipoHamburguesa();
-        comboBoxTipo.setItems(types);
         btnCancelar.setOnAction(event -> closeWindow());
+        btnAceptar.setOnAction(event -> aceptarPedido());
     }
 
     @FXML
@@ -59,10 +59,17 @@ public class DetalleController implements Initializable {
 
     public void setDetalle(String nombreMenu) {
         nombre.setText(nombreMenu);
+        getTipoHamburguesa(nombreMenu);
     }
 
-    @FXML
-    private Label counterLabel;
+    private void getTipoHamburguesa(String nombreMenu) {
+        ObservableList<String> tiposHamburguesa = typeDAO.getAllTipoHamburguesa();
+        if (tiposHamburguesa != null && !tiposHamburguesa.isEmpty()) {
+            comboBoxTipo.setItems(tiposHamburguesa);
+        } else {
+            showError("No se encontraron tipos de hamburguesa para: " + nombreMenu);
+        }
+    }
 
     @FXML
     private void incrementCounter() {
@@ -82,6 +89,10 @@ public class DetalleController implements Initializable {
         counterLabel.setText(String.valueOf(count));
     }
 
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
     @FXML
     private void aceptarPedido() {
         String tipo = comboBoxTipo.getValue();
@@ -93,7 +104,11 @@ public class DetalleController implements Initializable {
         }
         else {
             List<Topping> toppingList = getSelectedToppings();
-            actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingList);        }
+            actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingList);
+            if (stage != null) {
+                stage.close();
+            }
+        }
     }
 
     public void showError(String content) {
@@ -134,20 +149,20 @@ public class DetalleController implements Initializable {
         List<Topping> toppingList = new ArrayList<>();
 
         try {
-            if (cmbCheddar.isSelected()) toppingList.add(toppingDAO.getToppingById(1, true));
-            if (cmbBacon.isSelected()) toppingList.add(toppingDAO.getToppingById(2, true));
-            if (cmbLechuga.isSelected()) toppingList.add(toppingDAO.getToppingById(3, true));
-            if (cmbTomate.isSelected()) toppingList.add(toppingDAO.getToppingById(4, true));
-            if (cmbCebolla.isSelected()) toppingList.add(toppingDAO.getToppingById(5, true));
-            if (cmbCebollaCrisp.isSelected()) toppingList.add(toppingDAO.getToppingById(6, true));
-            if (cmbTomateConf.isSelected()) toppingList.add(toppingDAO.getToppingById(7, true));
-            if (cmbCheddar1.isSelected()) toppingList.add(toppingDAO.getToppingById(1, false));
-            if (cmbBacon1.isSelected()) toppingList.add(toppingDAO.getToppingById(2, false));
-            if (cmbLechuga1.isSelected()) toppingList.add(toppingDAO.getToppingById(3, false));
-            if (cmbTomate1.isSelected()) toppingList.add(toppingDAO.getToppingById(4, false));
-            if (cmbCebolla1.isSelected()) toppingList.add(toppingDAO.getToppingById(5, false));
-            if (cmbCebollaCrisp1.isSelected()) toppingList.add(toppingDAO.getToppingById(6, false));
-            if (cmbTomateConf1.isSelected()) toppingList.add(toppingDAO.getToppingById(7, false));
+            if (cmbCheddar.isSelected()) toppingList.add(ToppingDAO.getToppingById(1, true));
+            if (cmbBacon.isSelected()) toppingList.add(ToppingDAO.getToppingById(2, true));
+            if (cmbLechuga.isSelected()) toppingList.add(ToppingDAO.getToppingById(3, true));
+            if (cmbTomate.isSelected()) toppingList.add(ToppingDAO.getToppingById(4, true));
+            if (cmbCebolla.isSelected()) toppingList.add(ToppingDAO.getToppingById(5, true));
+            if (cmbCebollaCrisp.isSelected()) toppingList.add(ToppingDAO.getToppingById(6, true));
+            if (cmbTomateConf.isSelected()) toppingList.add(ToppingDAO.getToppingById(7, true));
+            if (cmbCheddar1.isSelected()) toppingList.add(ToppingDAO.getToppingById(1, false));
+            if (cmbBacon1.isSelected()) toppingList.add(ToppingDAO.getToppingById(2, false));
+            if (cmbLechuga1.isSelected()) toppingList.add(ToppingDAO.getToppingById(3, false));
+            if (cmbTomate1.isSelected()) toppingList.add(ToppingDAO.getToppingById(4, false));
+            if (cmbCebolla1.isSelected()) toppingList.add(ToppingDAO.getToppingById(5, false));
+            if (cmbCebollaCrisp1.isSelected()) toppingList.add(ToppingDAO.getToppingById(6, false));
+            if (cmbTomateConf1.isSelected()) toppingList.add(ToppingDAO.getToppingById(7, false));
             if (cmbCambiarSalsa.isSelected() && !txtCambiarSalsa.getText().isEmpty()) {
                 toppingList.add(new Topping(8, "Salsa" + txtCambiarSalsa.getText(), true));
             }
