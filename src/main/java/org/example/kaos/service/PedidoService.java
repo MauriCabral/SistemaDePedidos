@@ -6,22 +6,35 @@ import org.example.kaos.entity.Hamburgusa;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.repository.HamburguesaTipoDAO;
+import org.example.kaos.repository.PedidoDAO;
 
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONArray;
 
 public class PedidoService {
     private final HamburguesaDAO hamburguesaDAO;
     private final HamburguesaTipoDAO hamburguesaTipoDAO;
+    private PedidoDAO pedidoDAO = new PedidoDAO();
 
     private final List<DetallePedido> detallesPedidosList;
     private final List<Integer> listPrecio;
+    private static PedidoService instance;
 
     public PedidoService() {
         this.hamburguesaDAO = new HamburguesaDAO();
         this.hamburguesaTipoDAO = new HamburguesaTipoDAO();
         this.detallesPedidosList = new ArrayList<>();
         this.listPrecio = new ArrayList<>();
+    }
+
+    public static PedidoService getInstance() {
+        if (instance == null) {
+            instance = new PedidoService();
+        }
+        return instance;
     }
 
     public HamburguesaTipo getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
@@ -55,6 +68,7 @@ public class PedidoService {
         DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, hamburguesaTipos, toppingIds, precio);
         detallesPedidosList.add(detallePedido);
         listPrecio.add((int) precio);
+        System.out.println("listPrecio después de añadir: " + listPrecio);
     }
 
     public void removeDetallePedido(DetallePedido detallePedido) {
@@ -63,14 +77,31 @@ public class PedidoService {
     }
 
     public int getPrecioTotalPedido() {
-        int precioTotal = 0;
+        System.out.println("Contenido de listPrecio en getPrecioTotalPedido: " + listPrecio);
+        int total = 0;
         for (Integer precio : listPrecio) {
-            precioTotal += precio;
+            total += precio;
         }
-        return precioTotal;
+        System.out.println("Total calculado en getPrecioTotalPedido: " + total);
+        return total;
     }
 
     public List<DetallePedido> getDetallesPedidosList() {
         return detallesPedidosList;
+    }
+
+    public List<Integer> getListPrecio() {
+        System.out.println("Contenido de listPrecio en getListPrecio: " + listPrecio);
+        return listPrecio;
+    }
+
+    public void insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double precioTotal, JSONArray detallesJson) {
+        try {
+            pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, precioTotal, detallesJson);
+            System.out.println("Pedido insertado exitosamente.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al insertar el pedido: " + e.getMessage());
+        }
     }
 }

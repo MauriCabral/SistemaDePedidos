@@ -41,7 +41,7 @@ public class PedidoController {
     @FXML
     private Label lblTotal;
 
-    List<Integer> listPrecio = new ArrayList<>();
+    private List<Integer> listPrecio = new ArrayList<>();
 
     @FXML
     private void initialize() {
@@ -50,7 +50,7 @@ public class PedidoController {
         detallesPedidosList = new ArrayList<>();
     }
 
-    public PedidoController() {}
+    public PedidoController() {this.pedidoService = new PedidoService();}
 
     public void setPedidoApp(PedidoApplication pedidoApp) {
         this.pedidoApp = pedidoApp;
@@ -58,6 +58,7 @@ public class PedidoController {
 
     public void setPedidoService(PedidoService pedidoService) {
         this.pedidoService = pedidoService;
+        System.out.println("PedidoService set en el controlador: " + this.pedidoService);
     }
 
     @FXML
@@ -118,21 +119,25 @@ public class PedidoController {
             System.out.println("Id: " + tipo);
         }
 
-        Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " " + "($" + (int) precio + ")");
-
+        System.out.println("Precio inicial: " + precio);
         List<Integer> toppingIds = new ArrayList<>();
+        double precioTotal = precio;
         if (toppingList != null && !toppingList.isEmpty()) {
             for (Topping topping : toppingList) {
                 System.out.println("Id top: " + topping.getId());
                 toppingIds.add(topping.getId());
                 if (topping.getPrecio() != null) {
-                    precio += topping.getPrecio();
+                    precioTotal  += topping.getPrecio();
                 }
             }
         }
+        pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, precio, toppingList);
 
-        Label precioLabel = new Label(String.format("$%d", (int) precio));
-        listPrecio.add((int) precio);
+        Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " " + "($" + (int) precioTotal + ")");
+        Label precioLabel = new Label(String.format("$%d", (int) precioTotal));
+        System.out.println("Añadiendo precioTotal a listPrecio: " + (int) precioTotal);
+        listPrecio.add((int) precioTotal);
+        System.out.println("Contenido de listPrecio después de agregar: " + listPrecio);
         actualizarTotal();
         Button deleteButton = new Button();
         try {
@@ -145,13 +150,14 @@ public class PedidoController {
         } catch (NullPointerException e) {
             System.out.println("No se pudo cargar la imagen: " + e.getMessage());
         }
-        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, hamburguesaTipos, toppingIds, precio);
+        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, hamburguesaTipos, toppingIds, precioTotal);
         detallesPedidosList.add(detallePedido);
 
         final int precioFinal = (int) precio;
         deleteButton.setOnAction(event -> {
             detallePedidos.getChildren().remove(vBox);
             listPrecio.remove((Integer) precioFinal);
+            System.out.println("Contenido de listPrecio después de eliminar: " + listPrecio);
             actualizarTotal();
             detallesPedidosList.remove(detallePedido);
         });
@@ -203,20 +209,18 @@ public class PedidoController {
     }
 
     private void actualizarTotal() {
-        int total = getPrecioTotalPedido();
+        System.out.println("Llamando a actualizarTotal()");
+        int total = pedidoService.getPrecioTotalPedido();
+        System.out.println("Contenido de listPrecio en actualizarTotal: " + listPrecio);
+        System.out.println("Total calculado en actualizarTotal: " + total);
+        if (total == 0) {
+            System.out.println("El precio total es inválido: 0");
+        }
         lblTotal.setText("TOTAL: $" + total);
     }
 
-    private int getPrecioTotalPedido() {
-        int precioTotal = 0;
-        for (Integer precio : listPrecio) {
-            precioTotal += precio;
-        }
-        return precioTotal;
-    }
-
     public void aceptarPedido(ActionEvent actionEvent) {
-        pedidoApp.openDatoClienteWindow();
+        pedidoApp.openDatoClienteWindow(pedidoService);
     }
 
     public void cancelarPedido(ActionEvent actionEvent) {

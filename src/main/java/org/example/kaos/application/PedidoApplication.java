@@ -7,6 +7,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.kaos.controller.DatoClienteController;
 import org.example.kaos.controller.DetalleController;
+import org.example.kaos.service.PedidoService;
 
 import java.io.IOException;
 
@@ -31,18 +32,17 @@ public class PedidoApplication {
         }
     }
 
-    public void openDatoClienteWindow() {
+    public void openDatoClienteWindow(PedidoService pedidoService) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/DatoCliente.fxml"));
             Parent root = loader.load();
-
             DatoClienteController controller = loader.getController();
+            controller.setPedidoService(pedidoService);
             Stage stage = new Stage();
-            controller.setStage(stage);
-
             stage.setTitle("Datos del Cliente");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root, 380, 250));
+            controller.setStage(stage);
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();

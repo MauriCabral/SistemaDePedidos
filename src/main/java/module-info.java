@@ -3,6 +3,7 @@ module org.example.kaos {
     requires javafx.fxml;
     requires java.logging;
     requires java.sql;
+    requires org.json;
 
 
     opens org.example.kaos.window to javafx.fxml;

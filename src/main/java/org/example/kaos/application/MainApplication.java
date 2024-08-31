@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 import org.example.kaos.controller.PedidoController;
 import org.example.kaos.manager.ControllerManager;
+import org.example.kaos.service.PedidoService;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -14,6 +15,8 @@ import java.util.logging.Logger;
 
 public class MainApplication extends Application {
     private static final Logger logger = Logger.getLogger(MainApplication.class.getName());
+    private PedidoService pedidoService;
+    private PedidoApplication pedidoApp;
 
     public static void main(String[] args) {
         launch();
@@ -45,6 +48,7 @@ public class MainApplication extends Application {
         PedidoController controller = fxmlLoader.getController();
         ControllerManager.getInstance().setPedidoController(controller);
         PedidoApplication pedidoApp = new PedidoApplication();
+        controller.setPedidoService(pedidoService.getInstance());
         controller.setPedidoApp(pedidoApp);
         Stage newStage = new Stage();
         newStage.setTitle("Pedidos");

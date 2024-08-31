@@ -23,6 +23,13 @@
          <Insets top="15.0" />
       </padding>
     </HBox>
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="Costo envio:" />
+        <TextField fx:id="txtCostoEnvio" maxWidth="50.0" minWidth="50.0" prefHeight="26.0" prefWidth="50.0" />
+        <padding>
+            <Insets top="15.0" />
+        </padding>
+    </HBox>
     <HBox alignment="TOP_CENTER" spacing="10">
         <Button onAction="#aceptarDatos" text="Aceptar" />
         <Button onAction="#cancelarVentana" text="Cancelar" />

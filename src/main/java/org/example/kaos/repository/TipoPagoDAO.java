@@ -25,4 +25,21 @@ public class TipoPagoDAO {
         }
         return tipoPagos;
     }
+
+    public int getIdTipoPagoFromNombre(String nombreTipoPago) {
+        int idTipoPago = -1;
+        String sql = "SELECT id FROM tipo_pago WHERE nombre = ?";
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, nombreTipoPago);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    idTipoPago = rs.getInt("id");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return idTipoPago;
+    }
 }

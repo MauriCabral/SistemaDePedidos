@@ -2,6 +2,7 @@ package org.example.kaos.repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import org.json.JSONArray;
 
 public class PedidoDAO {
     public int createPedido() {
@@ -34,6 +35,19 @@ public class PedidoDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double precioTotal, JSONArray detallesJson) throws SQLException {
+        try (Connection conn = DataBase.getConnection()) {
+            CallableStatement stmt = conn.prepareCall("{call CrearPedidoConDetallesYtoppings(?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, nombreCliente);
+            stmt.setString(2, direccion);
+            stmt.setTimestamp(3, fecha);
+            stmt.setInt(4, idTipoPago);
+            stmt.setDouble(5, precioTotal);
+            stmt.setString(6, detallesJson.toString());
+            stmt.execute();
         }
     }
 }
