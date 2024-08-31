@@ -65,7 +65,7 @@ public class PedidoService {
             }
         }
 
-        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, hamburguesaTipos, toppingIds, precio);
+        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, hamburguesaTipos, toppingIds, precio, toppingList);
         detallesPedidosList.add(detallePedido);
         listPrecio.add((int) precio);
         System.out.println("listPrecio después de añadir: " + listPrecio);
@@ -95,9 +95,9 @@ public class PedidoService {
         return listPrecio;
     }
 
-    public void insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double precioTotal, JSONArray detallesJson) {
+    public void insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
         try {
-            pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, precioTotal, detallesJson);
+            pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson);
             System.out.println("Pedido insertado exitosamente.");
         } catch (SQLException e) {
             e.printStackTrace();

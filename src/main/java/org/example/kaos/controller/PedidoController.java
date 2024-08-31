@@ -150,7 +150,7 @@ public class PedidoController {
         } catch (NullPointerException e) {
             System.out.println("No se pudo cargar la imagen: " + e.getMessage());
         }
-        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, hamburguesaTipos, toppingIds, precioTotal);
+        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, hamburguesaTipos, toppingIds, precioTotal, toppingList);
         detallesPedidosList.add(detallePedido);
 
         final int precioFinal = (int) precio;
@@ -169,7 +169,7 @@ public class PedidoController {
             VBox toppingsBox = new VBox(5);
             toppingsBox.setPadding(new Insets(5, 0, 0, 0));
             for (Topping topping : toppingList) {
-                if (topping.esExtra()) {
+                if (topping.getEsExtra()) {
                     if (topping.getPrecio() != null) {
                         int precioTop = (int) Math.round(topping.getPrecio());
                         Label toppingLabel = new Label("Extra: " + topping.getNombre() + ": ($" + precioTop + ")");

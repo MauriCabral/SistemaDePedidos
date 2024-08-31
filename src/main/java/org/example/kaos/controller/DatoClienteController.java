@@ -6,6 +6,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.TipoPago;
+import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.TipoPagoDAO;
 import org.example.kaos.service.PedidoService;
 import org.json.JSONArray;
@@ -80,13 +81,14 @@ public class DatoClienteController {
                 detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
 
                 JSONArray toppingsJson = new JSONArray();
-                for (Integer toppingId : detalle.getId_topping()) {
+                for (Topping topping : detalle.getToppings()) {
                     JSONObject toppingJson = new JSONObject();
-                    toppingJson.put("id_topping", toppingId);
+                    toppingJson.put("id_topping", topping.getId());
+                    int esExtraible = topping.getEsExtra() ? 1 : 0;
+                    toppingJson.put("es_extraible", esExtraible);
                     toppingsJson.put(toppingJson);
                 }
                 detalleJson.put("toppings", toppingsJson);
-
                 detallesJson.put(detalleJson);
             }
             System.out.println("Detalles JSON: " + detallesJson.toString());
@@ -95,6 +97,7 @@ public class DatoClienteController {
                     direccion,
                     new Timestamp(System.currentTimeMillis()),
                     idTipoPago,
+                    costoEnvio,
                     precioTotal,
                     detallesJson
             );

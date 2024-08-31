@@ -38,15 +38,16 @@ public class PedidoDAO {
         }
     }
 
-    public void insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double precioTotal, JSONArray detallesJson) throws SQLException {
+    public void insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) throws SQLException {
         try (Connection conn = DataBase.getConnection()) {
-            CallableStatement stmt = conn.prepareCall("{call CrearPedidoConDetallesYtoppings(?, ?, ?, ?, ?, ?)}");
+            CallableStatement stmt = conn.prepareCall("{call CrearPedidoConDetallesYtoppings(?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, nombreCliente);
             stmt.setString(2, direccion);
             stmt.setTimestamp(3, fecha);
             stmt.setInt(4, idTipoPago);
-            stmt.setDouble(5, precioTotal);
-            stmt.setString(6, detallesJson.toString());
+            stmt.setDouble(5, costoEnvio);
+            stmt.setDouble(6, precioTotal);
+            stmt.setString(7, detallesJson.toString());
             stmt.execute();
         }
     }

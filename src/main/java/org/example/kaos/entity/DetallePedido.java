@@ -6,16 +6,18 @@ public class DetallePedido {
     private int id;
     private int id_pedido;
     private int cantidad;
-    private List<Integer> id_tipo_hamburgusa;
+    private List<Integer> id_tipo_hamburguesa;
     private List<Integer> id_topping;
     private double precio_unitario;
+    private List<Topping> toppings;
 
-    public DetallePedido(int id, int cantidad, List<Integer> id_tipo_hamburgusa, List<Integer> id_topping, double precio_unitario) {
+    public DetallePedido(int id, int cantidad, List<Integer> id_tipo_hamburguesa, List<Integer> id_topping, double precio_unitario, List<Topping> toppings) {
         this.id = id;
         this.cantidad = cantidad;
-        this.id_tipo_hamburgusa = id_tipo_hamburgusa;
+        this.id_tipo_hamburguesa = id_tipo_hamburguesa;
         this.id_topping = id_topping;
         this.precio_unitario = precio_unitario;
+        this.toppings = toppings;
     }
 
     public int getId() {
@@ -43,11 +45,11 @@ public class DetallePedido {
     }
 
     public List<Integer> getId_tipo_hamburgusa() {
-        return id_tipo_hamburgusa;
+        return id_tipo_hamburguesa;
     }
 
     public void setId_tipo_hamburgusa(List<Integer> id_tipo_hamburgusa) {
-        this.id_tipo_hamburgusa = id_tipo_hamburgusa;
+        this.id_tipo_hamburguesa = id_tipo_hamburgusa;
     }
 
     public List<Integer> getId_topping() {
@@ -66,12 +68,20 @@ public class DetallePedido {
         this.id_pedido = id_pedido;
     }
 
+    public List<Topping> getToppings() {
+        return toppings;
+    }
+
+    public void setToppings(List<Topping> toppings) {
+        this.toppings = toppings;
+    }
+
     @Override
     public String toString() {
         return "DetallePedido{" +
                 "id=" + id +
                 ", cantidad=" + cantidad +
-                ", id_tipo_hamburgusa=" + id_tipo_hamburgusa +
+                ", id_tipo_hamburgusa=" + id_tipo_hamburguesa +
                 ", id_topping=" + id_topping +
                 ", tipo_unitario=" + precio_unitario +
                 '}';

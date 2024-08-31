@@ -48,7 +48,7 @@ public class ToppingService {
             if (t1 == null && t2 == null) return 0;
             if (t1 == null) return 1;
             if (t2 == null) return -1;
-            return Boolean.compare(t2.esExtra(), t1.esExtra());
+            return Boolean.compare(t2.getEsExtra(), t1.getEsExtra());
         });
 
         return toppingList;

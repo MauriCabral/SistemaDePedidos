@@ -20,8 +20,12 @@ public class Topping {
         this.esExtra = esExtra;
     }
 
-    public boolean esExtra() {
+    public Boolean getEsExtra() {
         return esExtra;
+    }
+
+    public void setEsExtra(Boolean esExtra) {
+        this.esExtra = esExtra;
     }
 
     public void setExtra(boolean added) {
