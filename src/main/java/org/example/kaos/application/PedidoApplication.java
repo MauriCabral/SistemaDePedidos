@@ -7,6 +7,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.kaos.controller.DatoClienteController;
 import org.example.kaos.controller.DetalleController;
+import org.example.kaos.controller.PedidoController;
 import org.example.kaos.service.PedidoService;
 
 import java.io.IOException;

@@ -9,6 +9,7 @@ import org.example.kaos.entity.TipoPago;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.TipoPagoDAO;
 import org.example.kaos.service.PedidoService;
+import org.example.kaos.manager.ControllerManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,17 +22,22 @@ public class DatoClienteController {
 
     private final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
     private PedidoService pedidoService;
+    private PedidoController pedidoController;
+    private Stage stage;
 
     @FXML
     private TextField txtNombreCliente, txtDireccion, txtCostoEnvio;
     @FXML
     private ComboBox<String> cmbFormaPago;
 
-    private Stage stage;
-
     @FXML
     public void initialize() {
         cargarFormasPago();
+    }
+
+    public void setPedidoController(PedidoController pedidoController) {
+        this.pedidoController = pedidoController;
+        System.out.println("PedidoController establecido en DatoClienteController: " + pedidoController);
     }
 
     public void setPedidoService(PedidoService pedidoService) {
@@ -64,8 +70,7 @@ public class DatoClienteController {
         int idTipoPago = tipoPagoDAO.getIdTipoPagoFromNombre(formaPago);
         System.out.println(nombreCliente + " " + direccion + " " + formaPago + " " + costoEnvio + " " + idTipoPago);
         System.out.println("listPrecio en aceptarDatos: " + pedidoService.getListPrecio());
-
-            int precioTotal = pedidoService.getPrecioTotalPedido();
+        int precioTotal = pedidoService.getPrecioTotalPedido();
         if (precioTotal <= 0) {
             System.out.println("El precio total es inválido: " + precioTotal);
             return;
@@ -79,7 +84,6 @@ public class DatoClienteController {
             if (!hamburguesaTipos.isEmpty()) {
                 detalleJson.put("hamburguesa_tipo_id", hamburguesaTipos.get(0));
                 detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
-
                 JSONArray toppingsJson = new JSONArray();
                 for (Topping topping : detalle.getToppings()) {
                     JSONObject toppingJson = new JSONObject();
@@ -89,19 +93,23 @@ public class DatoClienteController {
                     toppingsJson.put(toppingJson);
                 }
                 detalleJson.put("toppings", toppingsJson);
-                detallesJson.put(detalleJson);
             }
-            System.out.println("Detalles JSON: " + detallesJson.toString());
-            pedidoService.insertarPedido(
-                    nombreCliente,
-                    direccion,
-                    new Timestamp(System.currentTimeMillis()),
-                    idTipoPago,
-                    costoEnvio,
-                    precioTotal,
-                    detallesJson
-            );
+            detallesJson.put(detalleJson);
+        }
+        System.out.println("Detalles JSON: " + detallesJson.toString());
+        PedidoController pedidoController = ControllerManager.getInstance().getPedidoController();
+        if (pedidoController != null) {
+            pedidoService.getDetallesPedidosList().clear();
+            pedidoService.getListPrecio().clear();
+            pedidoController.actualizarTotal();
+            pedidoController.getDetallePedidos().getChildren().clear();
+        } else {
+            System.out.println("PedidoController es null.");
+        }
+        if (stage != null) {
             stage.close();
+        } else {
+            System.out.println("El objeto Stage es null");
         }
     }
 

@@ -31,15 +31,7 @@
                -fx-background-color: transparent; -fx-text-fill: white;
             </style>
          </Button>
-         <Label text="Dashboard">
-            <font>
-               <Font size="17.0" />
-            </font>
-            <textFill>
-               <Color fx:value="#FFFFFF" />
-            </textFill>
-         </Label>
-         <Button fx:id="exitButton" onAction="#handleExitButtonClick" text="Salir">
+         <Button fx:id="exitButton" onAction="#handleExitButtonClick" text="Historico">
             <font>
                <Font size="17.0" />
             </font>
@@ -49,6 +41,16 @@
             <style>
                -fx-background-color: transparent; -fx-text-fill: white;
             </style>
+         </Button>
+         <Button fx:id="exitButton1" onAction="#handleExitButtonClick" style="&#10;               -fx-background-color: transparent; -fx-text-fill: white;&#10;            " text="Dashboard" textFill="#FFFFFF">
+            <font>
+               <Font size="17.0" />
+            </font>
+         </Button>
+         <Button fx:id="exitButton2" onAction="#handleExitButtonClick" style="&#10;               -fx-background-color: transparent; -fx-text-fill: white;&#10;            " text="Salir" textFill="#FFFFFF">
+            <font>
+               <Font size="17.0" />
+            </font>
          </Button>
       </VBox>
    </AnchorPane>
@@ -169,14 +171,14 @@
          </graphic>
       </Button>
 
-      <Button layoutX="87.0" layoutY="564.0" mnemonicParsing="false" text="Aceptar" onAction="#aceptarPedido"/>
-      <Button layoutX="190.0" layoutY="564.0" mnemonicParsing="false" text="Cancelar" onAction="#cancelarPedido"/>
+      <Button layoutX="87.0" layoutY="564.0" mnemonicParsing="false" onAction="#aceptarPedido" text="Aceptar" />
+      <Button layoutX="190.0" layoutY="564.0" mnemonicParsing="false" onAction="#cancelarPedido" text="Cancelar" />
       <ScrollPane fitToWidth="true" layoutX="7.0" layoutY="59.0" prefHeight="468.0" prefWidth="324.0" style="-fx-background-color: #d3d3d3;">
          <VBox fx:id="detallePedidos" spacing="10.0">
             <HBox prefHeight="3.0" prefWidth="286.0" spacing="10.0" />
          </VBox>
       </ScrollPane>
-      <Label fx:id="lblTotal" layoutX="124.0" layoutY="536.0" text=" " textAlignment="CENTER" style="-fx-font-weight: bold">
+      <Label fx:id="lblTotal" layoutX="124.0" layoutY="536.0" style="-fx-font-weight: bold" text=" " textAlignment="CENTER">
          <font>
             <Font size="14.0" />
          </font>

@@ -24,6 +24,8 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage) {
         try {
+            pedidoService = new PedidoService();
+            pedidoApp = new PedidoApplication();
             FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/kaos/window/Main.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 1000, 620);
             scene.setOnMouseClicked((MouseEvent event) -> {
@@ -46,10 +48,18 @@ public class MainApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/kaos/window/Pedido.fxml"));
         Scene newScene = new Scene(fxmlLoader.load(), 1000, 620);
         PedidoController controller = fxmlLoader.getController();
-        ControllerManager.getInstance().setPedidoController(controller);
-        PedidoApplication pedidoApp = new PedidoApplication();
-        controller.setPedidoService(pedidoService.getInstance());
-        controller.setPedidoApp(pedidoApp);
+
+        System.out.println("Controlador cargado desde FXML: " + controller);
+
+        if (controller != null) {
+            controller.setPedidoService(pedidoService);
+            controller.setPedidoApp(pedidoApp);
+            ControllerManager.getInstance().setPedidoController(controller);
+            System.out.println("PedidoController se ha establecido correctamente.");
+        } else {
+            System.out.println("El controlador de pedidos es null.");
+        }
+
         Stage newStage = new Stage();
         newStage.setTitle("Pedidos");
         newStage.setScene(newScene);

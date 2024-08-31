@@ -1,5 +1,6 @@
 package org.example.kaos.service;
 
+import org.example.kaos.controller.PedidoController;
 import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.Hamburgusa;
@@ -11,16 +12,21 @@ import org.example.kaos.repository.PedidoDAO;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.json.JSONArray;
 
 public class PedidoService {
     private final HamburguesaDAO hamburguesaDAO;
     private final HamburguesaTipoDAO hamburguesaTipoDAO;
     private PedidoDAO pedidoDAO = new PedidoDAO();
+    private PedidoController pedidoController;
 
     private final List<DetallePedido> detallesPedidosList;
     private final List<Integer> listPrecio;
+    private final Map<DetallePedido, Integer> detallePrecioMap;
     private static PedidoService instance;
 
     public PedidoService() {
@@ -28,6 +34,7 @@ public class PedidoService {
         this.hamburguesaTipoDAO = new HamburguesaTipoDAO();
         this.detallesPedidosList = new ArrayList<>();
         this.listPrecio = new ArrayList<>();
+        this.detallePrecioMap = new HashMap<>();
     }
 
     public static PedidoService getInstance() {
@@ -35,6 +42,11 @@ public class PedidoService {
             instance = new PedidoService();
         }
         return instance;
+    }
+
+    public void clearDetails() {
+        detallesPedidosList.clear();
+        listPrecio.clear();
     }
 
     public HamburguesaTipo getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
@@ -73,15 +85,12 @@ public class PedidoService {
 
     public void removeDetallePedido(DetallePedido detallePedido) {
         detallesPedidosList.remove(detallePedido);
-        listPrecio.remove((int) detallePedido.getPrecio_unitario());
+        listPrecio.removeIf(precio -> precio == detallePedido.getPrecio_unitario());
+        System.out.println("Detalle eliminado. Contenido actual de listPrecio: " + listPrecio);
     }
 
     public int getPrecioTotalPedido() {
-        System.out.println("Contenido de listPrecio en getPrecioTotalPedido: " + listPrecio);
-        int total = 0;
-        for (Integer precio : listPrecio) {
-            total += precio;
-        }
+        int total = listPrecio.stream().mapToInt(Integer::intValue).sum();
         System.out.println("Total calculado en getPrecioTotalPedido: " + total);
         return total;
     }

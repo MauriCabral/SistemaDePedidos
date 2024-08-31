@@ -89,7 +89,7 @@ public class DetalleController implements Initializable {
             showError("Porfavor seleccione un tipo");
         }
         else {
-            List<Topping> toppingList = toppingService.getSelectedToppings(cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf, cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, cmbCambiarSalsa, quitarSalsa, txtCambiarSalsa);
+            List<Topping> toppingList = toppingService.getSelectedToppings(cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf, cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1);
             actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingList);
             if (stage != null) {
                 stage.close();
