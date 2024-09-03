@@ -9,15 +9,14 @@ public class DetallePedido {
     private List<Integer> id_tipo_hamburguesa;
     private List<Integer> id_topping;
     private double precio_unitario;
-    private List<Topping> toppings;
+//    private List<Topping> toppings;
 
-    public DetallePedido(int id, int cantidad, List<Integer> id_tipo_hamburguesa, List<Integer> id_topping, double precio_unitario, List<Topping> toppings) {
+    public DetallePedido(int id, int cantidad, List<Integer> id_tipo_hamburguesa, List<Integer> id_topping, double precio_unitario) {
         this.id = id;
         this.cantidad = cantidad;
         this.id_tipo_hamburguesa = id_tipo_hamburguesa;
         this.id_topping = id_topping;
         this.precio_unitario = precio_unitario;
-        this.toppings = toppings;
     }
 
     public int getId() {
@@ -66,14 +65,6 @@ public class DetallePedido {
 
     public void setId_pedido(int id_pedido) {
         this.id_pedido = id_pedido;
-    }
-
-    public List<Topping> getToppings() {
-        return toppings;
-    }
-
-    public void setToppings(List<Topping> toppings) {
-        this.toppings = toppings;
     }
 
     @Override

@@ -71,6 +71,7 @@ public class DatoClienteController {
         System.out.println(nombreCliente + " " + direccion + " " + formaPago + " " + costoEnvio + " " + idTipoPago);
         System.out.println("listPrecio en aceptarDatos: " + pedidoService.getListPrecio());
         int precioTotal = pedidoService.getPrecioTotalPedido();
+        System.out.println("precio total pedido service: " + precioTotal);
         if (precioTotal <= 0) {
             System.out.println("El precio total es inválido: " + precioTotal);
             return;
@@ -85,23 +86,32 @@ public class DatoClienteController {
                 detalleJson.put("hamburguesa_tipo_id", hamburguesaTipos.get(0));
                 detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
                 JSONArray toppingsJson = new JSONArray();
-                for (Topping topping : detalle.getToppings()) {
-                    JSONObject toppingJson = new JSONObject();
-                    toppingJson.put("id_topping", topping.getId());
-                    int esExtraible = topping.getEsExtra() ? 1 : 0;
-                    toppingJson.put("es_extraible", esExtraible);
-                    toppingsJson.put(toppingJson);
-                }
+//                for (Topping topping : detalle.getToppings()) {
+//                    JSONObject toppingJson = new JSONObject();
+//                    toppingJson.put("id_topping", topping.getId());
+//                    int esExtraible = topping.getEsExtra() ? 1 : 0;
+//                    toppingJson.put("es_extraible", esExtraible);
+//                    toppingsJson.put(toppingJson);
+//                }
                 detalleJson.put("toppings", toppingsJson);
             }
             detallesJson.put(detalleJson);
         }
         System.out.println("Detalles JSON: " + detallesJson.toString());
+        pedidoService.insertarPedido(
+                nombreCliente,
+                direccion,
+                new Timestamp(System.currentTimeMillis()),
+                idTipoPago,
+                costoEnvio,
+                precioTotal,
+                detallesJson
+        );
         PedidoController pedidoController = ControllerManager.getInstance().getPedidoController();
         if (pedidoController != null) {
             pedidoService.getDetallesPedidosList().clear();
             pedidoService.getListPrecio().clear();
-            pedidoController.actualizarTotal();
+//            pedidoController.actualizarTotal();
             pedidoController.getDetallePedidos().getChildren().clear();
         } else {
             System.out.println("PedidoController es null.");

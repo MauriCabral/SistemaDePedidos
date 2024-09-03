@@ -11,23 +11,21 @@ import org.example.kaos.repository.PedidoDAO;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.json.JSONArray;
 
 public class PedidoService {
     private final HamburguesaDAO hamburguesaDAO;
     private final HamburguesaTipoDAO hamburguesaTipoDAO;
-    private PedidoDAO pedidoDAO = new PedidoDAO();
+    private final PedidoDAO pedidoDAO = new PedidoDAO();
     private PedidoController pedidoController;
 
     private final List<DetallePedido> detallesPedidosList;
     private final List<Integer> listPrecio;
     private final Map<DetallePedido, Integer> detallePrecioMap;
-    private static PedidoService instance;
+    private PedidoService pedidoService;
+//    private static PedidoService instance;
 
     public PedidoService() {
         this.hamburguesaDAO = new HamburguesaDAO();
@@ -37,16 +35,17 @@ public class PedidoService {
         this.detallePrecioMap = new HashMap<>();
     }
 
-    public static PedidoService getInstance() {
-        if (instance == null) {
-            instance = new PedidoService();
-        }
-        return instance;
-    }
+//    public static PedidoService getInstance() {
+//        if (instance == null) {
+//            instance = new PedidoService();
+//        }
+//        return instanc
+//    }
 
     public void clearDetails() {
         detallesPedidosList.clear();
         listPrecio.clear();
+//        detallePrecioMap.clear();
     }
 
     public HamburguesaTipo getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
@@ -57,42 +56,45 @@ public class PedidoService {
         return hamburguesaDAO.getMenuByCode(code);
     }
 
-    public void addDetallePedido(String nombreHamburguesa, String tipoHamburguesa, int cantidad, double precio, List<Topping> toppingList) {
-        HamburguesaTipo hamburguesaTipo = getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa);
-        if (hamburguesaTipo == null) {
-            System.out.println("No se encontró el tipo de hamburguesa especificado.");
-            return;
-        }
+    public DetallePedido addDetallePedido(String nombre, String tipo, int cantidad, double precio, List<Topping> toppingList) {
+        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, getIdTipHamb(nombre, tipo), getIdToppingDetalle(toppingList), precio);
+        detallesPedidosList.add(detallePedido);
+        listPrecio.add((int) precio);
+//        detallePrecioMap.put(detallePedido, (int) precio);
+        System.out.println("listPrecio después de añadir: " + listPrecio);
+        return detallePedido;
+    }
 
+    public List<Integer> getIdTipHamb (String nombre, String tipo) {
+        HamburguesaTipo hamburguesaTipo = hamburguesaTipoDAO.getHamburguesaTipo(nombre, tipo);
         List<Integer> hamburguesaTipos = new ArrayList<>();
-        hamburguesaTipos.add(hamburguesaTipo.getId());
+        int idTipoHamb = hamburguesaTipo.getId();
+        hamburguesaTipos.add(idTipoHamb);
+        return hamburguesaTipos;
+    }
 
+    public List<Integer> getIdToppingDetalle (List<Topping> toppingList) {
         List<Integer> toppingIds = new ArrayList<>();
         if (toppingList != null && !toppingList.isEmpty()) {
             for (Topping topping : toppingList) {
-                if (topping.getPrecio() != null) {
-                    precio += topping.getPrecio();
-                }
                 toppingIds.add(topping.getId());
             }
         }
-
-        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, hamburguesaTipos, toppingIds, precio, toppingList);
-        detallesPedidosList.add(detallePedido);
-        listPrecio.add((int) precio);
-        System.out.println("listPrecio después de añadir: " + listPrecio);
+        return toppingIds;
     }
 
     public void removeDetallePedido(DetallePedido detallePedido) {
         detallesPedidosList.remove(detallePedido);
-        listPrecio.removeIf(precio -> precio == detallePedido.getPrecio_unitario());
-        System.out.println("Detalle eliminado. Contenido actual de listPrecio: " + listPrecio);
+        final int precioDelete = (int)Math.round(detallePedido.getPrecio_unitario());
+        listPrecio.remove(Integer.valueOf(precioDelete));
+    }
+
+    public void setPedidoController(PedidoController pedidoController) {
+        this.pedidoController = pedidoController;
     }
 
     public int getPrecioTotalPedido() {
-        int total = listPrecio.stream().mapToInt(Integer::intValue).sum();
-        System.out.println("Total calculado en getPrecioTotalPedido: " + total);
-        return total;
+        return listPrecio.stream().mapToInt(Integer::intValue).sum();
     }
 
     public List<DetallePedido> getDetallesPedidosList() {
@@ -112,5 +114,28 @@ public class PedidoService {
             e.printStackTrace();
             System.out.println("Error al insertar el pedido: " + e.getMessage());
         }
+    }
+
+    public double getPrecioTotalTopping(List<Topping> toppingList) {
+        double totalTop = 0;
+        if (toppingList != null && !toppingList.isEmpty()) {
+            for (Topping topping : toppingList) {
+                if(topping.getPrecio() == null) {totalTop += 0;}
+                else {
+                totalTop += topping.getPrecio();}
+            }
+        }
+        return totalTop;
+    }
+
+    public int actualizarTotal() {
+        int totalFinal = 0;
+        int i = 0;
+        for (Integer precioList : listPrecio) {
+            System.out.println("lista de precios ActualizarTotal: (" + i + ")" + precioList);
+            totalFinal += precioList;
+        }
+        System.out.println("total de actualizar: " + totalFinal);
+        return totalFinal;
     }
 }
