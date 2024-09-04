@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import org.example.kaos.application.PedidoApplication;
 import org.example.kaos.entity.DetallePedido;
-import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.entity.Hamburgusa;
@@ -38,8 +37,6 @@ public class PedidoController {
     private VBox detallePedidos;
     @FXML
     private Label lblTotal;
-
-    private final List<Integer> listPrecio = new ArrayList<>();
 
     @FXML
     private void initialize() {
@@ -118,15 +115,11 @@ public class PedidoController {
         detallesPedidosList.add(detallePedido);
         pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, total, toppingList);
 
-//        pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, total, toppingList);
         Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " " + "($" + (int) precio + ")");
         Label precioLabel = new Label(String.format("$%d", (int) total));
 
-        System.out.println("Añadiendo precioTotal a listPrecio: " + (int) total);
-//        listPrecio.add((int) total);
-        System.out.println("Contenido de listPrecio después de agregar: " + listPrecio);
         int precioTotal = pedidoService.actualizarTotal();
-        lblTotal.setText("TOTAL: $" + precioTotal);
+        lblTotal.setText("TOTAL: $" + (precioTotal));
         Button deleteButton = new Button();
         try {
             Image image = new Image(getClass().getResource("/org/example/kaos/image/trash.png").toExternalForm());
@@ -140,53 +133,26 @@ public class PedidoController {
         }
 
         deleteButton.setUserData(detalleId);
-//        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, pedidoService.getIdTipHamb(nombreHamburguesa, tipoHamburguesa), pedidoService.getIdToppingDetalle(toppingList), precioTotal);
-//        detallesPedidosList.add(detallePedido);
-
-//        final int finalPrecioTotal = (int)Math.round(total);
         deleteButton.setOnAction(event -> {
-            Integer id = (Integer) deleteButton.getUserData(); // Obteniendo el ID del Detalle
-
+            Integer id = (Integer) deleteButton.getUserData();
             System.out.println("Intentando eliminar detalle con ID: " + id);
 
-            DetallePedido detalleEliminar = null;
-            for (DetallePedido detalle : detallesPedidosList) {
-                if (detalle.getId() == id) {
-                    detalleEliminar = detalle;
-                    break;
-                }
-            }
+            DetallePedido detalleEliminar = detallesPedidosList.stream()
+                    .filter(detalle -> detalle.getId() == id)
+                    .findFirst()
+                    .orElse(null);
 
             if (detalleEliminar != null) {
                 System.out.println("Eliminando detalle: " + detalleEliminar);
                 detallesPedidosList.remove(detalleEliminar);
                 pedidoService.removeDetallePedido(detalleEliminar);
                 detallePedidos.getChildren().remove(vBox);
-                int totalDel = (int) Math.round(detalleEliminar.getPrecio_unitario());
-                listPrecio.remove(Integer.valueOf(totalDel));
-
                 int precioTotalActualizado = pedidoService.actualizarTotal();
                 lblTotal.setText("TOTAL: $" + precioTotalActualizado);
                 System.out.println("Total después de la eliminación y actualización: $" + precioTotalActualizado);
             } else {
                 System.out.println("No se encontró el detalle con ID: " + id);
             }
-
-//            detallePedidos.getChildren().remove(vBox);
-//            System.out.println("Intentando eliminar detalle: " + detallesPedidosList);
-//            pedidoService.removeDetallePedido(detallePedido);
-////            detallesPedidosList.remove(detallePedido);
-//            System.out.println("Despues eliminar detalle: " + detallePedido);
-//            System.out.println("Antes eliminar precio en detalle: " + listPrecio);
-//            listPrecio.remove(Integer.valueOf(finalPrecioTotal));
-//            System.out.println("Despues eliminar precio en detalle: " + listPrecio);
-//            int precioTotal1 = pedidoService.actualizarTotal();
-//            if (precioTotal1 == 0) {
-//                lblTotal.setText(" ");
-//            }
-//            else {
-//                lblTotal.setText("TOTAL: $" + precioTotal1);
-//            }
         });
 
         Region spacer = new Region();
@@ -237,6 +203,7 @@ public class PedidoController {
     }
 
     public void aceptarPedido(ActionEvent actionEvent) {
+        System.out.println("PedidoService en PedidoController: " + pedidoService.hashCode());
         pedidoApp.openDatoClienteWindow(pedidoService);
     }
 
@@ -250,12 +217,10 @@ public class PedidoController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             if (pedidoService != null) {
                 pedidoService.getDetallesPedidosList().clear();
-                pedidoService.getListPrecio().clear();
             } else {
                 System.out.println("PedidoService no está inicializado.");
             }
             detallesPedidosList.clear();
-            listPrecio.clear();
             detallePedidos.getChildren().clear();
             lblTotal.setText(" ");
             Alert info = new Alert(Alert.AlertType.INFORMATION);
@@ -264,5 +229,9 @@ public class PedidoController {
             info.setContentText("El pedido ha sido cancelado.");
             info.showAndWait();
         }
+    }
+
+    public void limpiarLblTotal() {
+        lblTotal.setText("");
     }
 }

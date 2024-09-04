@@ -22,16 +22,12 @@ public class PedidoService {
     private PedidoController pedidoController;
 
     private final List<DetallePedido> detallesPedidosList;
-    private final List<Integer> listPrecio;
-//    private final Map<DetallePedido, Integer> detallePrecioMap;
-
+    private Runnable onTotalCleared;
 
     public PedidoService() {
         this.hamburguesaDAO = new HamburguesaDAO();
         this.hamburguesaTipoDAO = new HamburguesaTipoDAO();
         this.detallesPedidosList = new ArrayList<>();
-        this.listPrecio = new ArrayList<>();
-//        this.detallePrecioMap = new HashMap<>();
     }
 
     public List<HamburguesaTipo> getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
@@ -47,8 +43,6 @@ public class PedidoService {
     public DetallePedido addDetallePedido(String nombre, String tipo, int cantidad, double precio, List<Topping> toppingList) {
         DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, getHamburguesaTipo(nombre, tipo), toppingList, precio);
         detallesPedidosList.add(detallePedido);
-//        listPrecio.add((int) precio);
-        System.out.println("listPrecio después de añadir: " + listPrecio);
         return detallePedido;
     }
 
@@ -71,8 +65,7 @@ public class PedidoService {
         }
         if (index != -1) {
             DetallePedido detalleEliminar = detallesPedidosList.remove(index);
-            final int precioDelete = (int)Math.round(detalleEliminar.getPrecio_unitario());
-            listPrecio.remove(Integer.valueOf(precioDelete));
+            actualizarTotal();
         }
     }
 
@@ -86,11 +79,6 @@ public class PedidoService {
 
     public List<DetallePedido> getDetallesPedidosList() {
         return detallesPedidosList;
-    }
-
-    public List<Integer> getListPrecio() {
-        System.out.println("Contenido de listPrecio en getListPrecio: " + listPrecio);
-        return listPrecio;
     }
 
     public void insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
@@ -117,13 +105,18 @@ public class PedidoService {
 
     public int actualizarTotal() {
         int totalFinal = 0;
-        int i = 0;
-        for (DetallePedido precioList : detallesPedidosList) {
-            totalFinal += precioList.getPrecio_unitario();
-            i ++;
-            System.out.println("numero de la lista : "  + i);
+        for (DetallePedido detalle : detallesPedidosList) {
+            totalFinal += detalle.getCantidad() * (int) detalle.getPrecio_unitario();
         }
         System.out.println("total de actualizar: " + totalFinal);
         return totalFinal;
+    }
+
+    public void setOnTotalCleared(Runnable onTotalCleared) {
+        this.onTotalCleared = onTotalCleared;
+    }
+
+    public void limpiarDatos() {
+        actualizarTotal();
     }
 }

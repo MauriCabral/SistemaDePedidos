@@ -9,7 +9,6 @@ public class DetallePedido {
     private List<HamburguesaTipo> id_tipo_hamburguesa;
     private List<Topping> id_topping;
     private double precio_unitario;
-//    private List<Topping> toppings;
 
     public DetallePedido(int id, int cantidad, List<HamburguesaTipo> id_tipo_hamburguesa, List<Topping> id_topping, double precio_unitario) {
         this.id = id;

@@ -9,14 +9,11 @@ import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.TipoPago;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.TipoPagoDAO;
-import org.example.kaos.repository.ToppingDAO;
 import org.example.kaos.service.PedidoService;
 import org.example.kaos.manager.ControllerManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.sql.Timestamp;
@@ -24,9 +21,7 @@ import java.sql.Timestamp;
 public class DatoClienteController {
 
     private final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
-    private final ToppingDAO toppingDAO = new ToppingDAO();
     private PedidoService pedidoService;
-    private PedidoController pedidoController;
     private Stage stage;
 
     @FXML
@@ -39,13 +34,9 @@ public class DatoClienteController {
         cargarFormasPago();
     }
 
-    public void setPedidoController(PedidoController pedidoController) {
-        this.pedidoController = pedidoController;
-        System.out.println("PedidoController establecido en DatoClienteController: " + pedidoController);
-    }
-
     public void setPedidoService(PedidoService pedidoService) {
         this.pedidoService = pedidoService;
+        System.out.println("PedidoService en DatoClienteController: " + pedidoService.hashCode());
     }
 
     public void setStage(Stage stage) {
@@ -73,7 +64,6 @@ public class DatoClienteController {
         double costoEnvio = Double.parseDouble(txtCostoEnvio.getText());
         int idTipoPago = tipoPagoDAO.getIdTipoPagoFromNombre(formaPago);
         System.out.println(nombreCliente + " " + direccion + " " + formaPago + " " + costoEnvio + " " + idTipoPago);
-        System.out.println("listPrecio en aceptarDatos: " + pedidoService.getListPrecio());
         int precioTotal = pedidoService.getPrecioTotalPedido();
         System.out.println("precio total pedido service: " + precioTotal);
         if (precioTotal <= 0) {
@@ -115,8 +105,7 @@ public class DatoClienteController {
         PedidoController pedidoController = ControllerManager.getInstance().getPedidoController();
         if (pedidoController != null) {
             pedidoService.getDetallesPedidosList().clear();
-            pedidoService.getListPrecio().clear();
-            pedidoService.actualizarTotal();
+            pedidoController.limpiarLblTotal();
             pedidoController.getDetallePedidos().getChildren().clear();
         } else {
             System.out.println("PedidoController es null.");
