@@ -8,6 +8,7 @@ import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.TipoPago;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.TipoPagoDAO;
+import org.example.kaos.repository.ToppingDAO;
 import org.example.kaos.service.PedidoService;
 import org.example.kaos.manager.ControllerManager;
 import org.json.JSONArray;
@@ -15,12 +16,14 @@ import org.json.JSONObject;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 import java.sql.Timestamp;
 
 public class DatoClienteController {
 
     private final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
+    private final ToppingDAO toppingDAO = new ToppingDAO();
     private PedidoService pedidoService;
     private PedidoController pedidoController;
     private Stage stage;
@@ -57,7 +60,7 @@ public class DatoClienteController {
     }
 
     @FXML
-    private void aceptarDatos() {
+    private void aceptarDatos() throws SQLException {
         if (stage != null) {
             stage.close();
         } else {
@@ -81,21 +84,23 @@ public class DatoClienteController {
         for (DetallePedido detalle : detallesPedidosList) {
             JSONObject detalleJson = new JSONObject();
             detalleJson.put("cantidad", detalle.getCantidad());
-            List<Integer> hamburguesaTipos = detalle.getId_tipo_hamburgusa();
-            if (!hamburguesaTipos.isEmpty()) {
-                detalleJson.put("hamburguesa_tipo_id", hamburguesaTipos.get(0));
-                detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
-                JSONArray toppingsJson = new JSONArray();
-//                for (Topping topping : detalle.getToppings()) {
+//            List<Integer> hamburguesaTipos = detalle.getId_tipo_hamburgusa();
+//            if (!hamburguesaTipos.isEmpty()) {
+//                detalleJson.put("hamburguesa_tipo_id", hamburguesaTipos.get(0));
+//                detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
+//                JSONArray toppingsJson = new JSONArray();
+//                List<Integer> topping = detalle.getId_topping();
+//                for(Integer idTop : topping) {
+//                    Topping topp = ToppingDAO.getToppingById(idTop); //aca muere
 //                    JSONObject toppingJson = new JSONObject();
-//                    toppingJson.put("id_topping", topping.getId());
-//                    int esExtraible = topping.getEsExtra() ? 1 : 0;
+//                    toppingJson.put("id_topping", idTop);
+//                    int esExtraible = topp.getEsExtra() ? 1 : 0;
 //                    toppingJson.put("es_extraible", esExtraible);
 //                    toppingsJson.put(toppingJson);
 //                }
-                detalleJson.put("toppings", toppingsJson);
-            }
-            detallesJson.put(detalleJson);
+//                detalleJson.put("toppings", toppingsJson);
+//            }
+//            detallesJson.put(detalleJson);
         }
         System.out.println("Detalles JSON: " + detallesJson.toString());
         pedidoService.insertarPedido(

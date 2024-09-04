@@ -1,6 +1,8 @@
 package org.example.kaos.repository;
 
 import org.example.kaos.entity.DetallePedido;
+import org.example.kaos.entity.HamburguesaTipo;
+
 import java.util.List;
 import java.sql.*;
 
@@ -11,10 +13,10 @@ public class DetallePedidoDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             for (DetallePedido detalle : detallesPedidosList) {
                 detalle.setId_pedido(idPedido);
-                for (Integer hamburguesaTipoId : detalle.getId_tipo_hamburgusa()) {
+                for (HamburguesaTipo hamburguesaTipoId : detalle.getId_tipo_hamburgusa()) {
                     stmt.setInt(1, idPedido);
                     stmt.setInt(2, detalle.getCantidad());
-                    stmt.setInt(3, hamburguesaTipoId);
+                    stmt.setInt(3, hamburguesaTipoId.getHamburguesa_id());
                     stmt.setDouble(4, detalle.getPrecio_unitario());
                     stmt.addBatch();
                 }

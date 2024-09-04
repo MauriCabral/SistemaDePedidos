@@ -13,6 +13,12 @@ public class Topping {
         this.esExtra = esExtra;
     }
 
+    public Topping(int id, String nombre, Double precio) {
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
     public Topping(int id, String nombre, Boolean esExtra) {
         this.id = id;
         this.nombre = nombre;

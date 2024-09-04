@@ -19,7 +19,6 @@ import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.HamburguesaDAO;
-import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.entity.Hamburgusa;
 import org.example.kaos.service.PedidoService;
 
@@ -29,10 +28,8 @@ public class PedidoController {
 
     private PedidoApplication pedidoApp;
     private final HamburguesaDAO hamburguesaDAO = new HamburguesaDAO();
-    private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
     private boolean deleteButtonsVisible = false;
     private List<DetallePedido> detallesPedidosList;
-    private final List<DetallePedido> listDetalles = new ArrayList<>();
     private PedidoService pedidoService;
 
     @FXML
@@ -57,10 +54,6 @@ public class PedidoController {
 
     public VBox getDetallePedidos() {
         return detallePedidos;
-    }
-
-    public PedidoController() {
-//        this.pedidoService = new PedidoService();
     }
 
     public void setPedidoApp(PedidoApplication pedidoApp) {
@@ -119,11 +112,18 @@ public class PedidoController {
 
         double precioToppings = pedidoService.getPrecioTotalTopping(toppingList);
         double total = precio + precioToppings;
+
+        int detalleId = detallesPedidosList.size() + 1;
+        DetallePedido detallePedido = new DetallePedido(detalleId, cantidad, pedidoService.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa), toppingList, total);
+        detallesPedidosList.add(detallePedido);
         pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, total, toppingList);
+
+//        pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, total, toppingList);
         Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " " + "($" + (int) precio + ")");
         Label precioLabel = new Label(String.format("$%d", (int) total));
+
         System.out.println("Añadiendo precioTotal a listPrecio: " + (int) total);
-        listPrecio.add((int) total);
+//        listPrecio.add((int) total);
         System.out.println("Contenido de listPrecio después de agregar: " + listPrecio);
         int precioTotal = pedidoService.actualizarTotal();
         lblTotal.setText("TOTAL: $" + precioTotal);
@@ -138,21 +138,55 @@ public class PedidoController {
         } catch (NullPointerException e) {
             System.out.println("No se pudo cargar la imagen: " + e.getMessage());
         }
-        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, pedidoService.getIdTipHamb(nombreHamburguesa, tipoHamburguesa), pedidoService.getIdToppingDetalle(toppingList), precioTotal);
-        detallesPedidosList.add(detallePedido);
 
-        final int finalPrecioTotal = (int)Math.round(total);
+        deleteButton.setUserData(detalleId);
+//        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, pedidoService.getIdTipHamb(nombreHamburguesa, tipoHamburguesa), pedidoService.getIdToppingDetalle(toppingList), precioTotal);
+//        detallesPedidosList.add(detallePedido);
+
+//        final int finalPrecioTotal = (int)Math.round(total);
         deleteButton.setOnAction(event -> {
-            detallePedidos.getChildren().remove(vBox);
-            System.out.println("Intentando eliminar detalle: " + detallesPedidosList);
-            pedidoService.removeDetallePedido(detallePedido);
-//            detallesPedidosList.remove(detallePedido);
-            System.out.println("Despues eliminar detalle: " + detallePedido);
-            System.out.println("Antes eliminar precio en detalle: " + listPrecio);
-            listPrecio.remove(Integer.valueOf(finalPrecioTotal));
-            System.out.println("Despues eliminar precio en detalle: " + listPrecio);
-            int precioTotal1 = pedidoService.actualizarTotal();
-            lblTotal.setText("TOTAL: $" + precioTotal1);
+            Integer id = (Integer) deleteButton.getUserData(); // Obteniendo el ID del Detalle
+
+            System.out.println("Intentando eliminar detalle con ID: " + id);
+
+            DetallePedido detalleEliminar = null;
+            for (DetallePedido detalle : detallesPedidosList) {
+                if (detalle.getId() == id) {
+                    detalleEliminar = detalle;
+                    break;
+                }
+            }
+
+            if (detalleEliminar != null) {
+                System.out.println("Eliminando detalle: " + detalleEliminar);
+                detallesPedidosList.remove(detalleEliminar);
+                pedidoService.removeDetallePedido(detalleEliminar);
+                detallePedidos.getChildren().remove(vBox);
+                int totalDel = (int) Math.round(detalleEliminar.getPrecio_unitario());
+                listPrecio.remove(Integer.valueOf(totalDel));
+
+                int precioTotalActualizado = pedidoService.actualizarTotal();
+                lblTotal.setText("TOTAL: $" + precioTotalActualizado);
+                System.out.println("Total después de la eliminación y actualización: $" + precioTotalActualizado);
+            } else {
+                System.out.println("No se encontró el detalle con ID: " + id);
+            }
+
+//            detallePedidos.getChildren().remove(vBox);
+//            System.out.println("Intentando eliminar detalle: " + detallesPedidosList);
+//            pedidoService.removeDetallePedido(detallePedido);
+////            detallesPedidosList.remove(detallePedido);
+//            System.out.println("Despues eliminar detalle: " + detallePedido);
+//            System.out.println("Antes eliminar precio en detalle: " + listPrecio);
+//            listPrecio.remove(Integer.valueOf(finalPrecioTotal));
+//            System.out.println("Despues eliminar precio en detalle: " + listPrecio);
+//            int precioTotal1 = pedidoService.actualizarTotal();
+//            if (precioTotal1 == 0) {
+//                lblTotal.setText(" ");
+//            }
+//            else {
+//                lblTotal.setText("TOTAL: $" + precioTotal1);
+//            }
         });
 
         Region spacer = new Region();
@@ -180,8 +214,6 @@ public class PedidoController {
             vBox.getChildren().add(toppingsBox);
         }
         detallePedidos.getChildren().add(vBox);
-//        int precioTotal1 = pedidoService.actualizarTotal();
-//        lblTotal.setText("TOTAL: $" + precioTotal1);
     }
 
     public void deletePedidos() {

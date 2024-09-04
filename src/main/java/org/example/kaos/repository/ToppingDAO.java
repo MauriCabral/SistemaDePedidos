@@ -36,4 +36,20 @@ public class ToppingDAO {
             }
         }
     }
+
+    public static Topping getToppingById(int toppingId) throws SQLException {
+        String query = "SELECT nombre FROM Topping WHERE id = ?";
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, toppingId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String nombre = rs.getString("nombre");
+                double precio = rs.getDouble("precio");
+                return new Topping(toppingId, nombre, precio);
+            } else {
+                return null;
+            }
+        }
+    }
 }
