@@ -5,6 +5,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.kaos.entity.DetallePedido;
+import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.TipoPago;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.TipoPagoDAO;
@@ -84,23 +85,22 @@ public class DatoClienteController {
         for (DetallePedido detalle : detallesPedidosList) {
             JSONObject detalleJson = new JSONObject();
             detalleJson.put("cantidad", detalle.getCantidad());
-//            List<Integer> hamburguesaTipos = detalle.getId_tipo_hamburgusa();
-//            if (!hamburguesaTipos.isEmpty()) {
-//                detalleJson.put("hamburguesa_tipo_id", hamburguesaTipos.get(0));
-//                detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
-//                JSONArray toppingsJson = new JSONArray();
-//                List<Integer> topping = detalle.getId_topping();
-//                for(Integer idTop : topping) {
-//                    Topping topp = ToppingDAO.getToppingById(idTop); //aca muere
-//                    JSONObject toppingJson = new JSONObject();
-//                    toppingJson.put("id_topping", idTop);
-//                    int esExtraible = topp.getEsExtra() ? 1 : 0;
-//                    toppingJson.put("es_extraible", esExtraible);
-//                    toppingsJson.put(toppingJson);
-//                }
-//                detalleJson.put("toppings", toppingsJson);
-//            }
-//            detallesJson.put(detalleJson);
+            List<HamburguesaTipo> hamburguesaTipos = detalle.getId_tipo_hamburgusa();
+            if (!hamburguesaTipos.isEmpty()) {
+                detalleJson.put("hamburguesa_tipo_id", hamburguesaTipos.get(0).getHamburguesa_id());
+                detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
+                JSONArray toppingsJson = new JSONArray();
+                List<Topping> topping = detalle.getId_topping();
+                for(Topping idTop : topping) {
+                    JSONObject toppingJson = new JSONObject();
+                    toppingJson.put("id_topping", idTop.getId());
+                    int esExtraible = idTop.getEsExtra() ? 1 : 0;
+                    toppingJson.put("es_extraible", esExtraible);
+                    toppingsJson.put(toppingJson);
+                }
+                detalleJson.put("toppings", toppingsJson);
+            }
+            detallesJson.put(detalleJson);
         }
         System.out.println("Detalles JSON: " + detallesJson.toString());
         pedidoService.insertarPedido(
@@ -116,7 +116,7 @@ public class DatoClienteController {
         if (pedidoController != null) {
             pedidoService.getDetallesPedidosList().clear();
             pedidoService.getListPrecio().clear();
-//            pedidoController.actualizarTotal();
+            pedidoService.actualizarTotal();
             pedidoController.getDetallePedidos().getChildren().clear();
         } else {
             System.out.println("PedidoController es null.");
