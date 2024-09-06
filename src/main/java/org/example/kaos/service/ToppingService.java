@@ -15,7 +15,7 @@ public class ToppingService {
             CheckBox cmbTomate, CheckBox cmbCebolla, CheckBox cmbCebollaCrisp,
             CheckBox cmbTomateConf, CheckBox cmbCheddar1, CheckBox cmbBacon1,
             CheckBox cmbLechuga1, CheckBox cmbTomate1, CheckBox cmbCebolla1,
-            CheckBox cmbCebollaCrisp1, CheckBox cmbTomateConf1) {
+            CheckBox cmbCebollaCrisp1, CheckBox cmbTomateConf1, CheckBox quitarSalsa) {
 
         List<Topping> toppingList = new ArrayList<>();
 
@@ -34,6 +34,7 @@ public class ToppingService {
             if (cmbCebolla1.isSelected()) toppingList.add(ToppingDAO.getToppingById(5, false));
             if (cmbCebollaCrisp1.isSelected()) toppingList.add(ToppingDAO.getToppingById(6, false));
             if (cmbTomateConf1.isSelected()) toppingList.add(ToppingDAO.getToppingById(7, false));
+            if (quitarSalsa.isSelected()) toppingList.add(ToppingDAO.getToppingById(8, false));
         } catch (SQLException e) {
             e.printStackTrace();
         }

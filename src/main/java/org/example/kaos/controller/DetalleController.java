@@ -23,11 +23,10 @@ public class DetalleController implements Initializable {
     @FXML
     private ComboBox<String> comboBoxTipo;
     @FXML
-    private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf, cmbCambiarSalsa;
+    private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf; //cmbCambiarSalsa;
     @FXML
     private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
-    @FXML
-    private TextField txtCambiarSalsa;
+
     @FXML
     private Button btnCancelar, btnAceptar;
     @FXML
@@ -86,10 +85,10 @@ public class DetalleController implements Initializable {
         String nombreProducto = nombre.getText();
         double precioProducto = detalleService.obtenerPrecio(tipo, cantidad, nombreProducto);
         if (tipo == null) {
-            showError("Porfavor seleccione un tipo");
+            showError("Porfavor seleccione un tipo de hamburguesa");
         }
         else {
-            List<Topping> toppingList = toppingService.getSelectedToppings(cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf, cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1);
+            List<Topping> toppingList = toppingService.getSelectedToppings(cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf, cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa);
             actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingList);
             if (stage != null) {
                 stage.close();
@@ -100,6 +99,7 @@ public class DetalleController implements Initializable {
     public void showError(String content) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error");
+        alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
     }
@@ -116,10 +116,10 @@ public class DetalleController implements Initializable {
         }
     }
 
-    @FXML
-    private void cambiarSalsaCheckBox() {
-        txtCambiarSalsa.setVisible(cmbCambiarSalsa.isSelected());
-    }
+//    @FXML
+//    private void cambiarSalsaCheckBox() {
+//        txtCambiarSalsa.setVisible(cmbCambiarSalsa.isSelected());
+//    }
 
     @FXML
     private void closeWindow() {

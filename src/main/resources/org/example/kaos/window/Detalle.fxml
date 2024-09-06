@@ -36,7 +36,7 @@
    <Label layoutX="32.0" layoutY="239.0" text="Cebolla" />
    <Label layoutX="32.0" layoutY="264.0" text="Cebolla Crispy" />
    <Label layoutX="32.0" layoutY="289.0" text="Tomate Confitado" />
-   <Label layoutX="32.0" layoutY="314.0" text="Cambiar Salda" />
+<!--   <Label layoutX="32.0" layoutY="314.0" text="Cambiar Salda" />-->
    <CheckBox fx:id="cmbCheddar" layoutX="139.0" layoutY="139.0" mnemonicParsing="false" />
    <CheckBox fx:id="cmbBacon" layoutX="139.0" layoutY="164.0" mnemonicParsing="false" />
    <CheckBox fx:id="cmbLechuga" layoutX="139.0" layoutY="189.0" mnemonicParsing="false" />
@@ -44,8 +44,8 @@
    <CheckBox fx:id="cmbCebolla" layoutX="139.0" layoutY="239.0" mnemonicParsing="false" />
    <CheckBox fx:id="cmbCebollaCrisp" layoutX="139.0" layoutY="264.0" mnemonicParsing="false" />
    <CheckBox fx:id="cmbTomateConf" layoutX="139.0" layoutY="289.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbCambiarSalsa" layoutX="139.0" layoutY="314.0" mnemonicParsing="false" onAction="#cambiarSalsaCheckBox" />
-   <TextField fx:id="txtCambiarSalsa" layoutX="170.0" layoutY="310.0" prefHeight="26.0" prefWidth="130.0" text=" " visible="false" />
+<!--   <CheckBox fx:id="cmbCambiarSalsa" layoutX="139.0" layoutY="314.0" mnemonicParsing="false" onAction="#cambiarSalsaCheckBox" />-->
+<!--   <TextField fx:id="txtCambiarSalsa" layoutX="170.0" layoutY="310.0" prefHeight="26.0" prefWidth="130.0" text=" " visible="false" />-->
    <Label layoutX="388.0" layoutY="112.0" text="Quitar Toppings:" />
    <Label layoutX="403.0" layoutY="139.0" text="Cheddar" />
    <Label layoutX="403.0" layoutY="164.0" text="Bacon" />
@@ -54,7 +54,7 @@
    <Label layoutX="403.0" layoutY="239.0" text="Cebolla" />
    <Label layoutX="403.0" layoutY="264.0" text="Cebolla Crispy" />
    <Label layoutX="403.0" layoutY="289.0" text="Tomate Confitado" />
-   <Label layoutX="403.0" layoutY="314.0" text="Salda" />
+   <Label layoutX="403.0" layoutY="314.0" text="Salsa" />
    <CheckBox fx:id="cmbCheddar1" layoutX="513.0" layoutY="139.0" mnemonicParsing="false" />
    <CheckBox fx:id="cmbBacon1" layoutX="513.0" layoutY="164.0" mnemonicParsing="false" />
    <CheckBox fx:id="cmbLechuga1" layoutX="513.0" layoutY="189.0" mnemonicParsing="false" />

@@ -2,6 +2,11 @@ package org.example.kaos.repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.example.kaos.entity.Pedido;
 import org.json.JSONArray;
 
 public class PedidoDAO {
@@ -50,5 +55,31 @@ public class PedidoDAO {
             stmt.setString(7, detallesJson.toString());
             stmt.execute();
         }
+    }
+
+    public List<Pedido> getAllDalyPedido() {
+        List<Pedido> pedidos = new ArrayList<>();
+        String sql = "SELECT * \n" +
+                "FROM pedido  \n" +
+                "WHERE DATE(fecha) = CURRENT_DATE\n" +
+                "Order by fecha DESC";
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String clienteNombre = rs.getString("cliente_nombre");
+                String direccion = rs.getString("direccion");
+                LocalDateTime fechaPedido = rs.getObject("fecha", LocalDateTime.class);
+                int idFormaPago = rs.getInt("id_tipo_pago");
+                int costoEnvio = rs.getInt("precio_envio");
+                double precioTotal = rs.getDouble("precio_total");
+
+                pedidos.add(new Pedido(id, clienteNombre, direccion, fechaPedido, idFormaPago, costoEnvio, precioTotal));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return pedidos;
     }
 }

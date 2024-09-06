@@ -1,6 +1,7 @@
 package org.example.kaos.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -32,6 +33,11 @@ public class DatoClienteController {
     @FXML
     public void initialize() {
         cargarFormasPago();
+        txtCostoEnvio.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                txtCostoEnvio.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
     }
 
     public void setPedidoService(PedidoService pedidoService) {
@@ -53,11 +59,24 @@ public class DatoClienteController {
 
     @FXML
     private void aceptarDatos() throws SQLException {
-        if (stage != null) {
-            stage.close();
-        } else {
-            System.out.println("El objeto Stage es null");
+        StringBuilder errores = new StringBuilder();
+        if (txtNombreCliente.getText().isEmpty()) {
+            errores.append("Ingrese el nombre del cliente.\n");
         }
+        if (txtDireccion.getText().isEmpty()) {
+            errores.append("Ingrese la dirección del pedido.\n");
+        }
+        if (cmbFormaPago.getValue() == null || cmbFormaPago.getValue().isEmpty()) {
+            errores.append("Seleccione la forma de pago.\n");
+        }
+        if (txtCostoEnvio.getText().isEmpty()) {
+            errores.append("Ingrese el precio de envío.\n");
+        }
+        if (errores.length() > 0) {
+            showError(errores.toString());
+            return;
+        }
+
         String nombreCliente = txtNombreCliente.getText();
         String direccion = txtDireccion.getText();
         String formaPago = cmbFormaPago.getValue();
@@ -120,5 +139,13 @@ public class DatoClienteController {
     @FXML
     private void cancelarVentana() {
         stage.close();
+    }
+
+    public void showError(String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

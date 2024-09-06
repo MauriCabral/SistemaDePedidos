@@ -1,10 +1,7 @@
 package org.example.kaos.service;
 
 import org.example.kaos.controller.PedidoController;
-import org.example.kaos.entity.DetallePedido;
-import org.example.kaos.entity.HamburguesaTipo;
-import org.example.kaos.entity.Hamburgusa;
-import org.example.kaos.entity.Topping;
+import org.example.kaos.entity.*;
 import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.repository.PedidoDAO;
@@ -118,5 +115,9 @@ public class PedidoService {
 
     public void limpiarDatos() {
         actualizarTotal();
+    }
+
+    public List<Pedido> getDalyPedidos() {
+        return pedidoDAO.getAllDalyPedido();
     }
 }

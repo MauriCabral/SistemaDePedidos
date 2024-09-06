@@ -1,5 +1,9 @@
 package org.example.kaos.controller;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -10,15 +14,22 @@ import javafx.scene.layout.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.geometry.Insets;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Optional;
 
 import org.example.kaos.application.PedidoApplication;
 import org.example.kaos.entity.DetallePedido;
+import org.example.kaos.entity.Pedido;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.entity.Hamburgusa;
+import org.example.kaos.repository.TipoPagoDAO;
 import org.example.kaos.service.PedidoService;
 
 import java.util.List;
@@ -27,21 +38,44 @@ public class PedidoController {
 
     private PedidoApplication pedidoApp;
     private final HamburguesaDAO hamburguesaDAO = new HamburguesaDAO();
+    private final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
     private boolean deleteButtonsVisible = false;
     private List<DetallePedido> detallesPedidosList;
     private PedidoService pedidoService;
+    private ObservableList<Pedido> pedidoList = FXCollections.observableArrayList();
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @FXML
-    private Pane menuPane, rightPane;
+    private Pane menuPane, rightPane, pnHistorico;
     @FXML
     private VBox detallePedidos;
     @FXML
     private Label lblTotal;
+    @FXML
+    private TableView<Pedido> tableHistorico;
+    @FXML
+    private TableColumn<Pedido, Integer> colId;
+    @FXML
+    private TableColumn<Pedido, String> colNombre;
+    @FXML
+    private TableColumn<Pedido, String> colDireccion;
+    @FXML
+    private TableColumn<Pedido, Integer> colCostoEnvio;
+    @FXML
+    private TableColumn<Pedido, String> colFormaPago;
+    @FXML
+    private TableColumn<Pedido, String> colFecha;
+    @FXML
+    private TableColumn<Pedido, Integer> colTotalPedido;
+    @FXML
+    private TableColumn<Pedido, Integer> colTotal;
 
     @FXML
     private void initialize() {
         menuPane.setVisible(false);
         rightPane.setVisible(false);
+        pnHistorico.setVisible(false);
+
         detallesPedidosList = new ArrayList<>();
         if (pedidoService == null) {
             pedidoService = new PedidoService();
@@ -63,7 +97,7 @@ public class PedidoController {
     }
 
     @FXML
-    private void handleExitButtonClick() {
+    private void exit() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmación de Salida");
         alert.setHeaderText(null);
@@ -173,7 +207,7 @@ public class PedidoController {
                         toppingsBox.getChildren().add(toppingLabel);
                     }
                 } else {
-                    Label toppingLabel = new Label("Sin: " + topping.getNombre());
+                    Label toppingLabel = new Label("Sin " + topping.getNombre());
                     toppingsBox.getChildren().add(toppingLabel);
                 }
             }
@@ -184,27 +218,45 @@ public class PedidoController {
 
     public void deletePedidos() {
         deleteButtonsVisible = !deleteButtonsVisible;
-        for (var node : detallePedidos.getChildren()) {
-            if (node instanceof VBox) {
-                VBox vBox = (VBox) node;
-                for (var child : vBox.getChildren()) {
-                    if (child instanceof HBox) {
-                        HBox hBox = (HBox) child;
-                        for (var hboxChild : hBox.getChildren()) {
-                            if (hboxChild instanceof Button) {
-                                Button deleteButton = (Button) hboxChild;
-                                deleteButton.setVisible(deleteButtonsVisible);
+        if (!detallesPedidosList.isEmpty()) {
+            for (var node : detallePedidos.getChildren()) {
+                if (node instanceof VBox) {
+                    VBox vBox = (VBox) node;
+                    for (var child : vBox.getChildren()) {
+                        if (child instanceof HBox) {
+                            HBox hBox = (HBox) child;
+                            for (var hboxChild : hBox.getChildren()) {
+                                if (hboxChild instanceof Button) {
+                                    Button deleteButton = (Button) hboxChild;
+                                    deleteButton.setVisible(deleteButtonsVisible);
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("No se ha insertado ningún detalle en el pedido");
+            alert.showAndWait();
+        }
     }
 
     public void aceptarPedido(ActionEvent actionEvent) {
         System.out.println("PedidoService en PedidoController: " + pedidoService.hashCode());
-        pedidoApp.openDatoClienteWindow(pedidoService);
+        if (!detallesPedidosList.isEmpty()) {
+            pedidoApp.openDatoClienteWindow(pedidoService);
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("No se ha insertado ningún detalle en el pedido");
+            alert.showAndWait();
+        }
     }
 
     public void cancelarPedido(ActionEvent actionEvent) {
@@ -233,5 +285,46 @@ public class PedidoController {
 
     public void limpiarLblTotal() {
         lblTotal.setText("");
+    }
+
+    public void historico(ActionEvent actionEvent) {
+        menuPane.setVisible(false);
+        rightPane.setVisible(false);
+        pnHistorico.setVisible(true);
+
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colNombre.setCellValueFactory(new PropertyValueFactory<>("cliente_nombre"));
+        colDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+        colFormaPago.setCellValueFactory(cellData -> {
+            int idTipoPago = cellData.getValue().getId_pago();
+            String nombreTipoPago = tipoPagoDAO.getNameTipoPagoFromId(idTipoPago);
+            return new SimpleStringProperty(nombreTipoPago);
+        });
+        colCostoEnvio.setCellValueFactory(new PropertyValueFactory<>("precio_envio"));
+        colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha_pedido"));
+        colFecha.setCellValueFactory(cellData -> {
+            LocalDateTime date = cellData.getValue().getFecha_pedido();
+            return new SimpleStringProperty(date != null ? formatter.format(date) : "");});
+        colTotalPedido.setCellValueFactory(cellData -> {
+            double precioTotal = cellData.getValue().getPrecio_total();
+            return new SimpleIntegerProperty((int) precioTotal).asObject();
+        });
+        colTotal.setCellValueFactory(cellData -> {
+            double precioEnvio = cellData.getValue().getPrecio_envio();
+            double precioTotal = cellData.getValue().getPrecio_total();
+            int suma = (int) (precioEnvio + precioTotal);
+            return new SimpleIntegerProperty(suma).asObject();
+        });
+
+        cargarTablaPedidos();
+    }
+
+    private void cargarTablaPedidos() {
+        List<Pedido> pedidos = pedidoService.getDalyPedidos();
+        System.out.println("Pedidos obtenidos: " + pedidos);
+        tableHistorico.getItems().setAll(pedidos);
+    }
+
+    public void dashboard(ActionEvent actionEvent) {
     }
 }
