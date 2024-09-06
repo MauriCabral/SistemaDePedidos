@@ -78,14 +78,10 @@ public class PedidoService {
         return detallesPedidosList;
     }
 
-    public void insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
-        try {
-            pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson);
-            System.out.println("Pedido insertado exitosamente.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error al insertar el pedido: " + e.getMessage());
-        }
+    public boolean insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
+        boolean exito = false;
+        exito = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson);
+        return exito;
     }
 
     public double getPrecioTotalTopping(List<Topping> toppingList) {

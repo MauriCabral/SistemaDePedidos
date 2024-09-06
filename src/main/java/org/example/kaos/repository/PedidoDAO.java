@@ -43,9 +43,10 @@ public class PedidoDAO {
         }
     }
 
-    public void insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) throws SQLException {
+    public boolean insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
+        boolean exito = false;
         try (Connection conn = DataBase.getConnection()) {
-            CallableStatement stmt = conn.prepareCall("{call CrearPedidoConDetallesYtoppings(?, ?, ?, ?, ?, ?, ?)}");
+            CallableStatement stmt = conn.prepareCall("{call CrearPedidoConDetallesYtoppings(?, ?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, nombreCliente);
             stmt.setString(2, direccion);
             stmt.setTimestamp(3, fecha);
@@ -53,8 +54,18 @@ public class PedidoDAO {
             stmt.setDouble(5, costoEnvio);
             stmt.setDouble(6, precioTotal);
             stmt.setString(7, detallesJson.toString());
+            stmt.registerOutParameter(8, Types.INTEGER);
+
             stmt.execute();
+
+            int filasAfectadas = stmt.getInt(8);
+            System.out.println("Filas afectadas: " + filasAfectadas);
+
+            exito = filasAfectadas > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return exito;
     }
 
     public List<Pedido> getAllDalyPedido() {

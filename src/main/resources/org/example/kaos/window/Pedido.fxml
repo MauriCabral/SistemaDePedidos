@@ -207,11 +207,11 @@
          </Label>
          <TableView fx:id="tableHistorico" layoutX="10.0" layoutY="75.0" prefHeight="506.0" prefWidth="785.0">
            <columns>
-              <TableColumn fx:id="colId" prefWidth="50.0" text="Id" />
+              <TableColumn fx:id="colId" prefWidth="40.0" text="Id" />
               <TableColumn fx:id="colNombre" prefWidth="160.0" text="Nombre" />
               <TableColumn fx:id="colDireccion" prefWidth="180.0" text="Dirección" />
               <TableColumn fx:id="colFecha" prefWidth="110.0" text="Fecha" />
-              <TableColumn fx:id="colFormaPago" prefWidth="85.0" text="Forma pago" />
+              <TableColumn fx:id="colFormaPago" prefWidth="100.0" text="Forma pago" />
               <TableColumn fx:id="colCostoEnvio" prefWidth="60.0" text="Envío" />
               <TableColumn fx:id="colTotalPedido" prefWidth="65.0" text="PedTotal" />
               <TableColumn fx:id="colTotal" prefWidth="70.0" text="Total" />

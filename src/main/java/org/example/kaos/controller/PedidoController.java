@@ -118,6 +118,7 @@ public class PedidoController {
     private void handlePedidosButtonClick() {
         menuPane.setVisible(true);
         rightPane.setVisible(true);
+        pnHistorico.setVisible(false);
     }
 
     @FXML

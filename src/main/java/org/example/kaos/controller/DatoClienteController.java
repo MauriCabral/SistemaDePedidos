@@ -100,19 +100,23 @@ public class DatoClienteController {
                 detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
                 JSONArray toppingsJson = new JSONArray();
                 List<Topping> topping = detalle.getId_topping();
-                for(Topping idTop : topping) {
-                    JSONObject toppingJson = new JSONObject();
-                    toppingJson.put("id_topping", idTop.getId());
-                    int esExtraible = idTop.getEsExtra() ? 1 : 0;
-                    toppingJson.put("es_extraible", esExtraible);
-                    toppingsJson.put(toppingJson);
+                if (topping.isEmpty()) {
+                    detalleJson.put("toppings", JSONObject.NULL);
+                } else {
+                    for(Topping idTop : topping) {
+                        JSONObject toppingJson = new JSONObject();
+                        toppingJson.put("id_topping", idTop.getId());
+                        int esExtraible = idTop.getEsExtra() ? 1 : 0;
+                        toppingJson.put("es_extraible", esExtraible);
+                        toppingsJson.put(toppingJson);
+                    }
+                    detalleJson.put("toppings", toppingsJson);
                 }
-                detalleJson.put("toppings", toppingsJson);
             }
             detallesJson.put(detalleJson);
         }
         System.out.println("Detalles JSON: " + detallesJson.toString());
-        pedidoService.insertarPedido(
+        boolean exito = pedidoService.insertarPedido(
                 nombreCliente,
                 direccion,
                 new Timestamp(System.currentTimeMillis()),
@@ -121,18 +125,23 @@ public class DatoClienteController {
                 precioTotal,
                 detallesJson
         );
-        PedidoController pedidoController = ControllerManager.getInstance().getPedidoController();
-        if (pedidoController != null) {
-            pedidoService.getDetallesPedidosList().clear();
-            pedidoController.limpiarLblTotal();
-            pedidoController.getDetallePedidos().getChildren().clear();
+        if (exito) {
+            showConfirmation("El pedido se ha insertado correctamente.");
+            PedidoController pedidoController = ControllerManager.getInstance().getPedidoController();
+            if (pedidoController != null) {
+                pedidoService.getDetallesPedidosList().clear();
+                pedidoController.limpiarLblTotal();
+                pedidoController.getDetallePedidos().getChildren().clear();
+            } else {
+                System.out.println("PedidoController es null.");
+            }
+            if (stage != null) {
+                stage.close();
+            } else {
+                System.out.println("El objeto Stage es null");
+            }
         } else {
-            System.out.println("PedidoController es null.");
-        }
-        if (stage != null) {
-            stage.close();
-        } else {
-            System.out.println("El objeto Stage es null");
+            showError("No se pudo insertar el pedido. Intente nuevamente.");
         }
     }
 
@@ -143,6 +152,14 @@ public class DatoClienteController {
 
     public void showError(String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    public void showConfirmation(String content) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(content);
