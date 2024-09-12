@@ -6,11 +6,11 @@ public class DetallePedido {
     private int id;
     private int id_pedido;
     private int cantidad;
-    private List<HamburguesaTipo> id_tipo_hamburguesa;
-    private List<Topping> id_topping;
+    private List<Integer> id_tipo_hamburguesa;
+    private List<Integer> id_topping;
     private double precio_unitario;
 
-    public DetallePedido(int id, int cantidad, List<HamburguesaTipo> id_tipo_hamburguesa, List<Topping> id_topping, double precio_unitario) {
+    public DetallePedido(int id, int cantidad, List<Integer> id_tipo_hamburguesa, List<Integer> id_topping, double precio_unitario) {
         this.id = id;
         this.cantidad = cantidad;
         this.id_tipo_hamburguesa = id_tipo_hamburguesa;
@@ -42,19 +42,19 @@ public class DetallePedido {
         this.precio_unitario = precio_unitario;
     }
 
-    public List<HamburguesaTipo> getId_tipo_hamburgusa() {
+    public List<Integer> getId_tipo_hamburgusa() {
         return id_tipo_hamburguesa;
     }
 
-    public void setId_tipo_hamburgusa(List<HamburguesaTipo> id_tipo_hamburgusa) {
+    public void setId_tipo_hamburgusa(List<Integer> id_tipo_hamburgusa) {
         this.id_tipo_hamburguesa = id_tipo_hamburgusa;
     }
 
-    public List<Topping> getId_topping() {
+    public List<Integer> getId_topping() {
         return id_topping;
     }
 
-    public void setId_topping(List<Topping> id_topping) {
+    public void setId_topping(List<Integer> id_topping) {
         this.id_topping = id_topping;
     }
 

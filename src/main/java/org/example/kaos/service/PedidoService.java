@@ -6,7 +6,6 @@ import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.repository.PedidoDAO;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -21,23 +20,26 @@ public class PedidoService {
     private final List<DetallePedido> detallesPedidosList;
     private Runnable onTotalCleared;
 
-    public PedidoService() {
-        this.hamburguesaDAO = new HamburguesaDAO();
-        this.hamburguesaTipoDAO = new HamburguesaTipoDAO();
+    public PedidoService(HamburguesaDAO hamburguesaDAO, HamburguesaTipoDAO hamburguesaTipoDAO) {
+        this.hamburguesaDAO = hamburguesaDAO;
+        this.hamburguesaTipoDAO = hamburguesaTipoDAO;
         this.detallesPedidosList = new ArrayList<>();
     }
 
-    public List<HamburguesaTipo> getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
-        List<HamburguesaTipo> listHambTip = new ArrayList<>();
-        listHambTip.add(hamburguesaTipoDAO.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa));
-        return listHambTip;
+    public PedidoService() {
+        this(new HamburguesaDAO(), new HamburguesaTipoDAO());
     }
 
-    public Hamburgusa getMenuByCode(String code) {
+    public List<Integer> getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
+        return hamburguesaTipoDAO.getHamburguesaTipoIds(nombreHamburguesa, tipoHamburguesa);
+    }
+
+
+    public Hamburguesa getMenuByCode(String code) {
         return hamburguesaDAO.getMenuByCode(code);
     }
 
-    public DetallePedido addDetallePedido(String nombre, String tipo, int cantidad, double precio, List<Topping> toppingList) {
+    public DetallePedido addDetallePedido(String nombre, String tipo, int cantidad, double precio, List<Integer> toppingList) {
         DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, getHamburguesaTipo(nombre, tipo), toppingList, precio);
         detallesPedidosList.add(detallePedido);
         return detallePedido;
@@ -78,11 +80,12 @@ public class PedidoService {
         return detallesPedidosList;
     }
 
-    public boolean insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
+    public boolean insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson, JSONArray removeToppingsJson) {
         boolean exito = false;
-        exito = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson);
+        exito = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson, removeToppingsJson);
         return exito;
     }
+
 
     public double getPrecioTotalTopping(List<Topping> toppingList) {
         double totalTop = 0;
@@ -115,5 +118,9 @@ public class PedidoService {
 
     public List<Pedido> getDalyPedidos() {
         return pedidoDAO.getAllDalyPedido();
+    }
+
+    public Pedido getPedidoId(int id) {
+        return pedidoDAO.getPedidoById(id);
     }
 }

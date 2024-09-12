@@ -10,8 +10,6 @@ import org.example.kaos.manager.ControllerManager;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import org.example.kaos.service.DetalleService;
-import org.example.kaos.service.PedidoService;
-import org.example.kaos.service.ToppingService;
 
 import java.net.URL;
 import java.util.List;
@@ -23,27 +21,33 @@ public class DetalleController implements Initializable {
     @FXML
     private ComboBox<String> comboBoxTipo;
     @FXML
-    private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf; //cmbCambiarSalsa;
-    @FXML
-    private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
-
-    @FXML
     private Button btnCancelar, btnAceptar;
     @FXML
     private Label counterLabel;
-    
+    @FXML
+    private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf;
+    @FXML
+    private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
+
+    private DetalleService detalleService;
     private Stage stage;
     private int count = 1;
-
-    private final DetalleService detalleService = new DetalleService();
-    private final ToppingService toppingService = new ToppingService();
-    private final PedidoService pedidoService = new PedidoService();
+    private int pedidoId;
 
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
         btnCancelar.setOnAction(event -> closeWindow());
         btnAceptar.setOnAction(event -> aceptarPedido());
+        detalleService = new DetalleService();
+        detalleService.setCheckBoxes(cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf,
+                cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa);
+
     }
+
+//    public void setDetalleService(DetalleService detalleService) {
+//        this.detalleService = detalleService;
+//        System.out.println("DetalleService en DatoClienteController: " + detalleService.hashCode());
+//    }
 
     @FXML
     private void handleComboBoxAction() {
@@ -54,6 +58,10 @@ public class DetalleController implements Initializable {
     public void setDetalle(String nombreMenu) {
         nombre.setText(nombreMenu);
         comboBoxTipo.setItems(detalleService.getTiposHamburguesa(nombreMenu));
+    }
+
+    public void setPedidoId(int pedidoId) {
+        this.pedidoId = pedidoId;
     }
 
     @FXML
@@ -83,16 +91,28 @@ public class DetalleController implements Initializable {
         String tipo = comboBoxTipo.getValue();
         int cantidad = count;
         String nombreProducto = nombre.getText();
-        double precioProducto = detalleService.obtenerPrecio(tipo, cantidad, nombreProducto);
         if (tipo == null) {
             showError("Porfavor seleccione un tipo de hamburguesa");
         }
-        else {
-            List<Topping> toppingList = toppingService.getSelectedToppings(cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf, cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa);
-            actualizarVentanaPedido(nombreProducto, tipo, cantidad, precioProducto, toppingList);
-            if (stage != null) {
-                stage.close();
-            }
+        double precioProducto = detalleService.obtenerPrecio(tipo, cantidad, nombreProducto);
+
+//        List<Topping> toppingListExtra = toppingService.getExtraToppings(
+//                cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf);
+//
+//        List<Topping> toppingListRemove = toppingService.getRemovedToppings(
+//                cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa);
+
+        detalleService.updateExtraToppings();
+        detalleService.updateRemovedToppings();
+        List<Topping> toppingListExtra = detalleService.getToppingListExtra();
+        List<Topping> toppingListRemove = detalleService.getToppingListRemove();
+
+//        double totalPrecio = precioProducto + toppingListExtra.stream().mapToDouble(Topping::getPrecio).sum();
+
+        actualizarVentanaPedido(nombreProducto, tipo, cantidad, (int) precioProducto, toppingListExtra, toppingListRemove);
+
+        if (stage != null) {
+            stage.close();
         }
     }
 
@@ -104,22 +124,27 @@ public class DetalleController implements Initializable {
         alert.showAndWait();
     }
 
-    private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<Topping> toppingList) {
+    private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<Topping> toppingListExtra, List<Topping> toppingListRemove) {
         PedidoController pedidoCtrl = ControllerManager.getInstance().getPedidoController();
-        for (Topping topping : toppingList) {
-            System.out.println("Topping: " + topping.getNombre() + ", Precio: " + topping.getPrecio());
-        }
-        if (pedidoCtrl != null) {
-            Platform.runLater(() -> pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingList));
-        } else {
-            System.out.println("Controlador de Pedido no encontrado.");
-        }
-    }
 
-//    @FXML
-//    private void cambiarSalsaCheckBox() {
-//        txtCambiarSalsa.setVisible(cmbCambiarSalsa.isSelected());
-//    }
+        if (pedidoCtrl == null) {
+            System.out.println("Controlador de Pedido no encontrado. Verifica si está correctamente inicializado.");
+            return;
+        }
+
+        for (Topping topping : toppingListExtra) {
+            System.out.println("Topping Extra: " + topping.getNombre() + ", Precio: " + topping.getPrecio());
+        }
+        for (Topping topping : toppingListRemove) {
+            System.out.println("Topping Removido: " + topping.getNombre());
+        }
+
+        System.out.println("Invocando Platform.runLater...");
+        Platform.runLater(() -> {
+            System.out.println("Dentro de Platform.runLater...");
+            pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingListExtra, toppingListRemove);
+        });
+    }
 
     @FXML
     private void closeWindow() {

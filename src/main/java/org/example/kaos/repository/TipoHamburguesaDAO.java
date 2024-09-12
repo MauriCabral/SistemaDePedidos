@@ -24,12 +24,12 @@ public class TipoHamburguesaDAO {
         return tipos;
     }
 
-    public TipoHamburguesa getTipoHamburguesa(int code) {
+    public TipoHamburguesa getTipoHamburguesaById(int id) {
         String sql = "SELECT * FROM tipo_hamburguesa WHERE id = ?";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, code);
+            stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new TipoHamburguesa(

@@ -2,27 +2,29 @@ package org.example.kaos.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.kaos.entity.DetallePedido;
-import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.TipoPago;
-import org.example.kaos.entity.Topping;
+import org.example.kaos.manager.ControllerManager;
 import org.example.kaos.repository.TipoPagoDAO;
 import org.example.kaos.service.PedidoService;
-import org.example.kaos.manager.ControllerManager;
+import org.example.kaos.service.DetalleService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DatoClienteController {
 
     private final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
     private PedidoService pedidoService;
+    private DetalleService detalleService;
     private Stage stage;
 
     @FXML
@@ -43,6 +45,14 @@ public class DatoClienteController {
     public void setPedidoService(PedidoService pedidoService) {
         this.pedidoService = pedidoService;
         System.out.println("PedidoService en DatoClienteController: " + pedidoService.hashCode());
+    }
+
+    public void setDetalleService(DetalleService detalleService) {
+        this.detalleService = detalleService;
+        System.out.println("DetalleService en DatoClienteController: " + detalleService.hashCode());
+        if (this.detalleService == null) {
+            throw new IllegalStateException("DetalleService no ha sido inicializado");
+        }
     }
 
     public void setStage(Stage stage) {
@@ -89,25 +99,45 @@ public class DatoClienteController {
             System.out.println("El precio total es inválido: " + precioTotal);
             return;
         }
+
         List<DetallePedido> detallesPedidosList = pedidoService.getDetallesPedidosList();
+
         JSONArray detallesJson = new JSONArray();
+        JSONArray removeToppingsJson = new JSONArray();
+
         for (DetallePedido detalle : detallesPedidosList) {
+            System.out.println("Detalle ID Topping: " + detalle.getId_topping());
             JSONObject detalleJson = new JSONObject();
             detalleJson.put("cantidad", detalle.getCantidad());
-            List<HamburguesaTipo> hamburguesaTipos = detalle.getId_tipo_hamburgusa();
-            if (!hamburguesaTipos.isEmpty()) {
-                detalleJson.put("hamburguesa_tipo_id", hamburguesaTipos.get(0).getHamburguesa_id());
+            List<Integer> hamburguesaTipoIds = detalle.getId_tipo_hamburgusa();
+            if (!hamburguesaTipoIds.isEmpty()) {
+                detalleJson.put("hamburguesa_tipo_id", hamburguesaTipoIds.get(0));
                 detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
                 JSONArray toppingsJson = new JSONArray();
-                List<Topping> topping = detalle.getId_topping();
-                if (topping.isEmpty()) {
+
+                if (detalleService == null) {
+                    throw new IllegalStateException("DetalleService no ha sido inicializado");
+                }
+                List<Integer> toppingIds = detalle.getId_topping();
+                if (toppingIds.isEmpty()) {
                     detalleJson.put("toppings", JSONObject.NULL);
                 } else {
-                    for(Topping idTop : topping) {
+                    for (Integer toppingId : toppingIds) {
                         JSONObject toppingJson = new JSONObject();
-                        toppingJson.put("id_topping", idTop.getId());
-                        int esExtraible = idTop.getEsExtra() ? 1 : 0;
-                        toppingJson.put("es_extraible", esExtraible);
+                        toppingJson.put("id_topping", toppingId);
+
+                        System.out.println("Extra Toppings: " + detalleService.getToppingListExtra());
+                        System.out.println("Removed Toppings: " + detalleService.getToppingListRemove());
+
+                        boolean isExtraOrRemoved = detalleService.getToppingListExtra().stream().anyMatch(topping -> topping.getId() == toppingId) ||
+                                detalleService.getToppingListRemove().stream().anyMatch(topping -> topping.getId() == toppingId);
+
+                        System.out.println("Topping ID: " + toppingId + ", Is Extra or Removed: " + isExtraOrRemoved);
+
+                        toppingJson.put("is_extra_or_removed", isExtraOrRemoved);
+
+                        int toppingPrecio = isExtraOrRemoved ? (int) JSONObject.NULL : (int) detalleService.getToppingPrecio(toppingId);
+                        toppingJson.put("precio_final", toppingPrecio);
                         toppingsJson.put(toppingJson);
                     }
                     detalleJson.put("toppings", toppingsJson);
@@ -116,6 +146,8 @@ public class DatoClienteController {
             detallesJson.put(detalleJson);
         }
         System.out.println("Detalles JSON: " + detallesJson.toString());
+        System.out.println("Remove Toppings JSON: " + removeToppingsJson.toString());
+
         boolean exito = pedidoService.insertarPedido(
                 nombreCliente,
                 direccion,
@@ -123,7 +155,8 @@ public class DatoClienteController {
                 idTipoPago,
                 costoEnvio,
                 precioTotal,
-                detallesJson
+                detallesJson,
+                removeToppingsJson
         );
         if (exito) {
             showConfirmation("El pedido se ha insertado correctamente.");

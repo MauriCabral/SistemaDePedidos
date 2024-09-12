@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 import org.example.kaos.controller.PedidoController;
 import org.example.kaos.manager.ControllerManager;
+import org.example.kaos.repository.HamburguesaDAO;
+import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.service.PedidoService;
 
 import java.io.IOException;
@@ -24,7 +26,7 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            pedidoService = new PedidoService();
+            pedidoService = new PedidoService(new HamburguesaDAO(), new HamburguesaTipoDAO());
             pedidoApp = new PedidoApplication();
             FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/kaos/window/Main.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 1000, 620);

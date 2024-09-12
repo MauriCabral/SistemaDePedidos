@@ -25,10 +25,10 @@ import java.util.Optional;
 
 import org.example.kaos.application.PedidoApplication;
 import org.example.kaos.entity.DetallePedido;
+import org.example.kaos.entity.Hamburguesa;
 import org.example.kaos.entity.Pedido;
 import org.example.kaos.entity.Topping;
 import org.example.kaos.repository.HamburguesaDAO;
-import org.example.kaos.entity.Hamburgusa;
 import org.example.kaos.repository.TipoPagoDAO;
 import org.example.kaos.service.PedidoService;
 
@@ -42,6 +42,7 @@ public class PedidoController {
     private boolean deleteButtonsVisible = false;
     private List<DetallePedido> detallesPedidosList;
     private PedidoService pedidoService;
+    private DetallePedido detallePedido;
     private ObservableList<Pedido> pedidoList = FXCollections.observableArrayList();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -129,7 +130,7 @@ public class PedidoController {
             case "cb", "di", "kk", "kl", "mn", "rm", "tn", "v", "vr" -> menuCode;
             default -> " ";
         };
-        Hamburgusa selectedMenu = hamburguesaDAO.getMenuByCode(res);
+        Hamburguesa selectedMenu = hamburguesaDAO.getMenuByCode(res);
         if (selectedMenu != null) {
             pedidoApp.openDetalleWindow(selectedMenu.getNombre());
         } else {
@@ -137,18 +138,27 @@ public class PedidoController {
         }
     }
 
-    public void actualizarDetalles(String nombreHamburguesa, String tipoHamburguesa, int cantidad, double precio, List<Topping> toppingList) {
+    public void actualizarDetalles(String nombreHamburguesa, String tipoHamburguesa, int cantidad, double precio, List<Topping> toppingListExtra, List<Topping> toppingListRemove) {
         VBox vBox = new VBox(5);
         vBox.setPadding(new Insets(2, 8, 0, 8));
         HBox pedidoBox = new HBox(5);
 
-        double precioToppings = pedidoService.getPrecioTotalTopping(toppingList);
-        double total = precio + precioToppings;
+        double precioToppingsExtra = pedidoService.getPrecioTotalTopping(toppingListExtra);
+        double total = precio + precioToppingsExtra;
 
         int detalleId = detallesPedidosList.size() + 1;
-        DetallePedido detallePedido = new DetallePedido(detalleId, cantidad, pedidoService.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa), toppingList, total);
+
+        List<Integer> toppingListAllIds = new ArrayList<>();
+        if (toppingListExtra != null) {
+            toppingListAllIds.addAll(toppingListExtra.stream().map(Topping::getId).toList());
+        }
+        if (toppingListRemove != null) {
+            toppingListAllIds.addAll(toppingListRemove.stream().map(Topping::getId).toList());
+        }
+
+        DetallePedido detallePedido = new DetallePedido(detalleId, cantidad, pedidoService.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa), toppingListAllIds, total);
         detallesPedidosList.add(detallePedido);
-        pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, total, toppingList);
+        pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, total, toppingListAllIds);
 
         Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " " + "($" + (int) precio + ")");
         Label precioLabel = new Label(String.format("$%d", (int) total));
@@ -166,7 +176,6 @@ public class PedidoController {
         } catch (NullPointerException e) {
             System.out.println("No se pudo cargar la imagen: " + e.getMessage());
         }
-
         deleteButton.setUserData(detalleId);
         deleteButton.setOnAction(event -> {
             Integer id = (Integer) deleteButton.getUserData();
@@ -189,28 +198,31 @@ public class PedidoController {
                 System.out.println("No se encontró el detalle con ID: " + id);
             }
         });
-
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         pedidoBox.getChildren().addAll(pedidoLabel, spacer, precioLabel, deleteButton);
         vBox.getChildren().add(pedidoBox);
-        if (toppingList != null && !toppingList.isEmpty()) {
+        if (toppingListExtra != null && !toppingListExtra.isEmpty()) {
             VBox toppingsBox = new VBox(5);
             toppingsBox.setPadding(new Insets(5, 0, 0, 0));
-            for (Topping topping : toppingList) {
-                if (topping.getEsExtra()) {
-                    if (topping.getPrecio() != null) {
-                        int precioTop = (int) Math.round(topping.getPrecio());
-                        Label toppingLabel = new Label("Extra: " + topping.getNombre() + ": ($" + precioTop + ")");
-                        toppingsBox.getChildren().add(toppingLabel);
-                    } else {
-                        Label toppingLabel = new Label("Extra: " + topping.getNombre());
-                        toppingsBox.getChildren().add(toppingLabel);
-                    }
+            for (Topping topping : toppingListExtra) {
+                if (topping.getPrecio() != null) {
+                    int precioTop = (int) Math.round(topping.getPrecio());
+                    Label toppingLabel = new Label("Extra: " + topping.getNombre() + ": ($" + precioTop + ")");
+                    toppingsBox.getChildren().add(toppingLabel);
                 } else {
-                    Label toppingLabel = new Label("Sin " + topping.getNombre());
+                    Label toppingLabel = new Label("Extra: " + topping.getNombre());
                     toppingsBox.getChildren().add(toppingLabel);
                 }
+            }
+            vBox.getChildren().add(toppingsBox);
+        }
+        if (toppingListRemove != null && !toppingListRemove.isEmpty()) {
+            VBox toppingsBox = new VBox(5);
+            toppingsBox.setPadding(new Insets(5, 0, 0, 0));
+            for (Topping topping : toppingListRemove) {
+                Label toppingLabel = new Label("Sin " + topping.getNombre());
+                toppingsBox.getChildren().add(toppingLabel);
             }
             vBox.getChildren().add(toppingsBox);
         }
@@ -318,6 +330,12 @@ public class PedidoController {
         });
 
         cargarTablaPedidos();
+
+        tableHistorico.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                pedidoApp.abrirVentanaDetallePedido(newValue);
+            }
+        });
     }
 
     private void cargarTablaPedidos() {
