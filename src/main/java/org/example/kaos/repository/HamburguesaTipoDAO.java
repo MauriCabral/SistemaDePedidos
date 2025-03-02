@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.example.kaos.entity.HamburguesaTipo;
-import org.example.kaos.entity.Topping;
 
 public class HamburguesaTipoDAO {
     public List<Integer> getHamburguesaTipoIds(String nombre, String tipo) {
@@ -26,6 +25,28 @@ public class HamburguesaTipoDAO {
         return ids;
     }
 
+    public List<HamburguesaTipo> getHamburguesaTipoIds(int hamburguesaId) {
+        List<HamburguesaTipo> ids = new ArrayList<>();
+        String sql = "SELECT * FROM hamburguesa_tipo WHERE hamburguesa_id = ?";
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, hamburguesaId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    HamburguesaTipo hamburguesaTipo = new HamburguesaTipo(
+                            rs.getInt("id"),
+                            rs.getInt("hamburguesa_id"),
+                            rs.getInt("tipo_id"),
+                            rs.getDouble("precio")
+                    );
+                    ids.add(hamburguesaTipo);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
 
     public HamburguesaTipo getHamburguesaTipoByID(int id) {
         String sql = "SELECT * FROM hamburguesa_tipo WHERE id = ?";
@@ -48,27 +69,22 @@ public class HamburguesaTipoDAO {
         return null;
     }
 
-    /*public List<Topping> getToppingsByHamburguesaTipoID(int hamburguesaTipoId) {
-        List<Topping> toppings = new ArrayList<>();
-        String sql = "SELECT t.* FROM topping t " +
-                "INNER JOIN hamburguesa_tipo tht ON t.id = tht.topping_id " +
-                "WHERE tht.hamburguesa_tipo_id = ?";
-        try (Connection conn = DataBase.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, hamburguesaTipoId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Topping topping = new Topping(
-                            rs.getInt("id"),
-                            rs.getString("nombre"),
-                            rs.getDouble("precio")
-                    );
-                    toppings.add(topping);
-                }
-            }
+    public boolean updateHamburguesa(String nombre, int hamburguesa_id, int tipo_id, double precio) {
+        boolean exito = false;
+        try (Connection conn = DataBase.getConnection()) {
+            CallableStatement stmt = conn.prepareCall("{call UpdateHamburguesa(?, ?, ?, ?, ?)}");
+            stmt.setString(1, nombre);
+            stmt.setInt(2, hamburguesa_id);
+            stmt.setInt(3, tipo_id);
+            stmt.setDouble(4, precio);
+            stmt.registerOutParameter(5, Types.INTEGER);
+            stmt.execute();
+
+            exito = stmt.getInt(5) == 1;
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return toppings;
-    }*/
+        return exito;
+    }
 }

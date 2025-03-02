@@ -20,19 +20,4 @@ public class ToppingDAO {
             }
         }
     }
-
-    public double getToppingPrecio(int toppingId) throws SQLException {
-        double toppingPrecio = 0.0;
-        String query = "SELECT precio FROM topping WHERE id = ?";
-        try (Connection conn = DataBase.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, toppingId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    toppingPrecio = rs.getDouble("precio");
-                }
-            }
-        }
-        return toppingPrecio;
-    }
 }

@@ -18,5 +18,5 @@
 
         </VBox>
     </ScrollPane>
-   <Button layoutX="273.0" layoutY="371.0" mnemonicParsing="false" text="Cerrar" />
+   <Button fx:id="btnCancelar" layoutX="273.0" layoutY="371.0" mnemonicParsing="false" onAction="#closeWindow" text="Cerrar" />
 </AnchorPane>

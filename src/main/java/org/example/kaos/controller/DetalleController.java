@@ -51,7 +51,7 @@ public class DetalleController implements Initializable {
 
     public void setDetalle(String nombreMenu) {
         nombre.setText(nombreMenu);
-        comboBoxTipo.setItems(detalleService.getTiposHamburguesa(nombreMenu));
+        comboBoxTipo.setItems(detalleService.getTiposHamburguesa());
     }
 
     public void setPedidoId(int pedidoId) {

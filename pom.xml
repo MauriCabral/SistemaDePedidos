@@ -47,6 +47,11 @@
       <artifactId>json</artifactId>
       <version>20240303</version>
     </dependency>
+    <dependency>
+      <groupId>com.just.agentweb</groupId>
+      <artifactId>filechooser</artifactId>
+      <version>4.1.4</version>
+    </dependency>
   </dependencies>
 
   <build>

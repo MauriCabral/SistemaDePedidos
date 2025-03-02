@@ -9,6 +9,9 @@ public class TipoHamburguesa {
         this.tipo = tipo;
     }
 
+    public TipoHamburguesa() {
+    }
+
     public int getId() {
         return id;
     }

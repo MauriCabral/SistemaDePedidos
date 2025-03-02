@@ -34,15 +34,16 @@ public class DetallePedidoDAO {
         }
     }
 
-    public DetallePedido getDetallePedidoById(int idPedido) {
-        String sql = "SELECT * FROM detalle_pedido WHERE id_pedido = ?";
+    public List<DetallePedido> getDetallesByPedidoId(int idPedido) {
+        List<DetallePedido> detalles = new ArrayList<>();
+        String sql = "SELECT * FROM detalle_pedido WHERE pedido_id = ?";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idPedido);
             try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
+                while (rs.next()) {
                     List<Integer> tiposHamburguesa = new ArrayList<>();
-                    String tipoHamburguesaStr = rs.getString("id_tipo_hamburguesa");
+                    String tipoHamburguesaStr = rs.getString("hamburguesa_tipo_id");
                     if (tipoHamburguesaStr != null && !tipoHamburguesaStr.isEmpty()) {
                         String[] tipoIds = tipoHamburguesaStr.split(",");
                         for (String id : tipoIds) {
@@ -53,17 +54,17 @@ public class DetallePedidoDAO {
                             }
                         }
                     }
-                    return new DetallePedido(
+                    detalles.add(new DetallePedido(
                             rs.getInt("id"),
                             rs.getInt("cantidad"),
                             tiposHamburguesa,
                             rs.getDouble("precio_unitario")
-                    );
+                    ));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return detalles;
     }
 }

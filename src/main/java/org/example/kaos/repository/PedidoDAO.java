@@ -2,7 +2,6 @@ package org.example.kaos.repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,5 +114,19 @@ public class PedidoDAO {
             e.printStackTrace();
         }
         return pedido;
+    }
+
+    public boolean eliminarPedido(int pedidoId) {
+        boolean exito = false;
+        try (Connection conn = DataBase.getConnection()) {
+            CallableStatement stmt = conn.prepareCall("{call EliminarPedido(?)}");
+            stmt.setInt(1, pedidoId);
+            stmt.execute();
+
+            exito = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return exito;
     }
 }

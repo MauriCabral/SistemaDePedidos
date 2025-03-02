@@ -14,7 +14,8 @@ public class HamburguesaTipo {
         this.tipo_id = tipo_id;
         this.precio = precio;
     }
-
+    public HamburguesaTipo() {
+    }
     public int getId() {
         return id;
     }

@@ -6,6 +6,7 @@ module org.example.kaos {
     requires org.json;
     requires javafx.graphics;
     requires javafx.controls;
+    requires java.desktop;
 
 
     opens org.example.kaos.window to javafx.fxml;

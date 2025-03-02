@@ -2,13 +2,11 @@ package org.example.kaos.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.TipoPago;
-import org.example.kaos.entity.Topping;
 import org.example.kaos.entity.ToppingPedido;
 import org.example.kaos.manager.ControllerManager;
 import org.example.kaos.repository.TipoPagoDAO;
@@ -20,9 +18,7 @@ import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DatoClienteController {
 
@@ -113,7 +109,6 @@ public class DatoClienteController {
         JSONArray detallesJson = new JSONArray();
 
         for (DetallePedido detalle : detallesPedidosList) {
-            //System.out.println("Detalle ID Topping: " + detalle.getId_topping());
             JSONObject detalleJson = new JSONObject();
             detalleJson.put("cantidad", detalle.getCantidad());
             List<Integer> hamburguesaTipoIds = detalle.getTiposHamburguesa();
@@ -139,7 +134,6 @@ public class DatoClienteController {
             }
             detallesJson.put(detalleJson);
         }
-        System.out.println("Detalles JSON: " + detallesJson.toString());
 
         boolean exito = pedidoService.insertarPedido(
                 nombreCliente,

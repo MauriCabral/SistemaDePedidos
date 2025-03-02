@@ -2,8 +2,6 @@ package org.example.kaos.controller;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -25,6 +23,7 @@ import java.util.*;
 import org.example.kaos.application.PedidoApplication;
 import org.example.kaos.entity.*;
 import org.example.kaos.repository.HamburguesaDAO;
+import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.repository.TipoPagoDAO;
 import org.example.kaos.service.PedidoService;
 
@@ -32,12 +31,11 @@ public class PedidoController {
 
     private PedidoApplication pedidoApp;
     private final HamburguesaDAO hamburguesaDAO = new HamburguesaDAO();
+    private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
     private final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
     private boolean deleteButtonsVisible = false;
     private List<DetallePedido> detallesPedidosList;
     private PedidoService pedidoService;
-    private Map<Integer, DetallePedido> detallesPedidosMap = new HashMap<>();
-    private ObservableList<Pedido> pedidoList = FXCollections.observableArrayList();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static int detalleId = 0;
 
@@ -65,6 +63,9 @@ public class PedidoController {
     private TableColumn<Pedido, Integer> colTotalPedido;
     @FXML
     private TableColumn<Pedido, Integer> colTotal;
+
+    @FXML
+    private VBox counterBox;
 
     @FXML
     private void initialize() {
@@ -119,17 +120,30 @@ public class PedidoController {
 
     @FXML
     private void handleImageButtonClick(ActionEvent event) {
+        String currentStyle = menuPane.getStyle();
+
         Button sourceButton = (Button) event.getSource();
         String menuCode = (String) sourceButton.getUserData();
-        String res = switch (menuCode) {
-            case "cb", "di", "kk", "kl", "mn", "rm", "tn", "v", "vr" -> menuCode;
-            default -> " ";
-        };
-        Hamburguesa selectedMenu = hamburguesaDAO.getMenuByCode(res);
-        if (selectedMenu != null) {
-            pedidoApp.openDetalleWindow(selectedMenu.getNombre());
+
+        if (currentStyle.contains("blue")) {
+            Hamburguesa selectedHamburguesa = hamburguesaDAO.getMenuByCode(menuCode);
+            if (selectedHamburguesa != null) {
+                List<HamburguesaTipo> hamburguesaTipoIds = hamburguesaTipoDAO.getHamburguesaTipoIds(selectedHamburguesa.getId());
+                pedidoApp.agregarHamburguesa(selectedHamburguesa.getNombre(), hamburguesaTipoIds, true);
+            } else {
+                System.out.println("Hamburguesa no encontrada.");
+            }
         } else {
-            System.out.println("Menu no encontrado.");
+            String res = switch (menuCode) {
+                case "cb", "di", "kk", "kl", "mn", "rm", "tn", "v", "vr" -> menuCode;
+                default -> " ";
+            };
+            Hamburguesa selectedMenu = hamburguesaDAO.getMenuByCode(res);
+            if (selectedMenu != null) {
+                pedidoApp.openDetalleWindow(selectedMenu.getNombre());
+            } else {
+                System.out.println("Menu no encontrado.");
+            }
         }
     }
 
@@ -301,6 +315,7 @@ public class PedidoController {
         pnHistorico.setVisible(true);
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colId.setVisible(false);
         colNombre.setCellValueFactory(new PropertyValueFactory<>("cliente_nombre"));
         colDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
         colFormaPago.setCellValueFactory(cellData -> {
@@ -326,9 +341,12 @@ public class PedidoController {
 
         cargarTablaPedidos();
 
-        tableHistorico.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                pedidoApp.abrirVentanaDetallePedido(newValue);
+        tableHistorico.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Pedido selectedItem = tableHistorico.getSelectionModel().getSelectedItem();
+                if (selectedItem != null) {
+                    pedidoApp.abrirVentanaDetallePedido(selectedItem);
+                }
             }
         });
     }
@@ -340,5 +358,44 @@ public class PedidoController {
     }
 
     public void dashboard(ActionEvent actionEvent) {
+    }
+
+    public void deletePedidosCreados() {
+        Pedido selectedPedido = tableHistorico.getSelectionModel().getSelectedItem();
+        if (selectedPedido != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmar eliminación");
+            alert.setHeaderText("¿Está seguro de que desea eliminar este pedido?");
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    int pedidoId = selectedPedido.getId();
+                    boolean exito = pedidoService.eliminarPedido(pedidoId);
+
+                    if (exito) {
+                        System.out.println("Pedido eliminado exitosamente");
+                        cargarTablaPedidos();
+                    } else {
+                        System.out.println("Error al eliminar el pedido");
+                    }
+                } else {
+                    System.out.println("Eliminación cancelada");
+                }
+            });
+        } else {
+            System.out.println("Por favor, seleccione un pedido para eliminar.");
+        }
+    }
+
+    public void editButton(ActionEvent event) {
+        String currentStyle = menuPane.getStyle();
+        if (currentStyle.contains("blue")) {
+            menuPane.setStyle(currentStyle.replace("-fx-border-color: blue; -fx-border-width: 2px;", ""));
+        } else {
+            menuPane.setStyle("-fx-border-color: blue; -fx-border-width: 2px;");
+        }
+    }
+
+
+    public void agregarButton(ActionEvent actionEvent) {
     }
 }

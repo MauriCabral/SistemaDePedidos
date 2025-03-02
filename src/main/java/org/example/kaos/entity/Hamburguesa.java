@@ -11,6 +11,9 @@ public class Hamburguesa {
         this.codigo = codigo;
     }
 
+    public Hamburguesa() {
+    }
+
     public int getId() {
         return id;
     }

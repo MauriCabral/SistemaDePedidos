@@ -32,10 +32,6 @@ public class PedidoService {
         this(new HamburguesaDAO(), new HamburguesaTipoDAO());
     }
 
-    public Hamburguesa getMenuByCode(String code) {
-        return hamburguesaDAO.getMenuByCode(code);
-    }
-
     public DetallePedido addDetallePedido(String nombre, String tipo, int cantidad, double precio) {
         DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size(), cantidad, getHamburguesaTipo(nombre, tipo), precio);
         detallesPedidosList.add(detallePedido);
@@ -50,16 +46,6 @@ public class PedidoService {
 
     public List<Integer> getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
         return hamburguesaTipoDAO.getHamburguesaTipoIds(nombreHamburguesa, tipoHamburguesa);
-    }
-
-    public List<Integer> getIdToppingDetalle (List<Topping> toppingList) {
-        List<Integer> toppingIds = new ArrayList<>();
-        if (toppingList != null && !toppingList.isEmpty()) {
-            for (Topping topping : toppingList) {
-                toppingIds.add(topping.getId());
-            }
-        }
-        return toppingIds;
     }
 
     public void removeDetallePedido(DetallePedido detallePedido) {
@@ -85,7 +71,6 @@ public class PedidoService {
         }
     }
 
-
     public void setPedidoController(PedidoController pedidoController) {
         this.pedidoController = pedidoController;
     }
@@ -108,6 +93,9 @@ public class PedidoService {
         return exito;
     }
 
+    public boolean eliminarPedido(int pedidoId) {
+        return pedidoDAO.eliminarPedido(pedidoId);
+    }
 
     public double getPrecioTotalTopping(List<Topping> toppingList) {
         double totalTop = 0.0;
@@ -128,14 +116,6 @@ public class PedidoService {
         }
         System.out.println("total de actualizar: " + totalFinal);
         return totalFinal;
-    }
-
-    public void setOnTotalCleared(Runnable onTotalCleared) {
-        this.onTotalCleared = onTotalCleared;
-    }
-
-    public void limpiarDatos() {
-        actualizarTotal();
     }
 
     public List<Pedido> getDalyPedidos() {

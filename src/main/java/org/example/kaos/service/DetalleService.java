@@ -11,9 +11,7 @@ import org.example.kaos.repository.ToppingDAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DetalleService {
 
@@ -26,7 +24,7 @@ public class DetalleService {
     @FXML
     private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
 
-    public ObservableList<String> getTiposHamburguesa(String nombreMenu) {
+    public ObservableList<String> getTiposHamburguesa() {
         return typeDAO.getAllTipoHamburguesa();
     }
 
@@ -90,14 +88,4 @@ public class DetalleService {
             toppingList.add(toppingDAO.getToppingById(id, agregado));
         }
     }
-
-    /*public double getToppingPrecio(int toppingId) {
-        try {
-            Topping topping = toppingDAO.getToppingById(toppingId);
-            return (topping != null) ? topping.getPrecio() : 0.0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0.0;
-    }*/
 }
