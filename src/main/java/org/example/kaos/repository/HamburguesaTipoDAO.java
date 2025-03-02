@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.example.kaos.entity.HamburguesaTipo;
+import org.example.kaos.entity.Topping;
 
 public class HamburguesaTipoDAO {
     public List<Integer> getHamburguesaTipoIds(String nombre, String tipo) {
@@ -36,15 +37,38 @@ public class HamburguesaTipoDAO {
                     return new HamburguesaTipo(
                             rs.getInt("id"),
                             rs.getInt("hamburguesa_id"),
-                            rs.getDouble("precio"),
-                            rs.getInt("tipo_id")
+                            rs.getInt("tipo_id"),
+                            rs.getDouble("precio")
                     );
                 }
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return null;
     }
+
+    /*public List<Topping> getToppingsByHamburguesaTipoID(int hamburguesaTipoId) {
+        List<Topping> toppings = new ArrayList<>();
+        String sql = "SELECT t.* FROM topping t " +
+                "INNER JOIN hamburguesa_tipo tht ON t.id = tht.topping_id " +
+                "WHERE tht.hamburguesa_tipo_id = ?";
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, hamburguesaTipoId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Topping topping = new Topping(
+                            rs.getInt("id"),
+                            rs.getString("nombre"),
+                            rs.getDouble("precio")
+                    );
+                    toppings.add(topping);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return toppings;
+    }*/
 }

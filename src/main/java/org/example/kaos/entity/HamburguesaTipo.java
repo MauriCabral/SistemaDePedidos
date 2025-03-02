@@ -1,16 +1,18 @@
 package org.example.kaos.entity;
 
+import java.util.List;
+
 public class HamburguesaTipo {
     private int id;
     private int hamburguesa_id;
     private int tipo_id;
     private Double precio;
 
-    public HamburguesaTipo(int id, int hamburguesa_id, Double precio, int tipo_id) {
+    public HamburguesaTipo(int id, int hamburguesa_id, int tipo_id, Double precio) {
         this.id = id;
         this.hamburguesa_id = hamburguesa_id;
-        this.precio = precio;
         this.tipo_id = tipo_id;
+        this.precio = precio;
     }
 
     public int getId() {
@@ -51,7 +53,7 @@ public class HamburguesaTipo {
                 "id=" + id +
                 ", hamburguesa_id=" + hamburguesa_id +
                 ", tipo_id=" + tipo_id +
-                ", precios=" + precio +
+                ", precio=" + precio +
                 '}';
     }
 }

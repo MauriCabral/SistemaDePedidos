@@ -20,60 +20,11 @@ public class DetalleService {
     private final TipoHamburguesaDAO typeDAO = new TipoHamburguesaDAO();
     private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
     private final ToppingDAO toppingDAO = new ToppingDAO();
-    private List<Topping> toppingListExtra;
-    private List<Topping> toppingListRemove;
 
     @FXML
     private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf;
     @FXML
     private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
-
-    private final Map<CheckBox, Integer> extraToppingsMap = new HashMap<>();
-    private final Map<CheckBox, Integer> removedToppingsMap = new HashMap<>();
-
-    public DetalleService() {
-        toppingListExtra = new ArrayList<>();
-        toppingListRemove = new ArrayList<>();
-    }
-    public void setCheckBoxes(CheckBox cheddar, CheckBox bacon, CheckBox lechuga, CheckBox tomate, CheckBox cebolla, CheckBox cebollaCrisp, CheckBox tomateConf,
-                              CheckBox cheddar1, CheckBox bacon1, CheckBox lechuga1, CheckBox tomate1, CheckBox cebolla1, CheckBox cebollaCrisp1, CheckBox tomateConf1, CheckBox salsa) {
-        this.cmbCheddar = cheddar;
-        this.cmbBacon = bacon;
-        this.cmbLechuga = lechuga;
-        this.cmbTomate = tomate;
-        this.cmbCebolla = cebolla;
-        this.cmbCebollaCrisp = cebollaCrisp;
-        this.cmbTomateConf = tomateConf;
-        this.cmbCheddar1 = cheddar1;
-        this.cmbBacon1 = bacon1;
-        this.cmbLechuga1 = lechuga1;
-        this.cmbTomate1 = tomate1;
-        this.cmbCebolla1 = cebolla1;
-        this.cmbCebollaCrisp1 = cebollaCrisp1;
-        this.cmbTomateConf1 = tomateConf1;
-        this.quitarSalsa = salsa;
-
-        configureToppingsMap();
-    }
-
-    private void configureToppingsMap() {
-        extraToppingsMap.put(cmbCheddar, 1);
-        extraToppingsMap.put(cmbBacon, 2);
-        extraToppingsMap.put(cmbLechuga, 3);
-        extraToppingsMap.put(cmbTomate, 4);
-        extraToppingsMap.put(cmbCebolla, 5);
-        extraToppingsMap.put(cmbCebollaCrisp, 6);
-        extraToppingsMap.put(cmbTomateConf, 7);
-
-        removedToppingsMap.put(cmbCheddar1, 1);
-        removedToppingsMap.put(cmbBacon1, 2);
-        removedToppingsMap.put(cmbLechuga1, 3);
-        removedToppingsMap.put(cmbTomate1, 4);
-        removedToppingsMap.put(cmbCebolla1, 5);
-        removedToppingsMap.put(cmbCebollaCrisp1, 6);
-        removedToppingsMap.put(cmbTomateConf1, 7);
-        removedToppingsMap.put(quitarSalsa, 8);
-    }
 
     public ObservableList<String> getTiposHamburguesa(String nombreMenu) {
         return typeDAO.getAllTipoHamburguesa();
@@ -89,58 +40,64 @@ public class DetalleService {
         return -1;
     }
 
-    public void updateExtraToppings() {
-        toppingListExtra.clear();
-        toppingListExtra.addAll(getExtraToppings());
+    public void setCheckBoxes(CheckBox... checkBoxes) {
+        this.cmbCheddar = checkBoxes[0];
+        this.cmbBacon = checkBoxes[1];
+        this.cmbLechuga = checkBoxes[2];
+        this.cmbTomate = checkBoxes[3];
+        this.cmbCebolla = checkBoxes[4];
+        this.cmbCebollaCrisp = checkBoxes[5];
+        this.cmbTomateConf = checkBoxes[6];
+        this.cmbCheddar1 = checkBoxes[7];
+        this.cmbBacon1 = checkBoxes[8];
+        this.cmbLechuga1 = checkBoxes[9];
+        this.cmbTomate1 = checkBoxes[10];
+        this.cmbCebolla1 = checkBoxes[11];
+        this.cmbCebollaCrisp1 = checkBoxes[12];
+        this.cmbTomateConf1 = checkBoxes[13];
+        this.quitarSalsa = checkBoxes[14];
     }
 
-    public void updateRemovedToppings() {
-        toppingListRemove.clear();
-        toppingListRemove.addAll(getRemovedToppings());
-    }
+    public List<Topping> getSelectedToppings() {
+        List<Topping> toppingList = new ArrayList<>();
+        try {
+            addToppingIfSelected(cmbCheddar, 1, toppingList, true);
+            addToppingIfSelected(cmbBacon, 2, toppingList, true);
+            addToppingIfSelected(cmbLechuga, 3, toppingList, true);
+            addToppingIfSelected(cmbTomate, 4, toppingList, true);
+            addToppingIfSelected(cmbCebolla, 5, toppingList, true);
+            addToppingIfSelected(cmbCebollaCrisp, 6, toppingList, true);
+            addToppingIfSelected(cmbTomateConf, 7, toppingList, true);
+            addToppingIfSelected(cmbCheddar1, 1, toppingList, false);
+            addToppingIfSelected(cmbBacon1, 2, toppingList, false);
+            addToppingIfSelected(cmbLechuga1, 3, toppingList, false);
+            addToppingIfSelected(cmbTomate1, 4, toppingList, false);
+            addToppingIfSelected(cmbCebolla1, 5, toppingList, false);
+            addToppingIfSelected(cmbCebollaCrisp1, 6, toppingList, false);
+            addToppingIfSelected(cmbTomateConf1, 7, toppingList, false);
 
-    public List<Topping> getExtraToppings() {
-        List<Topping> toppingListExtra = new ArrayList<>();
-        addSelectedToppings(extraToppingsMap, toppingListExtra);
-        System.out.println("Extra Toppings after adding: " + toppingListExtra);
-        return toppingListExtra;
-    }
-
-    public List<Topping> getRemovedToppings() {
-        List<Topping> toppingListRemove = new ArrayList<>();
-        addSelectedToppings(removedToppingsMap, toppingListRemove);
-        System.out.println("Toppings Removed: " + toppingListRemove);
-        return toppingListRemove;
-    }
-
-    private void addSelectedToppings(Map<CheckBox, Integer> toppingsMap, List<Topping> toppingList) {
-        for (Map.Entry<CheckBox, Integer> entry : toppingsMap.entrySet()) {
-            CheckBox checkBox = entry.getKey();
-            int toppingId = entry.getValue();
-            if (checkBox.isSelected()) {
-                try {
-                    Topping topping = toppingDAO.getToppingById(toppingId);
-                    if (topping != null && !toppingList.contains(topping)) {
-                        toppingList.add(topping);
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+            if (quitarSalsa.isSelected()) {
+                toppingList.add(new Topping(8, "Salsa"));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return toppingList;
+    }
+
+    private void addToppingIfSelected(CheckBox checkBox, int id, List<Topping> toppingList, boolean agregado) throws SQLException {
+        if (checkBox.isSelected()) {
+            toppingList.add(toppingDAO.getToppingById(id, agregado));
         }
     }
 
-    public List<Topping> getToppingListExtra() {
-        System.out.println("Topping List Extra: " + toppingListExtra);
-        return new ArrayList<>(toppingListExtra);
-    }
-
-    public List<Topping> getToppingListRemove() {
-        System.out.println("Topping List Remove: " + toppingListRemove);
-        return new ArrayList<>(toppingListRemove);
-    }
-
-    public double getToppingPrecio(int toppingId) throws SQLException {
-        return toppingDAO.getToppingPrecio(toppingId);
-    }
+    /*public double getToppingPrecio(int toppingId) {
+        try {
+            Topping topping = toppingDAO.getToppingById(toppingId);
+            return (topping != null) ? topping.getPrecio() : 0.0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }*/
 }

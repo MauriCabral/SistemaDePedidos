@@ -20,19 +20,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.*;
 
 import org.example.kaos.application.PedidoApplication;
-import org.example.kaos.entity.DetallePedido;
-import org.example.kaos.entity.Hamburguesa;
-import org.example.kaos.entity.Pedido;
-import org.example.kaos.entity.Topping;
+import org.example.kaos.entity.*;
 import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.repository.TipoPagoDAO;
 import org.example.kaos.service.PedidoService;
-
-import java.util.List;
 
 public class PedidoController {
 
@@ -42,9 +36,10 @@ public class PedidoController {
     private boolean deleteButtonsVisible = false;
     private List<DetallePedido> detallesPedidosList;
     private PedidoService pedidoService;
-    private DetallePedido detallePedido;
+    private Map<Integer, DetallePedido> detallesPedidosMap = new HashMap<>();
     private ObservableList<Pedido> pedidoList = FXCollections.observableArrayList();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private static int detalleId = 0;
 
     @FXML
     private Pane menuPane, rightPane, pnHistorico;
@@ -138,32 +133,38 @@ public class PedidoController {
         }
     }
 
-    public void actualizarDetalles(String nombreHamburguesa, String tipoHamburguesa, int cantidad, double precio, List<Topping> toppingListExtra, List<Topping> toppingListRemove) {
+    public void actualizarDetalles(String nombreHamburguesa, String tipoHamburguesa, int cantidad, double precio, List<Topping> toppingList) {
         VBox vBox = new VBox(5);
         vBox.setPadding(new Insets(2, 8, 0, 8));
         HBox pedidoBox = new HBox(5);
 
-        double precioToppingsExtra = pedidoService.getPrecioTotalTopping(toppingListExtra);
-        double total = precio + precioToppingsExtra;
-
-        int detalleId = detallesPedidosList.size() + 1;
+        double total = precio + pedidoService.getPrecioTotalTopping(toppingList);
 
         List<Integer> toppingListAllIds = new ArrayList<>();
-        if (toppingListExtra != null) {
-            toppingListAllIds.addAll(toppingListExtra.stream().map(Topping::getId).toList());
-        }
-        if (toppingListRemove != null) {
-            toppingListAllIds.addAll(toppingListRemove.stream().map(Topping::getId).toList());
+        if (toppingList != null) {
+            toppingListAllIds.addAll(toppingList.stream().map(Topping::getId).toList());
         }
 
-        DetallePedido detallePedido = new DetallePedido(detalleId, cantidad, pedidoService.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa), toppingListAllIds, total);
+        for (Topping toppingPedido : toppingList)
+        {
+            if (toppingPedido.getPrecio() != null) {
+                pedidoService.addDetalleToppingPedido(toppingPedido.getId(), true);
+            } else {
+                pedidoService.addDetalleToppingPedido(toppingPedido.getId(), false);
+            }
+        }
+
+        int idActual = detalleId;
+        DetallePedido detallePedido = new DetallePedido(detalleId, cantidad, pedidoService.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa), total);
         detallesPedidosList.add(detallePedido);
-        pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, total, toppingListAllIds);
+        pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, total);
+
+        detalleId++;
 
         Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " " + "($" + (int) precio + ")");
         Label precioLabel = new Label(String.format("$%d", (int) total));
 
-        int precioTotal = pedidoService.actualizarTotal();
+        int precioTotal = (int) pedidoService.actualizarTotal();
         lblTotal.setText("TOTAL: $" + (precioTotal));
         Button deleteButton = new Button();
         try {
@@ -176,22 +177,25 @@ public class PedidoController {
         } catch (NullPointerException e) {
             System.out.println("No se pudo cargar la imagen: " + e.getMessage());
         }
-        deleteButton.setUserData(detalleId);
+        System.out.println("Detalles en la lista antes de eliminar: ");
+        detallesPedidosList.forEach(detalle -> System.out.println("ID: " + detalle.getId()));
+        deleteButton.setUserData(idActual);
         deleteButton.setOnAction(event -> {
             Integer id = (Integer) deleteButton.getUserData();
             System.out.println("Intentando eliminar detalle con ID: " + id);
 
             DetallePedido detalleEliminar = detallesPedidosList.stream()
+                    .peek(detalle -> System.out.println("Comparando con ID detalle: " + detalle.getId()))
                     .filter(detalle -> detalle.getId() == id)
                     .findFirst()
                     .orElse(null);
 
             if (detalleEliminar != null) {
-                System.out.println("Eliminando detalle: " + detalleEliminar);
                 detallesPedidosList.remove(detalleEliminar);
-                pedidoService.removeDetallePedido(detalleEliminar);
                 detallePedidos.getChildren().remove(vBox);
-                int precioTotalActualizado = pedidoService.actualizarTotal();
+                pedidoService.removeDetallePedido(detalleEliminar);
+
+                int precioTotalActualizado = detallesPedidosList.isEmpty() ? 0 : (int) pedidoService.actualizarTotal();
                 lblTotal.setText("TOTAL: $" + precioTotalActualizado);
                 System.out.println("Total después de la eliminación y actualización: $" + precioTotalActualizado);
             } else {
@@ -202,27 +206,18 @@ public class PedidoController {
         HBox.setHgrow(spacer, Priority.ALWAYS);
         pedidoBox.getChildren().addAll(pedidoLabel, spacer, precioLabel, deleteButton);
         vBox.getChildren().add(pedidoBox);
-        if (toppingListExtra != null && !toppingListExtra.isEmpty()) {
+        if (toppingList != null || !toppingList.isEmpty()) {
             VBox toppingsBox = new VBox(5);
             toppingsBox.setPadding(new Insets(5, 0, 0, 0));
-            for (Topping topping : toppingListExtra) {
+            for (Topping topping : toppingList) {
                 if (topping.getPrecio() != null) {
                     int precioTop = (int) Math.round(topping.getPrecio());
                     Label toppingLabel = new Label("Extra: " + topping.getNombre() + ": ($" + precioTop + ")");
                     toppingsBox.getChildren().add(toppingLabel);
                 } else {
-                    Label toppingLabel = new Label("Extra: " + topping.getNombre());
+                    Label toppingLabel = new Label("Sin : " + topping.getNombre());
                     toppingsBox.getChildren().add(toppingLabel);
                 }
-            }
-            vBox.getChildren().add(toppingsBox);
-        }
-        if (toppingListRemove != null && !toppingListRemove.isEmpty()) {
-            VBox toppingsBox = new VBox(5);
-            toppingsBox.setPadding(new Insets(5, 0, 0, 0));
-            for (Topping topping : toppingListRemove) {
-                Label toppingLabel = new Label("Sin " + topping.getNombre());
-                toppingsBox.getChildren().add(toppingLabel);
             }
             vBox.getChildren().add(toppingsBox);
         }

@@ -5,7 +5,7 @@ import org.example.kaos.entity.Topping;
 import java.sql.*;
 
 public class ToppingDAO {
-    public static Topping getToppingById(int toppingId) throws SQLException {
+    public Topping getToppingById(int toppingId, boolean agregado) throws SQLException {
         String query = "SELECT * FROM Topping WHERE id = ?";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -13,7 +13,7 @@ public class ToppingDAO {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 String nombre = rs.getString("nombre");
-                double precio = rs.getDouble("precio");
+                Double precio = agregado ? rs.getDouble("precio") : null;
                 return new Topping(toppingId, nombre, precio);
             } else {
                 return null;

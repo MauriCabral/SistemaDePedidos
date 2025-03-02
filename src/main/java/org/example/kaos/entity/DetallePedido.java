@@ -6,15 +6,13 @@ public class DetallePedido {
     private int id;
     private int id_pedido;
     private int cantidad;
-    private List<Integer> id_tipo_hamburguesa;
-    private List<Integer> id_topping;
+    private List<Integer> tiposHamburguesa;
     private double precio_unitario;
 
-    public DetallePedido(int id, int cantidad, List<Integer> id_tipo_hamburguesa, List<Integer> id_topping, double precio_unitario) {
+    public DetallePedido(int id, int cantidad, List<Integer> tiposHamburguesa, double precio_unitario) {
         this.id = id;
         this.cantidad = cantidad;
-        this.id_tipo_hamburguesa = id_tipo_hamburguesa;
-        this.id_topping = id_topping;
+        this.tiposHamburguesa = tiposHamburguesa;
         this.precio_unitario = precio_unitario;
     }
 
@@ -42,20 +40,12 @@ public class DetallePedido {
         this.precio_unitario = precio_unitario;
     }
 
-    public List<Integer> getId_tipo_hamburgusa() {
-        return id_tipo_hamburguesa;
+    public List<Integer> getTiposHamburguesa() {
+        return tiposHamburguesa;
     }
 
-    public void setId_tipo_hamburgusa(List<Integer> id_tipo_hamburgusa) {
-        this.id_tipo_hamburguesa = id_tipo_hamburgusa;
-    }
-
-    public List<Integer> getId_topping() {
-        return id_topping;
-    }
-
-    public void setId_topping(List<Integer> id_topping) {
-        this.id_topping = id_topping;
+    public void setTiposHamburguesa(List<Integer> tiposHamburguesa) {
+        this.tiposHamburguesa = tiposHamburguesa;
     }
 
     public int getId_pedido() {
@@ -71,24 +61,8 @@ public class DetallePedido {
         return "DetallePedido{" +
                 "id=" + id +
                 ", cantidad=" + cantidad +
-                ", id_tipo_hamburgusa=" + id_tipo_hamburguesa +
-                ", id_topping=" + id_topping +
+                ", tiposHamburguesa=" + tiposHamburguesa +
                 ", tipo_unitario=" + precio_unitario +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DetallePedido that = (DetallePedido) o;
-
-        return id == that.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(id);
     }
 }

@@ -8,8 +8,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.TipoPago;
+import org.example.kaos.entity.Topping;
+import org.example.kaos.entity.ToppingPedido;
 import org.example.kaos.manager.ControllerManager;
 import org.example.kaos.repository.TipoPagoDAO;
+import org.example.kaos.repository.ToppingDAO;
 import org.example.kaos.service.PedidoService;
 import org.example.kaos.service.DetalleService;
 import org.json.JSONArray;
@@ -17,12 +20,14 @@ import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DatoClienteController {
 
     private final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
+    private final ToppingDAO toppingDAO = new ToppingDAO();
     private PedidoService pedidoService;
     private DetalleService detalleService;
     private Stage stage;
@@ -40,6 +45,9 @@ public class DatoClienteController {
                 txtCostoEnvio.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+        if (detalleService == null) {
+            this.detalleService = new DetalleService();
+        }
     }
 
     public void setPedidoService(PedidoService pedidoService) {
@@ -93,7 +101,7 @@ public class DatoClienteController {
         double costoEnvio = Double.parseDouble(txtCostoEnvio.getText());
         int idTipoPago = tipoPagoDAO.getIdTipoPagoFromNombre(formaPago);
         System.out.println(nombreCliente + " " + direccion + " " + formaPago + " " + costoEnvio + " " + idTipoPago);
-        int precioTotal = pedidoService.getPrecioTotalPedido();
+        int precioTotal = (int) pedidoService.getPrecioTotalPedido();
         System.out.println("precio total pedido service: " + precioTotal);
         if (precioTotal <= 0) {
             System.out.println("El precio total es inválido: " + precioTotal);
@@ -103,50 +111,35 @@ public class DatoClienteController {
         List<DetallePedido> detallesPedidosList = pedidoService.getDetallesPedidosList();
 
         JSONArray detallesJson = new JSONArray();
-        JSONArray removeToppingsJson = new JSONArray();
 
         for (DetallePedido detalle : detallesPedidosList) {
-            System.out.println("Detalle ID Topping: " + detalle.getId_topping());
+            //System.out.println("Detalle ID Topping: " + detalle.getId_topping());
             JSONObject detalleJson = new JSONObject();
             detalleJson.put("cantidad", detalle.getCantidad());
-            List<Integer> hamburguesaTipoIds = detalle.getId_tipo_hamburgusa();
+            List<Integer> hamburguesaTipoIds = detalle.getTiposHamburguesa();
             if (!hamburguesaTipoIds.isEmpty()) {
                 detalleJson.put("hamburguesa_tipo_id", hamburguesaTipoIds.get(0));
                 detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
                 JSONArray toppingsJson = new JSONArray();
 
-                if (detalleService == null) {
-                    throw new IllegalStateException("DetalleService no ha sido inicializado");
-                }
-                List<Integer> toppingIds = detalle.getId_topping();
-                if (toppingIds.isEmpty()) {
+                List<ToppingPedido> detalleToppingPedidosList = pedidoService.getDetallesToppingPedidosList();
+
+                if (detalleToppingPedidosList.isEmpty()){
                     detalleJson.put("toppings", JSONObject.NULL);
                 } else {
-                    for (Integer toppingId : toppingIds) {
+                    for (ToppingPedido detalleTopping : detalleToppingPedidosList) {
                         JSONObject toppingJson = new JSONObject();
-                        toppingJson.put("id_topping", toppingId);
+                        toppingJson.put("id_topping", detalleTopping.getIdTopping());
+                        toppingJson.put("Agregado", detalleTopping.isAgregado() ? 1 : 0);
 
-                        System.out.println("Extra Toppings: " + detalleService.getToppingListExtra());
-                        System.out.println("Removed Toppings: " + detalleService.getToppingListRemove());
-
-                        boolean isExtraOrRemoved = detalleService.getToppingListExtra().stream().anyMatch(topping -> topping.getId() == toppingId) ||
-                                detalleService.getToppingListRemove().stream().anyMatch(topping -> topping.getId() == toppingId);
-
-                        System.out.println("Topping ID: " + toppingId + ", Is Extra or Removed: " + isExtraOrRemoved);
-
-                        toppingJson.put("is_extra_or_removed", isExtraOrRemoved);
-
-                        int toppingPrecio = isExtraOrRemoved ? (int) JSONObject.NULL : (int) detalleService.getToppingPrecio(toppingId);
-                        toppingJson.put("precio_final", toppingPrecio);
                         toppingsJson.put(toppingJson);
+                        detalleJson.put("toppings", toppingsJson);
                     }
-                    detalleJson.put("toppings", toppingsJson);
                 }
             }
             detallesJson.put(detalleJson);
         }
         System.out.println("Detalles JSON: " + detallesJson.toString());
-        System.out.println("Remove Toppings JSON: " + removeToppingsJson.toString());
 
         boolean exito = pedidoService.insertarPedido(
                 nombreCliente,
@@ -155,8 +148,7 @@ public class DatoClienteController {
                 idTipoPago,
                 costoEnvio,
                 precioTotal,
-                detallesJson,
-                removeToppingsJson
+                detallesJson
         );
         if (exito) {
             showConfirmation("El pedido se ha insertado correctamente.");
@@ -192,8 +184,8 @@ public class DatoClienteController {
     }
 
     public void showConfirmation(String content) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Error");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();

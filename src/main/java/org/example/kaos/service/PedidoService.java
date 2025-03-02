@@ -17,32 +17,39 @@ public class PedidoService {
     private final PedidoDAO pedidoDAO = new PedidoDAO();
     private PedidoController pedidoController;
 
-    private final List<DetallePedido> detallesPedidosList;
-    private Runnable onTotalCleared;
+        private final List<DetallePedido> detallesPedidosList;
+        private final List<ToppingPedido> detalleToppingPedidoList;
+        private Runnable onTotalCleared;
 
-    public PedidoService(HamburguesaDAO hamburguesaDAO, HamburguesaTipoDAO hamburguesaTipoDAO) {
-        this.hamburguesaDAO = hamburguesaDAO;
-        this.hamburguesaTipoDAO = hamburguesaTipoDAO;
-        this.detallesPedidosList = new ArrayList<>();
-    }
+        public PedidoService(HamburguesaDAO hamburguesaDAO, HamburguesaTipoDAO hamburguesaTipoDAO) {
+            this.hamburguesaDAO = hamburguesaDAO;
+            this.hamburguesaTipoDAO = hamburguesaTipoDAO;
+            this.detallesPedidosList = new ArrayList<>();
+            this.detalleToppingPedidoList = new ArrayList<>();
+        }
 
     public PedidoService() {
         this(new HamburguesaDAO(), new HamburguesaTipoDAO());
     }
 
-    public List<Integer> getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
-        return hamburguesaTipoDAO.getHamburguesaTipoIds(nombreHamburguesa, tipoHamburguesa);
-    }
-
-
     public Hamburguesa getMenuByCode(String code) {
         return hamburguesaDAO.getMenuByCode(code);
     }
 
-    public DetallePedido addDetallePedido(String nombre, String tipo, int cantidad, double precio, List<Integer> toppingList) {
-        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size() + 1, cantidad, getHamburguesaTipo(nombre, tipo), toppingList, precio);
+    public DetallePedido addDetallePedido(String nombre, String tipo, int cantidad, double precio) {
+        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size(), cantidad, getHamburguesaTipo(nombre, tipo), precio);
         detallesPedidosList.add(detallePedido);
         return detallePedido;
+    }
+
+    public ToppingPedido addDetalleToppingPedido(int idTopping, boolean agregago){
+        ToppingPedido detalleToppingPedido = new ToppingPedido(0, detallesPedidosList.size() + 1, idTopping, agregago);
+        detalleToppingPedidoList.add(detalleToppingPedido);
+        return detalleToppingPedido;
+    }
+
+    public List<Integer> getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
+        return hamburguesaTipoDAO.getHamburguesaTipoIds(nombreHamburguesa, tipoHamburguesa);
     }
 
     public List<Integer> getIdToppingDetalle (List<Topping> toppingList) {
@@ -56,23 +63,34 @@ public class PedidoService {
     }
 
     public void removeDetallePedido(DetallePedido detallePedido) {
-        int index = -1;for (int i = 0; i < detallesPedidosList.size(); i++) {
+        int index = -1;
+        for (int i = 0; i < detallesPedidosList.size(); i++) {
             if (detallesPedidosList.get(i).getId() == detallePedido.getId()) {
                 index = i;
                 break;
             }
         }
+
         if (index != -1) {
-            DetallePedido detalleEliminar = detallesPedidosList.remove(index);
+            Iterator<ToppingPedido> iterator = detalleToppingPedidoList.iterator();
+            while (iterator.hasNext()) {
+                ToppingPedido toppingPedido = iterator.next();
+                if (toppingPedido.getIdDetallePedido() == detallePedido.getId()) {
+                    iterator.remove();
+                }
+            }
+
+            detallesPedidosList.remove(index);
             actualizarTotal();
         }
     }
+
 
     public void setPedidoController(PedidoController pedidoController) {
         this.pedidoController = pedidoController;
     }
 
-    public int getPrecioTotalPedido() {
+    public double getPrecioTotalPedido() {
         return actualizarTotal();
     }
 
@@ -80,29 +98,33 @@ public class PedidoService {
         return detallesPedidosList;
     }
 
-    public boolean insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson, JSONArray removeToppingsJson) {
+    public List<ToppingPedido> getDetallesToppingPedidosList() {
+        return detalleToppingPedidoList;
+    }
+
+    public boolean insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
         boolean exito = false;
-        exito = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson, removeToppingsJson);
+        exito = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson);
         return exito;
     }
 
 
     public double getPrecioTotalTopping(List<Topping> toppingList) {
-        double totalTop = 0;
-        if (toppingList != null && !toppingList.isEmpty()) {
+        double totalTop = 0.0;
+        if (toppingList != null || !toppingList.isEmpty()) {
             for (Topping topping : toppingList) {
-                if(topping.getPrecio() == null) {totalTop += 0;}
-                else {
-                totalTop += topping.getPrecio();}
+                if (topping.getPrecio() != null) {
+                    totalTop += topping.getPrecio();
+                }
             }
         }
         return totalTop;
     }
 
-    public int actualizarTotal() {
-        int totalFinal = 0;
+    public double actualizarTotal() {
+        double totalFinal = 0;
         for (DetallePedido detalle : detallesPedidosList) {
-            totalFinal += detalle.getCantidad() * (int) detalle.getPrecio_unitario();
+            totalFinal += detalle.getPrecio_unitario();
         }
         System.out.println("total de actualizar: " + totalFinal);
         return totalFinal;

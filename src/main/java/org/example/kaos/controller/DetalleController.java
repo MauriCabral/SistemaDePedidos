@@ -36,18 +36,12 @@ public class DetalleController implements Initializable {
 
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
+        detalleService = new DetalleService();
         btnCancelar.setOnAction(event -> closeWindow());
         btnAceptar.setOnAction(event -> aceptarPedido());
-        detalleService = new DetalleService();
         detalleService.setCheckBoxes(cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf,
                 cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa);
-
     }
-
-//    public void setDetalleService(DetalleService detalleService) {
-//        this.detalleService = detalleService;
-//        System.out.println("DetalleService en DatoClienteController: " + detalleService.hashCode());
-//    }
 
     @FXML
     private void handleComboBoxAction() {
@@ -72,7 +66,7 @@ public class DetalleController implements Initializable {
 
     @FXML
     private void decrementCounter() {
-        if (count > 0) {
+        if (count > 1) {
             count--;
         }
         updateCounterLabel();
@@ -93,23 +87,13 @@ public class DetalleController implements Initializable {
         String nombreProducto = nombre.getText();
         if (tipo == null) {
             showError("Porfavor seleccione un tipo de hamburguesa");
+            return;
         }
         double precioProducto = detalleService.obtenerPrecio(tipo, cantidad, nombreProducto);
 
-//        List<Topping> toppingListExtra = toppingService.getExtraToppings(
-//                cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf);
-//
-//        List<Topping> toppingListRemove = toppingService.getRemovedToppings(
-//                cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa);
+        List<Topping> toppingList = detalleService.getSelectedToppings();
 
-        detalleService.updateExtraToppings();
-        detalleService.updateRemovedToppings();
-        List<Topping> toppingListExtra = detalleService.getToppingListExtra();
-        List<Topping> toppingListRemove = detalleService.getToppingListRemove();
-
-//        double totalPrecio = precioProducto + toppingListExtra.stream().mapToDouble(Topping::getPrecio).sum();
-
-        actualizarVentanaPedido(nombreProducto, tipo, cantidad, (int) precioProducto, toppingListExtra, toppingListRemove);
+        actualizarVentanaPedido(nombreProducto, tipo, cantidad, (int) precioProducto, toppingList);
 
         if (stage != null) {
             stage.close();
@@ -124,25 +108,15 @@ public class DetalleController implements Initializable {
         alert.showAndWait();
     }
 
-    private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<Topping> toppingListExtra, List<Topping> toppingListRemove) {
+    private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<Topping> toppingList) {
         PedidoController pedidoCtrl = ControllerManager.getInstance().getPedidoController();
 
         if (pedidoCtrl == null) {
             System.out.println("Controlador de Pedido no encontrado. Verifica si está correctamente inicializado.");
             return;
         }
-
-        for (Topping topping : toppingListExtra) {
-            System.out.println("Topping Extra: " + topping.getNombre() + ", Precio: " + topping.getPrecio());
-        }
-        for (Topping topping : toppingListRemove) {
-            System.out.println("Topping Removido: " + topping.getNombre());
-        }
-
-        System.out.println("Invocando Platform.runLater...");
         Platform.runLater(() -> {
-            System.out.println("Dentro de Platform.runLater...");
-            pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingListExtra, toppingListRemove);
+            pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingList);
         });
     }
 
