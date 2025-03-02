@@ -398,4 +398,7 @@ public class PedidoController {
 
     public void agregarButton(ActionEvent actionEvent) {
     }
+
+    public void excel(ActionEvent actionEvent) {
+    }
 }

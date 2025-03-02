@@ -85,6 +85,7 @@ public class HamburguesaController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Imagenes", "*.jpg", "*.png"));
         File file = fileChooser.showOpenDialog(null);
+
         if (file != null) {
             Image image = new Image(file.toURI().toString());
             imageView.setImage(image);
