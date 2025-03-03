@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="272.0" prefWidth="341.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.HamburguesaController">
     <TextField fx:id="nombreHamburguesa" layoutX="110.0" layoutY="18.0" prefHeight="26.0" prefWidth="165.0" promptText="Nombre de la hamburguesa" />
-    <Button layoutX="16.0" layoutY="185.0" onAction="#loadImage" text="Cargar imagen" />
+    <Button fx:id="cargarImagen" layoutX="16.0" layoutY="185.0" onAction="#loadImage" text="Cargar imagen" />
     <ImageView fx:id="imageView" layoutX="150.0" layoutY="60.0" />
     <Button layoutX="107.0" layoutY="234.0" onAction="#handleAccept" text="Aceptar" />
    <TextField fx:id="precioSimple" layoutX="111.0" layoutY="57.0" prefHeight="26.0" prefWidth="71.0" promptText="Precio" />

@@ -82,7 +82,7 @@ public class PedidoApplication {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/HamburguesaAgregar.fxml"));
             Parent root = loader.load();
             HamburguesaController hamburgusaController = loader.getController();
-            hamburgusaController.setHamburguesaEditar(menuNombre, idHamburguesaList);
+            hamburgusaController.setHamburguesaEditar(menuNombre, idHamburguesaList, esEditar);
             Stage stage = new Stage();
             if (esEditar){
                 stage.setTitle("Editar Hamburguesa");

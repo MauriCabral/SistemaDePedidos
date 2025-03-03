@@ -1,20 +1,26 @@
 package org.example.kaos.service;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.kaos.controller.PedidoController;
 import org.example.kaos.entity.*;
 import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.repository.PedidoDAO;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 
+import org.example.kaos.repository.TipoPagoDAO;
 import org.json.JSONArray;
 
 public class PedidoService {
     private final HamburguesaDAO hamburguesaDAO;
     private final HamburguesaTipoDAO hamburguesaTipoDAO;
     private final PedidoDAO pedidoDAO = new PedidoDAO();
+    private static final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
     private PedidoController pedidoController;
 
         private final List<DetallePedido> detallesPedidosList;
@@ -118,11 +124,61 @@ public class PedidoService {
         return totalFinal;
     }
 
-    public List<Pedido> getDalyPedidos() {
-        return pedidoDAO.getAllDalyPedido();
+    public List<Pedido> getAllPedidos() {
+        return pedidoDAO.getAllPedidos();
     }
 
     public Pedido getPedidoId(int id) {
         return pedidoDAO.getPedidoById(id);
+    }
+
+    public static void exportarPedidos(List<Pedido> pedidos, String rutaArchivo) {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Histórico de Pedidos");
+        Row headerRow = sheet.createRow(0);
+        String[] columnas = {"ID", "Cliente", "Dirección", "Forma de Pago", "Fecha", "Costo Envío", "Total"};
+        CellStyle headerStyle = getHeaderStyle(workbook);
+        for (int i = 0; i < columnas.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columnas[i]);
+            cell.setCellStyle(headerStyle);
+        }
+        int rowNum = 1;
+        for (Pedido pedido : pedidos) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(pedido.getId());
+            row.createCell(1).setCellValue(pedido.getCliente_nombre());
+            row.createCell(2).setCellValue(pedido.getDireccion());
+
+            String formaPago = tipoPagoDAO.getNameTipoPagoFromId(pedido.getId_pago());
+
+            row.createCell(3).setCellValue(formaPago);
+            row.createCell(4).setCellValue(pedido.getFecha_pedido().toString());
+            row.createCell(5).setCellValue(pedido.getPrecio_envio());
+            row.createCell(6).setCellValue(pedido.getPrecio_total());
+        }
+        for (int i = 0; i < columnas.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+        try (FileOutputStream fileOut = new FileOutputStream(rutaArchivo)) {
+            workbook.write(fileOut);
+            System.out.println("Archivo Excel creado: " + rutaArchivo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                workbook.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static CellStyle getHeaderStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+        style.setFont(font);
+        return style;
     }
 }

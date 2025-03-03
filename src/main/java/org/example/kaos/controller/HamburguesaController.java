@@ -2,6 +2,7 @@ package org.example.kaos.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,6 +21,8 @@ public class HamburguesaController {
     private ImageView imageView;
     @FXML
     private TextField nombreHamburguesa, precioSimple, precioDoble, precioTriple;
+    @FXML
+    private Button cargarImagen;
 
     private HamburguesaService hamburguesaService;
     private List<HamburguesaTipo> hamburguesasList;
@@ -50,11 +53,14 @@ public class HamburguesaController {
         return df.format(precio);
     }
 
-    public void setHamburguesaEditar(String menuNombre, List<HamburguesaTipo> idHamburguesaList) {
+    public void setHamburguesaEditar(String menuNombre, List<HamburguesaTipo> idHamburguesaList, boolean esEditar) {
         if (menuNombre == null || menuNombre.isEmpty()) {
             nombreHamburguesa.setText("");
         } else {
             nombreHamburguesa.setText(menuNombre);
+        }
+        if (esEditar) {
+            cargarImagen.setDisable(true);
         }
         if (idHamburguesaList == null || idHamburguesaList.isEmpty()) {
             precioSimple.setText("");

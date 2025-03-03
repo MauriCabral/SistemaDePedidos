@@ -1,5 +1,6 @@
 package org.example.kaos.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.paint.Color;
@@ -110,21 +111,4 @@ public class DetallePedidoHistoricoController implements Initializable {
             stage.close();
         }
     }
-
-//    public void setPedidoId(int id) {
-//        Pedido pedido = pedidoService.getPedidoId(id);
-//        if (pedidoService != null) {
-//            if (pedido != null) {
-//                System.out.println(String.valueOf(pedido.getId()));
-//                System.out.println(pedido.getCliente_nombre());
-//                System.out.println(pedido.getDireccion());
-//                System.out.println(pedido.getFecha_pedido().toString());
-//                System.out.println(String.valueOf(pedido.getPrecio_envio()));
-//                System.out.println(String.valueOf(pedido.getPrecio_total()));
-//
-//            } else {
-//                System.err.println("PedidoService no ha sido inicializado.");
-//            }
-//        }
-//    }
 }

@@ -33,12 +33,11 @@ public class PedidoDAO {
         return exito;
     }
 
-    public List<Pedido> getAllDalyPedido() {
+    public List<Pedido> getAllPedidos() {
         List<Pedido> pedidos = new ArrayList<>();
-        String sql = "SELECT * \n" +
-                "FROM pedido  \n" +
-                "WHERE DATE(fecha) = CURRENT_DATE\n" +
-                "Order by fecha DESC";
+        String sql = "SELECT * FROM pedido ";
+        //sql += "WHERE DATE(fecha) = CURRENT_DATE";
+        sql += "Order by fecha DESC";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();

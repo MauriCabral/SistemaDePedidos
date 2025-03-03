@@ -48,11 +48,23 @@
       <version>20240303</version>
     </dependency>
     <dependency>
-      <groupId>com.just.agentweb</groupId>
-      <artifactId>filechooser</artifactId>
-      <version>4.1.4</version>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>5.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vlkan.rfos</groupId>
+      <artifactId>rotating-fos</artifactId>
+      <version>0.10.0</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>

@@ -7,6 +7,8 @@ module org.example.kaos {
     requires javafx.graphics;
     requires javafx.controls;
     requires java.desktop;
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
 
 
     opens org.example.kaos.window to javafx.fxml;
