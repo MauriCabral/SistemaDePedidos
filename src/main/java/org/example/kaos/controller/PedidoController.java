@@ -47,7 +47,7 @@ public class PedidoController {
     @FXML
     private VBox detallePedidos;
     @FXML
-    private Label lblTotal;
+    private Label lblTotal, TotalMp, TotalEf;
     @FXML
     private TableView<Pedido> tableHistorico;
     @FXML
@@ -69,7 +69,12 @@ public class PedidoController {
 
     @FXML
     private VBox counterBox;
-    @FXML private TextField idPedido;
+    @FXML
+    private TextField idPedido;
+    @FXML
+    private ImageView editando;
+    @FXML
+    private CheckBox chkHoy;
 
     @FXML
     private void initialize() {
@@ -319,7 +324,6 @@ public class PedidoController {
         pnHistorico.setVisible(true);
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colId.setVisible(false);
         colNombre.setCellValueFactory(new PropertyValueFactory<>("cliente_nombre"));
         colDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
         colFormaPago.setCellValueFactory(cellData -> {
@@ -343,7 +347,8 @@ public class PedidoController {
             return new SimpleIntegerProperty(suma).asObject();
         });
 
-        cargarTablaPedidos();
+        cargarTablaPedidosHoy();
+        //cargarTablaPedidos();
 
         tableHistorico.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
@@ -391,14 +396,13 @@ public class PedidoController {
 
     public void editButton(ActionEvent event) {
         String currentStyle = menuPane.getStyle();
+        editando.setVisible(true);
         if (currentStyle.contains("blue")) {
             menuPane.setStyle(currentStyle.replace("-fx-border-color: blue; -fx-border-width: 2px;", ""));
+            editando.setVisible(false);
         } else {
             menuPane.setStyle("-fx-border-color: blue; -fx-border-width: 2px;");
         }
-    }
-
-    public void agregarButton(ActionEvent actionEvent) {
     }
 
     public void excel(ActionEvent actionEvent) {
@@ -448,6 +452,55 @@ public class PedidoController {
             }
         } else {
             tableHistorico.setItems(FXCollections.observableArrayList(pedidos));
+        }
+    }
+
+    public void pedidosDelDia(ActionEvent actionEvent) {
+        if (chkHoy.isSelected()){
+            filtrarPedidosDaily(true);
+        } else {
+            filtrarPedidosDaily(false);
+        }
+    }
+
+    @FXML
+    private void filtrarPedidosDaily(boolean esHoy) {
+        try {
+            if (esHoy) {
+                int contEf = 0, contMp = 0;
+                List<Pedido> pedidos = pedidoService.getAllPedidosDaily();
+                ObservableList<Pedido> filteredList = FXCollections.observableArrayList();
+                for (Pedido pedido : pedidos) {
+                    filteredList.add(pedido);
+                    if(pedido.getId_pago() == 1){
+                        contEf += pedido.getPrecio_total() + pedido.getPrecio_envio();
+                    }
+                    else {
+                        contMp += pedido.getPrecio_total() + pedido.getPrecio_envio();
+                    }
+                }
+                tableHistorico.setItems(filteredList);
+                TotalEf.setText("$" + String.valueOf(contEf));
+                TotalMp.setText("$" + String.valueOf(contMp));
+            } else {
+                List<Pedido> pedidos = pedidoService.getAllPedidos();
+                tableHistorico.setItems(FXCollections.observableArrayList(pedidos));
+                TotalEf.setText("$0");
+                TotalMp.setText("$0");
+            }
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error de Entrada");
+            alert.setHeaderText(null);
+            alert.setContentText("Por favor ingrese un ID de pedido válido.");
+            alert.showAndWait();
+        }
+    }
+
+    public void cargarTablaPedidosHoy() {
+        chkHoy.setSelected(true);
+        if(chkHoy.isSelected()){
+            filtrarPedidosDaily(true);
         }
     }
 }

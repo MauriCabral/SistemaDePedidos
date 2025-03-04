@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -158,16 +159,20 @@
             -fx-background-color: transparent; -fx-text-fill: white;
          </style>
       </Button>
-      <Button contentDisplay="GRAPHIC_ONLY" layoutX="415.0" layoutY="5.0" mnemonicParsing="false" onAction="#editButton">
+      <ImageView fx:id="editando" fitHeight="35.0" fitWidth="140.0" layoutX="170.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <Image url="@../image/editing.png" />
+      </ImageView>
+      <Button fx:id="editar" layoutX="410.0" layoutY="5.0" onAction="#editButton">
          <graphic>
-            <ImageView fx:id="editar" fitHeight="25.0" fitWidth="25.0">
-               <image>
-                  <Image url="@../image/editar1.png" />
-               </image>
+            <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/edit2.png" />
             </ImageView>
          </graphic>
+         <style>
+            -fx-background-color: transparent; -fx-text-fill: white;
+         </style>
       </Button>
-      <Button contentDisplay="GRAPHIC_ONLY" layoutX="360.0" layoutY="5.0" mnemonicParsing="false" onAction="#agregarButton">
+      <!--<Button contentDisplay="GRAPHIC_ONLY" layoutX="360.0" layoutY="5.0" mnemonicParsing="false" onAction="#agregarButton">
          <graphic>
             <ImageView fx:id="agregar" fitHeight="25.0" fitWidth="25.0">
                <image>
@@ -175,7 +180,7 @@
                </image>
             </ImageView>
          </graphic>
-      </Button>
+      </Button> -->
       <Button fx:id="vrButton" layoutX="170.0" layoutY="370.0" onAction="#handleImageButtonClick" userData="vr">
          <graphic>
             <ImageView fitHeight="130.0" fitWidth="140.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
@@ -193,12 +198,15 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button fx:id="deletePedido" layoutX="300.0" layoutY="16.0" onAction="#deletePedidos">
+      <Button fx:id="deletePedido" layoutX="285.0" layoutY="10.0" onAction="#deletePedidos">
          <graphic>
-            <ImageView fitHeight="14.0" fitWidth="61.0" layoutX="260.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-               <Image url="@../image/trash.png" />
+            <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/trash1.png" />
             </ImageView>
          </graphic>
+         <style>
+            -fx-background-color: transparent; -fx-text-fill: white;
+         </style>
       </Button>
 
       <Button layoutX="87.0" layoutY="564.0" mnemonicParsing="false" onAction="#aceptarPedido" text="Aceptar" />
@@ -216,6 +224,11 @@
    </Pane>
    <Pane fx:id="pnHistorico" layoutX="185.0" layoutY="12.0" prefHeight="610.0" prefWidth="810.0">
       <children>
+         <Label layoutX="280.0" layoutY="37.0" text="EF:" textFill="#e9500e">
+            <font>
+               <Font name="System Bold" size="12.0" />
+            </font></Label>
+         <CheckBox fx:id="chkHoy" layoutX="477.0" layoutY="37.0" mnemonicParsing="false" onAction="#pedidosDelDia" text="Hoy" />
          <Label layoutX="9.0" layoutY="28.0" text="Historico de pedidos">
             <font>
                <Font size="24.0" />
@@ -237,12 +250,15 @@
          </Button>
 
          <TextField fx:id="idPedido" layoutX="595.0" layoutY="34.0" prefHeight="25.0" prefWidth="69.0" promptText="Id pedido" />
-         <Button fx:id="search" layoutX="670.0" layoutY="34.0" onAction="#search">
+         <Button fx:id="search" layoutX="670.0" layoutY="29.0" onAction="#search">
             <graphic>
-               <ImageView fitHeight="14.0" fitWidth="61.0" layoutX="260.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                  <Image url="@../image/search.png" />
+               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                  <Image url="@../image/search1.png" />
                </ImageView>
             </graphic>
+            <style>
+               -fx-background-color: transparent; -fx-text-fill: white;
+            </style>
          </Button>
          <TableView fx:id="tableHistorico" layoutX="10.0" layoutY="75.0" prefHeight="506.0" prefWidth="785.0">
            <columns>
@@ -256,6 +272,21 @@
               <TableColumn fx:id="colTotal" prefWidth="70.0" text="Total" />
            </columns>
          </TableView>
+         <Label layoutX="374.0" layoutY="37.0" text="MP:" textFill="#e9500e">
+            <font>
+               <Font name="System Bold" size="12.0" />
+            </font>
+         </Label>
+         <Label fx:id="TotalEf" layoutX="302.0" layoutY="37.0" text="0" textFill="#e9500e">
+            <font>
+               <Font name="System Bold" size="12.0" />
+            </font>
+         </Label>
+         <Label fx:id="TotalMp" layoutX="402.0" layoutY="37.0" text="0" textFill="#e9500e">
+            <font>
+               <Font name="System Bold" size="12.0" />
+            </font>
+         </Label>
       </children>
    </Pane>
 </AnchorPane>

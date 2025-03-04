@@ -25,7 +25,7 @@
     </HBox>
     <HBox alignment="CENTER_LEFT" spacing="10">
         <Label text="Costo envio:" />
-        <TextField fx:id="txtCostoEnvio" maxWidth="50.0" minWidth="50.0" prefHeight="26.0" prefWidth="50.0" />
+        <TextField fx:id="txtCostoEnvio" text="800" maxWidth="50.0" minWidth="50.0" prefHeight="26.0" prefWidth="50.0" />
         <padding>
             <Insets top="15.0" />
         </padding>

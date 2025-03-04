@@ -58,6 +58,31 @@ public class PedidoDAO {
         return pedidos;
     }
 
+    public List<Pedido> getAllPedidosDaily() {
+        List<Pedido> pedidos = new ArrayList<>();
+        String sql = "SELECT * FROM pedido ";
+        sql += "WHERE DATE(fecha) = CURRENT_DATE ";
+        sql += "Order by fecha DESC";
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String clienteNombre = rs.getString("cliente_nombre");
+                String direccion = rs.getString("direccion");
+                LocalDateTime fechaPedido = rs.getObject("fecha", LocalDateTime.class);
+                int idFormaPago = rs.getInt("id_tipo_pago");
+                int costoEnvio = rs.getInt("precio_envio");
+                double precioTotal = rs.getDouble("precio_total");
+
+                pedidos.add(new Pedido(id, clienteNombre, direccion, fechaPedido, idFormaPago, costoEnvio, precioTotal));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return pedidos;
+    }
+
     public Pedido getPedidoById(int id) {
         Pedido pedido = null;
         String sql = "SELECT * FROM pedido WHERE id = ?";

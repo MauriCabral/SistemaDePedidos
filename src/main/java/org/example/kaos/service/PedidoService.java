@@ -128,6 +128,10 @@ public class PedidoService {
         return pedidoDAO.getAllPedidos();
     }
 
+    public List<Pedido> getAllPedidosDaily() {
+        return pedidoDAO.getAllPedidosDaily();
+    }
+
     public Pedido getPedidoId(int id) {
         return pedidoDAO.getPedidoById(id);
     }

@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
 import org.example.kaos.controller.PedidoController;
 import org.example.kaos.manager.ControllerManager;
+import org.example.kaos.manager.Update;
 import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.service.PedidoService;
@@ -21,8 +22,9 @@ public class MainApplication extends Application {
     private PedidoApplication pedidoApp;
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
+
     @Override
     public void start(Stage stage) {
         try {
