@@ -18,7 +18,7 @@
 
 <AnchorPane prefHeight="622.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.PedidoController">
    <AnchorPane fx:id="leftPanel" prefHeight="600.0" prefWidth="178.0" style="-fx-background-color: #e9500e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <VBox alignment="TOP_CENTER" prefHeight="428.0" prefWidth="200.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
+      <VBox alignment="TOP_CENTER" prefHeight="506.0" prefWidth="178.0" spacing="20.0" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
          <ImageView fitHeight="28.0" fitWidth="138.0" pickOnBounds="true" preserveRatio="true">
             <image>
                <Image url="@../image/logo.png" />
@@ -69,6 +69,7 @@
             </style>
          </Button>
       </VBox>
+      <Label layoutX="10.0" layoutY="600.0" text="v1.0.0" />
    </AnchorPane>
    <Pane fx:id="menuPane" layoutX="187.2" layoutY="15.2" prefHeight="594.0" prefWidth="463.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="187.0" AnchorPane.topAnchor="15.0">
       <Label layoutX="20.0" layoutY="25.0" text="Menu">
@@ -234,12 +235,15 @@
                <Font size="24.0" />
             </font>
          </Label>
-         <Button fx:id="deletePedidoCreado" layoutX="767.0" layoutY="34.0" onAction="#deletePedidosCreados">
+         <Button fx:id="deletePedidoCreado" layoutX="760.0" layoutY="29.0" onAction="#deletePedidosCreados">
             <graphic>
-               <ImageView fitHeight="14.0" fitWidth="61.0" layoutX="260.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-                  <Image url="@../image/trash.png" />
+               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                  <Image url="@../image/trash1.png" />
                </ImageView>
             </graphic>
+            <style>
+               -fx-background-color: transparent; -fx-text-fill: white;
+            </style>
          </Button>
          <Button fx:id="excel" layoutX="730.0" layoutY="34.0" onAction="#excel">
             <graphic>
