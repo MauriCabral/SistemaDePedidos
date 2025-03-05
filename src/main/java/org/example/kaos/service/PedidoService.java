@@ -23,23 +23,25 @@ public class PedidoService {
     private static final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
     private PedidoController pedidoController;
 
-        private final List<DetallePedido> detallesPedidosList;
-        private final List<ToppingPedido> detalleToppingPedidoList;
-        private Runnable onTotalCleared;
+    private final List<DetallePedido> detallesPedidosList;
+    private final List<ToppingPedido> detalleToppingPedidoList;
+    private List<Topping> toppingList;
+    private Runnable onTotalCleared;
 
-        public PedidoService(HamburguesaDAO hamburguesaDAO, HamburguesaTipoDAO hamburguesaTipoDAO) {
-            this.hamburguesaDAO = hamburguesaDAO;
-            this.hamburguesaTipoDAO = hamburguesaTipoDAO;
-            this.detallesPedidosList = new ArrayList<>();
-            this.detalleToppingPedidoList = new ArrayList<>();
-        }
+    public PedidoService(HamburguesaDAO hamburguesaDAO, HamburguesaTipoDAO hamburguesaTipoDAO) {
+        this.hamburguesaDAO = hamburguesaDAO;
+        this.hamburguesaTipoDAO = hamburguesaTipoDAO;
+        this.detallesPedidosList = new ArrayList<>();
+        this.detalleToppingPedidoList = new ArrayList<>();
+        this.toppingList = new ArrayList<>();
+    }
 
     public PedidoService() {
         this(new HamburguesaDAO(), new HamburguesaTipoDAO());
     }
 
-    public DetallePedido addDetallePedido(String nombre, String tipo, int cantidad, double precio) {
-        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size(), cantidad, getHamburguesaTipo(nombre, tipo), precio);
+    public DetallePedido addDetallePedido(String nombre, String tipo, int cantidad, double precio, String observaciones) {
+        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size(), cantidad, getHamburguesaTipo(nombre, tipo), precio, observaciones);
         detallesPedidosList.add(detallePedido);
         return detallePedido;
     }
@@ -184,5 +186,13 @@ public class PedidoService {
         font.setBold(true);
         style.setFont(font);
         return style;
+    }
+
+    public void setDetalleTopping(List<Topping> listTopping) {
+        this.toppingList = listTopping;
+    }
+
+    public List<Topping> getToppingList(){
+        return toppingList;
     }
 }

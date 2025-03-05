@@ -210,8 +210,26 @@
          </style>
       </Button>
 
-      <Button layoutX="87.0" layoutY="564.0" mnemonicParsing="false" onAction="#aceptarPedido" text="Aceptar" />
-      <Button layoutX="190.0" layoutY="564.0" mnemonicParsing="false" onAction="#cancelarPedido" text="Cancelar" />
+      <Button layoutX="87.0" layoutY="555.0" mnemonicParsing="false" onAction="#aceptarPedido">
+         <graphic>
+            <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/accept.png" />
+            </ImageView>
+         </graphic>
+         <style>
+            -fx-background-color: transparent; -fx-text-fill: white;
+         </style>
+      </Button>
+      <Button layoutX="190.0" layoutY="555.0" mnemonicParsing="false" onAction="#cancelarPedido">
+         <graphic>
+            <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/cancel.png" />
+            </ImageView>
+         </graphic>
+         <style>
+            -fx-background-color: transparent; -fx-text-fill: white;
+         </style>
+      </Button>
       <ScrollPane fitToWidth="true" layoutX="7.0" layoutY="59.0" prefHeight="468.0" prefWidth="324.0" style="-fx-background-color: #d3d3d3;">
          <VBox fx:id="detallePedidos" spacing="10.0">
             <HBox prefHeight="3.0" prefWidth="286.0" spacing="10.0" />

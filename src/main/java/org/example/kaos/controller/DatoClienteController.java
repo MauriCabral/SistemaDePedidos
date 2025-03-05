@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.TipoPago;
+import org.example.kaos.entity.Topping;
 import org.example.kaos.entity.ToppingPedido;
 import org.example.kaos.manager.ControllerManager;
 import org.example.kaos.repository.TipoPagoDAO;
@@ -23,7 +24,6 @@ import java.util.List;
 public class DatoClienteController {
 
     private final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
-    private final ToppingDAO toppingDAO = new ToppingDAO();
     private PedidoService pedidoService;
     private DetalleService detalleService;
     private Stage stage;
@@ -53,7 +53,6 @@ public class DatoClienteController {
 
     public void setDetalleService(DetalleService detalleService) {
         this.detalleService = detalleService;
-        System.out.println("DetalleService en DatoClienteController: " + detalleService.hashCode());
         if (this.detalleService == null) {
             throw new IllegalStateException("DetalleService no ha sido inicializado");
         }
@@ -115,17 +114,18 @@ public class DatoClienteController {
             if (!hamburguesaTipoIds.isEmpty()) {
                 detalleJson.put("hamburguesa_tipo_id", hamburguesaTipoIds.get(0));
                 detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
+                detalleJson.put("observacion", detalle.getObservacion());
                 JSONArray toppingsJson = new JSONArray();
 
-                List<ToppingPedido> detalleToppingPedidosList = pedidoService.getDetallesToppingPedidosList();
+                List<Topping> detalleToppingPedidosList = pedidoService.getToppingList();
 
                 if (detalleToppingPedidosList.isEmpty()){
                     detalleJson.put("toppings", JSONObject.NULL);
                 } else {
-                    for (ToppingPedido detalleTopping : detalleToppingPedidosList) {
+                    for (Topping topping : detalleToppingPedidosList) {
                         JSONObject toppingJson = new JSONObject();
-                        toppingJson.put("id_topping", detalleTopping.getIdTopping());
-                        toppingJson.put("Agregado", detalleTopping.isAgregado() ? 1 : 0);
+                        toppingJson.put("id_topping", topping.getId());
+                        toppingJson.put("Agregado", topping.getPrecio() == null ? 0 : 1);
 
                         toppingsJson.put(toppingJson);
                         detalleJson.put("toppings", toppingsJson);

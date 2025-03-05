@@ -28,6 +28,8 @@ public class DetalleController implements Initializable {
     private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf;
     @FXML
     private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
+    @FXML
+    private TextArea txtObservaciones;
 
     private DetalleService detalleService;
     private Stage stage;
@@ -93,7 +95,7 @@ public class DetalleController implements Initializable {
 
         List<Topping> toppingList = detalleService.getSelectedToppings();
 
-        actualizarVentanaPedido(nombreProducto, tipo, cantidad, (int) precioProducto, toppingList);
+        actualizarVentanaPedido(nombreProducto, tipo, cantidad, (int) precioProducto, toppingList, txtObservaciones.getText().trim());
 
         if (stage != null) {
             stage.close();
@@ -108,15 +110,14 @@ public class DetalleController implements Initializable {
         alert.showAndWait();
     }
 
-    private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<Topping> toppingList) {
+    private void actualizarVentanaPedido(String nombre, String tipo, int cantidad, double precio, List<Topping> toppingList, String txtObservaciones) {
         PedidoController pedidoCtrl = ControllerManager.getInstance().getPedidoController();
-
         if (pedidoCtrl == null) {
             System.out.println("Controlador de Pedido no encontrado. Verifica si está correctamente inicializado.");
             return;
         }
         Platform.runLater(() -> {
-            pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingList);
+            pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingList, txtObservaciones);
         });
     }
 

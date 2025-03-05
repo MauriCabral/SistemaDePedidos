@@ -39,8 +39,7 @@ public class PedidoController {
     private PedidoService pedidoService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static int detalleId = 0;
-    private List<Pedido> pedidos = new ArrayList<>();
-    private List<Pedido> pedidos1 = new ArrayList<>();
+    private List<Topping> listTopping = new ArrayList<>();
 
     @FXML
     private Pane menuPane, rightPane, pnHistorico;
@@ -156,7 +155,7 @@ public class PedidoController {
         }
     }
 
-    public void actualizarDetalles(String nombreHamburguesa, String tipoHamburguesa, int cantidad, double precio, List<Topping> toppingList) {
+    public void actualizarDetalles(String nombreHamburguesa, String tipoHamburguesa, int cantidad, double precio, List<Topping> toppingList, String txtObservaciones) {
         VBox vBox = new VBox(5);
         vBox.setPadding(new Insets(2, 8, 0, 8));
         HBox pedidoBox = new HBox(5);
@@ -178,9 +177,9 @@ public class PedidoController {
         }
 
         int idActual = detalleId;
-        DetallePedido detallePedido = new DetallePedido(detalleId, cantidad, pedidoService.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa), total);
+        DetallePedido detallePedido = new DetallePedido(detalleId, cantidad, pedidoService.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa), total, txtObservaciones);
         detallesPedidosList.add(detallePedido);
-        pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, total);
+        pedidoService.addDetallePedido(nombreHamburguesa, tipoHamburguesa, cantidad, total, txtObservaciones);
 
         detalleId++;
 
@@ -244,7 +243,13 @@ public class PedidoController {
             }
             vBox.getChildren().add(toppingsBox);
         }
+        if (txtObservaciones != null && !txtObservaciones.trim().isEmpty()) {
+            Label observacionesLabel = new Label("Observaciones: " + txtObservaciones);
+            observacionesLabel.setStyle("-fx-font-style: italic; -fx-text-fill: #555555;");
+            vBox.getChildren().add(observacionesLabel);
+        }
         detallePedidos.getChildren().add(vBox);
+        this.listTopping = toppingList;
     }
 
     public void deletePedidos() {
@@ -277,9 +282,9 @@ public class PedidoController {
     }
 
     public void aceptarPedido(ActionEvent actionEvent) {
-        System.out.println("PedidoService en PedidoController: " + pedidoService.hashCode());
         if (!detallesPedidosList.isEmpty()) {
-            pedidoApp.openDatoClienteWindow(pedidoService);
+            pedidoService.setDetalleTopping(listTopping);
+            pedidoApp.openDatosClienteWindow(pedidoService);
         }
         else {
             Alert alert = new Alert(Alert.AlertType.ERROR);

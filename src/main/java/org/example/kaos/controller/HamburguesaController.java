@@ -1,5 +1,6 @@
 package org.example.kaos.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -154,5 +155,9 @@ public class HamburguesaController {
     private void close() {
         Stage stage = (Stage) nombreHamburguesa.getScene().getWindow();
         stage.close();
+    }
+
+    public void handleCancelar(ActionEvent actionEvent) {
+        this.close();
     }
 }

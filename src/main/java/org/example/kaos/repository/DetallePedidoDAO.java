@@ -58,7 +58,8 @@ public class DetallePedidoDAO {
                             rs.getInt("id"),
                             rs.getInt("cantidad"),
                             tiposHamburguesa,
-                            rs.getDouble("precio_unitario")
+                            rs.getDouble("precio_unitario"),
+                            rs.getString("observacion")
                     ));
                 }
             }

@@ -44,7 +44,7 @@ public class PedidoApplication {
         }
     }
 
-    public void openDatoClienteWindow(PedidoService pedidoService) {
+    public void openDatosClienteWindow(PedidoService pedidoService) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/DatoCliente.fxml"));
             Parent root = loader.load();

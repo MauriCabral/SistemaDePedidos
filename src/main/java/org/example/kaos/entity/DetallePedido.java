@@ -8,12 +8,14 @@ public class DetallePedido {
     private int cantidad;
     private List<Integer> tiposHamburguesa;
     private double precio_unitario;
+    private String observacion;
 
-    public DetallePedido(int id, int cantidad, List<Integer> tiposHamburguesa, double precio_unitario) {
+    public DetallePedido(int id, int cantidad, List<Integer> tiposHamburguesa, double precio_unitario, String observacion) {
         this.id = id;
         this.cantidad = cantidad;
         this.tiposHamburguesa = tiposHamburguesa;
         this.precio_unitario = precio_unitario;
+        this.observacion = observacion;
     }
 
     public int getId() {
@@ -56,6 +58,14 @@ public class DetallePedido {
         this.id_pedido = id_pedido;
     }
 
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
+
     @Override
     public String toString() {
         return "DetallePedido{" +
@@ -63,6 +73,7 @@ public class DetallePedido {
                 ", cantidad=" + cantidad +
                 ", tiposHamburguesa=" + tiposHamburguesa +
                 ", tipo_unitario=" + precio_unitario +
+                ", observacion=" + observacion +
                 '}';
     }
 }
