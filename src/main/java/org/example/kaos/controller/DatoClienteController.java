@@ -8,12 +8,11 @@ import javafx.stage.Stage;
 import org.example.kaos.entity.DetallePedido;
 import org.example.kaos.entity.TipoPago;
 import org.example.kaos.entity.Topping;
-import org.example.kaos.entity.ToppingPedido;
 import org.example.kaos.manager.ControllerManager;
 import org.example.kaos.repository.TipoPagoDAO;
-import org.example.kaos.repository.ToppingDAO;
 import org.example.kaos.service.PedidoService;
 import org.example.kaos.service.DetalleService;
+import org.example.kaos.service.TicketPrinterService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -26,7 +25,9 @@ public class DatoClienteController {
     private final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
     private PedidoService pedidoService;
     private DetalleService detalleService;
+    private TicketPrinterService ticketPrinterService;
     private Stage stage;
+    private int idPedidoImprimir = 0;
 
     @FXML
     private TextField txtNombreCliente, txtDireccion, txtCostoEnvio;
@@ -44,6 +45,7 @@ public class DatoClienteController {
         if (detalleService == null) {
             this.detalleService = new DetalleService();
         }
+        this.ticketPrinterService = new TicketPrinterService();
     }
 
     public void setPedidoService(PedidoService pedidoService) {
@@ -104,48 +106,60 @@ public class DatoClienteController {
         }
 
         List<DetallePedido> detallesPedidosList = pedidoService.getDetallesPedidosList();
-
         JSONArray detallesJson = new JSONArray();
 
         for (DetallePedido detalle : detallesPedidosList) {
             JSONObject detalleJson = new JSONObject();
             detalleJson.put("cantidad", detalle.getCantidad());
-            List<Integer> hamburguesaTipoIds = detalle.getTiposHamburguesa();
-            if (!hamburguesaTipoIds.isEmpty()) {
-                detalleJson.put("hamburguesa_tipo_id", hamburguesaTipoIds.get(0));
+            int hamburguesaTipoId = detalle.getTipoHamburguesa();
+            if (hamburguesaTipoId > 0) {
+                detalleJson.put("hamburguesa_tipo_id", hamburguesaTipoId);
                 detalleJson.put("precio_unitario", detalle.getPrecio_unitario());
                 detalleJson.put("observacion", detalle.getObservacion());
+
+                List<Topping> toppingsDelDetalle = pedidoService.getToppingsByDetalleId(detalle.getId());
+
                 JSONArray toppingsJson = new JSONArray();
-
-                List<Topping> detalleToppingPedidosList = pedidoService.getToppingList();
-
-                if (detalleToppingPedidosList.isEmpty()){
-                    detalleJson.put("toppings", JSONObject.NULL);
-                } else {
-                    for (Topping topping : detalleToppingPedidosList) {
-                        JSONObject toppingJson = new JSONObject();
-                        toppingJson.put("id_topping", topping.getId());
-                        toppingJson.put("Agregado", topping.getPrecio() == null ? 0 : 1);
-
-                        toppingsJson.put(toppingJson);
-                        detalleJson.put("toppings", toppingsJson);
-                    }
+                for (Topping topping : toppingsDelDetalle) {
+                    JSONObject toppingJson = new JSONObject();
+                    toppingJson.put("id_topping", topping.getId());
+                    toppingJson.put("Agregado", topping.getPrecio() == null ? 0 : 1);
+                    toppingsJson.put(toppingJson);
                 }
+
+                detalleJson.put("toppings", toppingsJson);
             }
             detallesJson.put(detalleJson);
         }
 
-        boolean exito = pedidoService.insertarPedido(
+        List<DetallePedido> detallesExtra = pedidoService.getDetalleExtra();
+        JSONArray detallesExtras = new JSONArray();
+        for(DetallePedido detalleExtras : detallesExtra){
+            JSONObject detalleJson = new JSONObject();
+            detalleJson.put("cantidad", detalleExtras.getCantidad());
+
+            String precioUnitario = String.valueOf(detalleExtras.getPrecio_unitario());
+            detalleJson.put("precio", Double.parseDouble(precioUnitario));
+            detalleJson.put("id_extra", detalleExtras.getExtra_id());
+            detallesExtras.put(detalleJson);
+        }
+
+        int idPedido = pedidoService.insertarPedido(
                 nombreCliente,
                 direccion,
                 new Timestamp(System.currentTimeMillis()),
                 idTipoPago,
                 costoEnvio,
                 precioTotal,
-                detallesJson
+                detallesJson,
+                detallesExtras
         );
-        if (exito) {
+        idPedidoImprimir = idPedido;
+        if (idPedido>0) {
             showConfirmation("El pedido se ha insertado correctamente.");
+
+            printTicket(idPedidoImprimir);
+
             PedidoController pedidoController = ControllerManager.getInstance().getPedidoController();
             if (pedidoController != null) {
                 pedidoService.getDetallesPedidosList().clear();
@@ -162,6 +176,10 @@ public class DatoClienteController {
         } else {
             showError("No se pudo insertar el pedido. Intente nuevamente.");
         }
+    }
+
+    private void printTicket(int idPedidoImprimir) {
+        ticketPrinterService.imprimir(idPedidoImprimir);
     }
 
     @FXML

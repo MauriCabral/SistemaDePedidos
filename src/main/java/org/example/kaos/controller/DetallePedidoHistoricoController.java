@@ -12,9 +12,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.example.kaos.entity.*;
 import org.example.kaos.repository.*;
+import org.example.kaos.service.ExtraService;
 import org.example.kaos.service.PedidoService;
 
-import java.awt.*;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
@@ -33,6 +33,7 @@ public class DetallePedidoHistoricoController implements Initializable {
     private final ToppingPedidoDAO toppingPedidoDAO = new ToppingPedidoDAO();
     private final ToppingDAO toppingDAO = new ToppingDAO();
     private PedidoService pedidoService;
+    private ExtraService extraService = new ExtraService();
 
     public DetallePedidoHistoricoController() {}
 
@@ -48,50 +49,44 @@ public class DetallePedidoHistoricoController implements Initializable {
     public void cargarDetallePedido(int id) {
         try {
             Pedido pedido = pedidoService.getPedidoId(id);
-
             List<DetallePedido> detallesPedido = detallePedidoDAO.getDetallesByPedidoId(pedido.getId());
             vboxPedidosDetalle.getChildren().clear();
-
             for (DetallePedido detallePedido : detallesPedido) {
                 VBox detalleBox = new VBox(10);
                 detalleBox.setPadding(new Insets(5));
                 detalleBox.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-radius: 5; -fx-border-color: #dcdcdc;");
-                for (Integer detalleHamburguesa : detallePedido.getTiposHamburguesa()) {
-                    HamburguesaTipo hamburguesaTipo = hamburguesaTipoDAO.getHamburguesaTipoByID(detalleHamburguesa);
+                if(detallePedido.getTipoHamburguesa() > 0) {
+                    HamburguesaTipo hamburguesaTipo = hamburguesaTipoDAO.getHamburguesaTipoByID(detallePedido.getTipoHamburguesa());
                     Hamburguesa hamburguesa = hamburguesaDAO.getMenuById(hamburguesaTipo.getHamburguesa_id());
-
                     HBox hamburguesaBox = new HBox(20);
                     hamburguesaBox.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-radius: 5; -fx-border-color: #dcdcdc;");
-
                     Label labelTipo = new Label("Hamburguesa: " + hamburguesa.getNombre());
                     labelTipo.setFont(new Font(16));
                     labelTipo.setTextFill(Color.BLACK);
-
                     Label labelCantidad = new Label("Cantidad: " + detallePedido.getCantidad());
                     labelCantidad.setFont(new Font(16));
                     labelCantidad.setTextFill(Color.BLACK);
-
                     Label labelPrecio = new Label("Precio: $" + detallePedido.getPrecio_unitario());
                     labelPrecio.setFont(new Font(16));
                     labelPrecio.setTextFill(Color.BLACK);
-
                     hamburguesaBox.getChildren().addAll(labelTipo, labelCantidad, labelPrecio);
                     vboxPedidosDetalle.getChildren().add(hamburguesaBox);
                 }
-
                 if (detallePedido.getObservacion() != null && !detallePedido.getObservacion().isEmpty()) {
                     Label labelObservacion = new Label("Observación: " + detallePedido.getObservacion());
                     labelObservacion.setFont(new Font(14));
                     labelObservacion.setTextFill(Color.DARKBLUE);
                     detalleBox.getChildren().add(labelObservacion);
                 }
-
                 List<ToppingPedido> toppingPedidosList = toppingPedidoDAO.getToppingByDetallePedidoId(detallePedido.getId());
                 VBox toppingsBox = new VBox(5);
-
                 for (ToppingPedido toppingPedido : toppingPedidosList) {
-                    Topping topping = toppingDAO.getToppingById(toppingPedido.getIdTopping(), toppingPedido.isAgregado());
-
+                    Topping topping = null;
+                    try {
+                        topping = toppingDAO.getToppingById(toppingPedido.getIdTopping(), toppingPedido.isAgregado());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                     Label toppingLabel;
                     if (topping != null) {
                         if (toppingPedido.isAgregado()) {
@@ -108,11 +103,20 @@ public class DetallePedidoHistoricoController implements Initializable {
                     toppingLabel.setFont(new Font(14));
                     toppingsBox.getChildren().add(toppingLabel);
                 }
-
                 if (!toppingsBox.getChildren().isEmpty()) {
                     detalleBox.getChildren().add(toppingsBox);
                 }
-
+                for (DetallePedido detallePedido1 : detallesPedido) {
+                    Label extra = null;
+                    if (detallePedido1.getExtra_id() > 0) {
+                        Extra extras;
+                        extras = extraService.getExtra(detallePedido1.getExtra_id());
+                        extra = new Label("Extra: " + extras.getNombre() + " - Precio: $" + extras.getPrecio());
+                        extra.setTextFill(Color.ORANGE);
+                        extra.setFont(new Font(14));
+                        toppingsBox.getChildren().add(extra);
+                    }
+                }
                 vboxPedidosDetalle.getChildren().add(detalleBox);
             }
         } catch (SQLException e) {

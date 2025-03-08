@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.example.kaos.entity.HamburguesaTipo;
+import org.example.kaos.entity.TipoHamburguesa;
 
 public class HamburguesaTipoDAO {
-    public List<Integer> getHamburguesaTipoIds(String nombre, String tipo) {
-        List<Integer> ids = new ArrayList<>();
+    public int getHamburguesaTipoIds(String nombre, String tipo) {
+        int id = 0;
         String sql = "SELECT ht.id FROM hamburguesa_tipo ht INNER JOIN hamburguesa h ON h.id = ht.hamburguesa_id INNER JOIN tipo_hamburguesa th ON th.id = ht.tipo_id WHERE h.nombre = ? AND th.tipo = ?";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -16,13 +17,13 @@ public class HamburguesaTipoDAO {
             stmt.setString(2, tipo);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    ids.add(rs.getInt("id"));
+                    id = rs.getInt("id");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return ids;
+        return id;
     }
 
     public List<HamburguesaTipo> getHamburguesaTipoIds(int hamburguesaId) {

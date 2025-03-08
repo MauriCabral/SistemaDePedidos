@@ -24,7 +24,7 @@ public class TipoHamburguesaDAO {
         return tipos;
     }
 
-    public TipoHamburguesa getTipoHamburguesaById(int id) {
+    public static TipoHamburguesa getTipoHamburguesaById(int id) {
         String sql = "SELECT * FROM tipo_hamburguesa WHERE id = ?";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

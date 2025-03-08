@@ -3,11 +3,11 @@ package org.example.kaos.service;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
+import org.example.kaos.entity.DetallePedido;
+import org.example.kaos.entity.Extra;
 import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.Topping;
-import org.example.kaos.repository.HamburguesaTipoDAO;
-import org.example.kaos.repository.TipoHamburguesaDAO;
-import org.example.kaos.repository.ToppingDAO;
+import org.example.kaos.repository.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,24 +18,27 @@ public class DetalleService {
     private final TipoHamburguesaDAO typeDAO = new TipoHamburguesaDAO();
     private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
     private final ToppingDAO toppingDAO = new ToppingDAO();
+    private final ExtraPromoDAO extraPromoDAO = new ExtraPromoDAO();
+    private final DetallePedidoDAO detallePedidoDAO = new DetallePedidoDAO();
 
     @FXML
     private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf;
     @FXML
     private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
 
+    public ObservableList<Extra> getComboExtra(int id_tipo) {
+        return extraPromoDAO.getAllExtraCombo(id_tipo);
+    }
+
     public ObservableList<String> getTiposHamburguesa() {
         return typeDAO.getAllTipoHamburguesa();
     }
 
     public double obtenerPrecio(String tipo, int cantidad, String nombreProducto) {
-        List<Integer> hamburguesaTipo = hamburguesaTipoDAO.getHamburguesaTipoIds(nombreProducto, tipo);
-        for(Integer hamburTipo : hamburguesaTipo) {
-            HamburguesaTipo hamburguesaTipo1 = hamburguesaTipoDAO.getHamburguesaTipoByID(hamburTipo);
-            double precioBase = hamburguesaTipo1.getPrecios();
-            return precioBase * cantidad;
-        }
-        return -1;
+        int hamburguesaTipo = hamburguesaTipoDAO.getHamburguesaTipoIds(nombreProducto, tipo);
+        HamburguesaTipo hamburguesaTipo1 = hamburguesaTipoDAO.getHamburguesaTipoByID(hamburguesaTipo);
+        double precioBase = hamburguesaTipo1.getPrecios();
+        return precioBase * cantidad;
     }
 
     public void setCheckBoxes(CheckBox... checkBoxes) {
@@ -87,5 +90,21 @@ public class DetalleService {
         if (checkBox.isSelected()) {
             toppingList.add(toppingDAO.getToppingById(id, agregado));
         }
+    }
+
+    public Extra getExtraById(int idExtra) {
+        return extraPromoDAO.getExtraById(idExtra);
+    }
+
+    public List<Topping> getPrecioTopping() {
+        return toppingDAO.getPreciosToppings();
+    }
+
+    public int actualizarPreciosTopping(List<Topping> toppingList) {
+       return toppingDAO.setPrecioTopping(toppingList);
+    }
+
+    public List<DetallePedido> getDetallePedidoList(int idPedidoRes) {
+        return detallePedidoDAO.getDetallesByPedidoId(idPedidoRes);
     }
 }

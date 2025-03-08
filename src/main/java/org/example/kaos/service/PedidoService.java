@@ -26,7 +26,9 @@ public class PedidoService {
     private final List<DetallePedido> detallesPedidosList;
     private final List<ToppingPedido> detalleToppingPedidoList;
     private List<Topping> toppingList;
-    private Runnable onTotalCleared;
+    private List<Extra> listaDetalleExtra;
+    private List<DetallePedido> detallesExtraPedidosList;
+    private Map<Integer, List<Topping>> toppingsPorDetalle = new HashMap<>();
 
     public PedidoService(HamburguesaDAO hamburguesaDAO, HamburguesaTipoDAO hamburguesaTipoDAO) {
         this.hamburguesaDAO = hamburguesaDAO;
@@ -34,14 +36,16 @@ public class PedidoService {
         this.detallesPedidosList = new ArrayList<>();
         this.detalleToppingPedidoList = new ArrayList<>();
         this.toppingList = new ArrayList<>();
+        this.listaDetalleExtra = new ArrayList<>();
+        this.detallesExtraPedidosList = new ArrayList<>();
     }
 
     public PedidoService() {
         this(new HamburguesaDAO(), new HamburguesaTipoDAO());
     }
 
-    public DetallePedido addDetallePedido(String nombre, String tipo, int cantidad, double precio, String observaciones) {
-        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size(), cantidad, getHamburguesaTipo(nombre, tipo), precio, observaciones);
+    public DetallePedido addDetallePedido(int hamburguesaId, int cantidad, double precio, String observaciones) {
+        DetallePedido detallePedido = new DetallePedido(detallesPedidosList.size(), cantidad, hamburguesaId, precio, observaciones);
         detallesPedidosList.add(detallePedido);
         return detallePedido;
     }
@@ -52,7 +56,7 @@ public class PedidoService {
         return detalleToppingPedido;
     }
 
-    public List<Integer> getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
+    public int getHamburguesaTipo(String nombreHamburguesa, String tipoHamburguesa) {
         return hamburguesaTipoDAO.getHamburguesaTipoIds(nombreHamburguesa, tipoHamburguesa);
     }
 
@@ -64,7 +68,6 @@ public class PedidoService {
                 break;
             }
         }
-
         if (index != -1) {
             Iterator<ToppingPedido> iterator = detalleToppingPedidoList.iterator();
             while (iterator.hasNext()) {
@@ -73,9 +76,9 @@ public class PedidoService {
                     iterator.remove();
                 }
             }
-
             detallesPedidosList.remove(index);
-            actualizarTotal();
+            double nuevoTotal = actualizarTotal();
+            System.out.println("Nuevo total después de eliminar: " + nuevoTotal);
         }
     }
 
@@ -95,10 +98,9 @@ public class PedidoService {
         return detalleToppingPedidoList;
     }
 
-    public boolean insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
-        boolean exito = false;
-        exito = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson);
-        return exito;
+    public int insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson, JSONArray detallesExtraJson) {
+        int idPedido = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson, detallesExtraJson);
+        return idPedido;
     }
 
     public boolean eliminarPedido(int pedidoId) {
@@ -107,7 +109,7 @@ public class PedidoService {
 
     public double getPrecioTotalTopping(List<Topping> toppingList) {
         double totalTop = 0.0;
-        if (toppingList != null || !toppingList.isEmpty()) {
+        if (toppingList != null && !toppingList.isEmpty()) {
             for (Topping topping : toppingList) {
                 if (topping.getPrecio() != null) {
                     totalTop += topping.getPrecio();
@@ -121,6 +123,9 @@ public class PedidoService {
         double totalFinal = 0;
         for (DetallePedido detalle : detallesPedidosList) {
             totalFinal += detalle.getPrecio_unitario();
+        }
+        for (DetallePedido extra : detallesExtraPedidosList){
+            totalFinal += extra.getPrecio_unitario();
         }
         System.out.println("total de actualizar: " + totalFinal);
         return totalFinal;
@@ -194,5 +199,60 @@ public class PedidoService {
 
     public List<Topping> getToppingList(){
         return toppingList;
+    }
+
+    public void addDetalleExtra(List<Extra> extraList) {
+        listaDetalleExtra.addAll(extraList);
+    }
+
+    public void removeDetalleExtra(DetallePedido extras) {
+        int index = -1;
+        for (int i = 0; i < detallesExtraPedidosList.size(); i++) {
+            if (detallesExtraPedidosList.get(i).getId() == extras.getId()) {
+                index = i;
+                break;
+            }
+        }
+        if (index != -1) {
+            Iterator<ToppingPedido> iterator = detalleToppingPedidoList.iterator();
+            while (iterator.hasNext()) {
+                ToppingPedido toppingPedido = iterator.next();
+                if (toppingPedido.getIdDetallePedido() == extras.getId()) {
+                    iterator.remove();
+                }
+            }
+            detallesExtraPedidosList.remove(index);
+            actualizarTotal();
+        }
+    }
+
+    public void setDetalleExtra(List<Extra> extraList) {
+        this.listaDetalleExtra = extraList;
+    }
+
+    public List<DetallePedido> getDetalleExtra() {
+        return detallesExtraPedidosList;
+    }
+
+    public DetallePedido addDetalleExtraPedido(int id, int cantidad, int precio, int idExtra) {
+        DetallePedido detallePedidoExtra = new DetallePedido(id, cantidad, precio, idExtra);
+        detallesExtraPedidosList.add(detallePedidoExtra);
+        return detallePedidoExtra;
+    }
+
+    public void agregarToppingsADetalle(int detalleId, List<Topping> toppings) {
+        toppingsPorDetalle.put(detalleId, toppings);
+        System.out.println("Toppings almacenados para detalle " + detalleId + ": " + toppings);
+    }
+
+    public List<Topping> getToppingsByDetalleId(int detalleId) {
+        List<Topping> toppings = toppingsPorDetalle.getOrDefault(detalleId, new ArrayList<>());
+        System.out.println("Toppings recuperados para detalle " + detalleId + ": " + toppings);
+        return toppings;
+    }
+
+    public void agregarDetallePedido(DetallePedido detallePedido) {
+        detallesPedidosList.add(detallePedido);
+        System.out.println("Detalle agregado: " + detallePedido);
     }
 }

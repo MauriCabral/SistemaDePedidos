@@ -5,67 +5,92 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 <AnchorPane fx:id="pnlDetalle" prefHeight="482.0" prefWidth="445.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.DetalleController">
-    <Label fx:id="nombre" layoutX="19.0" layoutY="10.0" text="Nombre del Menú">
-      <font>
-         <Font size="24.0" />
-      </font></Label>
-   <Label layoutX="125.0" layoutY="49.0" text="Tipo:">
-      <font>
-         <Font size="13.0" />
-      </font>
-   </Label>
-   <Label layoutX="20.0" layoutY="49.0" text="Cantidad:">
-      <font>
-         <Font size="13.0" />
-      </font>
-   </Label>
-    
-    <Label fx:id="counterLabel" layoutX="52.0" layoutY="77.0" prefHeight="18.0" prefWidth="7.0" style="-fx-font-size: 12;" text="1" />
-    <Button layoutX="64.0" layoutY="73.0" onAction="#incrementCounter" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="+" />
-    <Button layoutX="20.0" layoutY="73.0" onAction="#decrementCounter" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="-" />
-   <ComboBox fx:id="comboBoxTipo" layoutX="125.0" layoutY="73.0" onAction="#handleComboBoxAction" prefHeight="26.0" prefWidth="130.0" />
-   <Label layoutX="19.0" layoutY="112.0" text="Agregar Toppings: " />
-   <Label layoutX="32.0" layoutY="139.0" text="Cheddar" />
-   <Label layoutX="32.0" layoutY="164.0" text="Bacon" />
-   <Label layoutX="32.0" layoutY="189.0" text="Lechuga" />
-   <Label layoutX="32.0" layoutY="214.0" text="Tomate" />
-   <Label layoutX="32.0" layoutY="239.0" text="Cebolla" />
-   <Label layoutX="32.0" layoutY="264.0" text="Cebolla Crispy" />
-   <Label layoutX="32.0" layoutY="289.0" text="Tomate Confitado" />
-<!--   <Label layoutX="32.0" layoutY="314.0" text="Cambiar Salda" />-->
-   <CheckBox fx:id="cmbCheddar" layoutX="139.0" layoutY="139.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbBacon" layoutX="139.0" layoutY="164.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbLechuga" layoutX="139.0" layoutY="189.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbTomate" layoutX="139.0" layoutY="214.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbCebolla" layoutX="139.0" layoutY="239.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbCebollaCrisp" layoutX="139.0" layoutY="264.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbTomateConf" layoutX="139.0" layoutY="289.0" mnemonicParsing="false" />
-<!--   <CheckBox fx:id="cmbCambiarSalsa" layoutX="139.0" layoutY="314.0" mnemonicParsing="false" onAction="#cambiarSalsaCheckBox" />-->
-<!--   <TextField fx:id="txtCambiarSalsa" layoutX="170.0" layoutY="310.0" prefHeight="26.0" prefWidth="130.0" text=" " visible="false" />-->
-   <Label layoutX="276.0" layoutY="112.0" text="Quitar Toppings:" />
-   <Label layoutX="291.0" layoutY="139.0" text="Cheddar" />
-   <Label layoutX="291.0" layoutY="164.0" text="Bacon" />
-   <Label layoutX="291.0" layoutY="189.0" text="Lechuga" />
-   <Label layoutX="291.0" layoutY="214.0" text="Tomate" />
-   <Label layoutX="291.0" layoutY="239.0" text="Cebolla" />
-   <Label layoutX="291.0" layoutY="264.0" text="Cebolla Crispy" />
-   <Label layoutX="291.0" layoutY="289.0" text="Tomate Confitado" />
-   <Label layoutX="291.0" layoutY="314.0" text="Salsa" />
-   <CheckBox fx:id="cmbCheddar1" layoutX="401.0" layoutY="139.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbBacon1" layoutX="401.0" layoutY="164.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbLechuga1" layoutX="401.0" layoutY="189.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbTomate1" layoutX="401.0" layoutY="214.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbCebolla1" layoutX="401.0" layoutY="239.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbCebollaCrisp1" layoutX="401.0" layoutY="264.0" mnemonicParsing="false" />
-   <CheckBox fx:id="cmbTomateConf1" layoutX="401.0" layoutY="289.0" mnemonicParsing="false" />
-   <CheckBox fx:id="quitarSalsa" layoutX="401.0" layoutY="314.0" mnemonicParsing="false" />
-   <Button fx:id="btnAceptar" layoutX="118.0" layoutY="435.0" mnemonicParsing="false" onAction="#aceptarPedido">
+   <Pane fx:id="paneleditar" layoutX="6.0" layoutY="8.0" prefHeight="433.0" prefWidth="432.0">
+      <Label fx:id="nombre" layoutX="19.0" layoutY="10.0" text="Nombre del Menú">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+      <Label layoutX="125.0" layoutY="49.0" text="Tipo:">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+      <Label layoutX="20.0" layoutY="49.0" text="Cantidad:">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+
+      <Label fx:id="counterLabel" layoutX="52.0" layoutY="77.0" prefHeight="18.0" prefWidth="7.0" style="-fx-font-size: 12;" text="1" />
+      <Button layoutX="64.0" layoutY="73.0" onAction="#incrementCounter" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="+" />
+      <Button layoutX="20.0" layoutY="73.0" onAction="#decrementCounter" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="-" />
+      <ComboBox fx:id="comboBoxTipo" layoutX="125.0" layoutY="73.0" onAction="#handleComboBoxAction" prefHeight="26.0" prefWidth="130.0" />
+      <Label layoutX="19.0" layoutY="112.0" text="Agregar Toppings: " />
+      <Label layoutX="32.0" layoutY="139.0" text="Cheddar" />
+      <Label layoutX="32.0" layoutY="164.0" text="Bacon" />
+      <Label layoutX="32.0" layoutY="189.0" text="Lechuga" />
+      <Label layoutX="32.0" layoutY="214.0" text="Tomate" />
+      <Label layoutX="32.0" layoutY="239.0" text="Cebolla" />
+      <Label layoutX="32.0" layoutY="264.0" text="Cebolla Crispy" />
+      <Label layoutX="32.0" layoutY="289.0" text="Tomate Confitado" />
+      <CheckBox fx:id="cmbCheddar" layoutX="139.0" layoutY="139.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbBacon" layoutX="139.0" layoutY="164.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbLechuga" layoutX="139.0" layoutY="189.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbTomate" layoutX="139.0" layoutY="214.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbCebolla" layoutX="139.0" layoutY="239.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbCebollaCrisp" layoutX="139.0" layoutY="264.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbTomateConf" layoutX="139.0" layoutY="289.0" mnemonicParsing="false" />
+      <Label layoutX="276.0" layoutY="112.0" text="Quitar Toppings:" />
+      <Label layoutX="291.0" layoutY="139.0" text="Cheddar" />
+      <Label layoutX="291.0" layoutY="164.0" text="Bacon" />
+      <Label layoutX="291.0" layoutY="189.0" text="Lechuga" />
+      <Label layoutX="291.0" layoutY="214.0" text="Tomate" />
+      <Label layoutX="291.0" layoutY="239.0" text="Cebolla" />
+      <Label layoutX="291.0" layoutY="264.0" text="Cebolla Crispy" />
+      <Label layoutX="291.0" layoutY="289.0" text="Tomate Confitado" />
+      <Label layoutX="291.0" layoutY="314.0" text="Salsa" />
+      <CheckBox fx:id="cmbCheddar1" layoutX="401.0" layoutY="139.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbBacon1" layoutX="401.0" layoutY="164.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbLechuga1" layoutX="401.0" layoutY="189.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbTomate1" layoutX="401.0" layoutY="214.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbCebolla1" layoutX="401.0" layoutY="239.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbCebollaCrisp1" layoutX="401.0" layoutY="264.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbTomateConf1" layoutX="401.0" layoutY="289.0" mnemonicParsing="false" />
+      <CheckBox fx:id="quitarSalsa" layoutX="401.0" layoutY="314.0" mnemonicParsing="false" />
+
+      <Label layoutX="30.0" layoutY="341.0" text="Observaciones" />
+      <TextArea fx:id="txtObservaciones" layoutX="30.0" layoutY="361.0" prefHeight="69.0" prefWidth="386.0" wrapText="true" />
+      <Button fx:id="editarTopping" layoutX="388.0" layoutY="11.0" onAction="#editarTopping">
+         <graphic>
+            <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/edit2.png" />
+            </ImageView>
+         </graphic>
+         <style>
+            -fx-background-color: transparent; -fx-text-fill: white;
+         </style>
+      </Button>
+      <Pane fx:id="panelPreciosTopping" layoutX="169.0" layoutY="116.0" prefHeight="216.0" prefWidth="78.0">
+         <children>
+            <TextField fx:id="toppingCh" layoutX="12.0" layoutY="17.0" prefHeight="20.0" prefWidth="54.0" />
+            <TextField fx:id="toppingB" layoutX="12.0" layoutY="43.0" prefHeight="20.0" prefWidth="54.0" />
+            <TextField fx:id="toppingL" layoutX="12.0" layoutY="69.0" prefHeight="20.0" prefWidth="54.0" />
+            <TextField fx:id="toppingT" layoutX="12.0" layoutY="95.0" prefHeight="20.0" prefWidth="54.0" />
+            <TextField fx:id="toppingC" layoutX="12.0" layoutY="173.0" prefHeight="20.0" prefWidth="54.0" />
+            <TextField fx:id="toppingCC" layoutX="12.0" layoutY="147.0" prefHeight="20.0" prefWidth="54.0" />
+            <TextField fx:id="toppingTC" layoutX="12.0" layoutY="121.0" prefHeight="20.0" prefWidth="54.0" />
+         </children>
+      </Pane>
+   </Pane>
+   <Button fx:id="btnAceptar" layoutX="118.0" layoutY="440.0" mnemonicParsing="false" onAction="#aceptarPedido">
       <graphic>
          <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
             <Image url="@../image/accept.png" />
@@ -75,7 +100,7 @@
          -fx-background-color: transparent; -fx-text-fill: white;
       </style>
    </Button>
-   <Button fx:id="btnCancelar" layoutX="269.0" layoutY="435.0" mnemonicParsing="false" onAction="#closeWindow">
+   <Button fx:id="btnCancelar" layoutX="269.0" layoutY="440.0" mnemonicParsing="false" onAction="#closeWindow">
       <graphic>
          <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
             <Image url="@../image/cancel.png" />
@@ -85,6 +110,4 @@
          -fx-background-color: transparent; -fx-text-fill: white;
       </style>
    </Button>
-   <Label layoutX="30.0" layoutY="341.0" text="Observaciones" />
-   <TextArea fx:id="txtObservaciones" layoutX="30.0" layoutY="361.0" prefHeight="69.0" prefWidth="386.0" wrapText="true"/>
 </AnchorPane>

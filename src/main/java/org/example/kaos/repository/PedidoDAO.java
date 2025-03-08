@@ -9,10 +9,10 @@ import org.example.kaos.entity.Pedido;
 import org.json.JSONArray;
 
 public class PedidoDAO {
-    public boolean insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
-        boolean exito = false;
+    public int insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson, JSONArray detallesExtraJson) {
+        int pedidoId = -1;
         try (Connection conn = DataBase.getConnection()) {
-            CallableStatement stmt = conn.prepareCall("{call CrearPedidoConDetallesYtoppings(?, ?, ?, ?, ?, ?, ?, ?)}");
+            CallableStatement stmt = conn.prepareCall("{call CrearPedidoConDetallesYtoppings(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, nombreCliente);
             stmt.setString(2, direccion);
             stmt.setTimestamp(3, fecha);
@@ -20,23 +20,25 @@ public class PedidoDAO {
             stmt.setDouble(5, costoEnvio);
             stmt.setDouble(6, precioTotal);
             stmt.setString(7, detallesJson.toString());
-            stmt.registerOutParameter(8, Types.INTEGER);
+            stmt.setString(8, detallesExtraJson.toString());
+            stmt.registerOutParameter(9, Types.INTEGER);
+            stmt.registerOutParameter(10, Types.INTEGER);
             stmt.execute();
 
-            int filasAfectadas = stmt.getInt(8);
+            int filasAfectadas = stmt.getInt(9);
             System.out.println("Filas afectadas: " + filasAfectadas);
+            pedidoId = stmt.getInt(10);
+            System.out.println("Pedido insertado con ID: " + pedidoId);
 
-            exito = filasAfectadas > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return exito;
+        return pedidoId;
     }
 
     public List<Pedido> getAllPedidos() {
         List<Pedido> pedidos = new ArrayList<>();
         String sql = "SELECT * FROM pedido ";
-        //sql += "WHERE DATE(fecha) = CURRENT_DATE";
         sql += "Order by fecha DESC";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

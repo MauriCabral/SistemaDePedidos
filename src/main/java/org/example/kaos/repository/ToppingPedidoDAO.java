@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ToppingPedidoDAO {
-    public List<ToppingPedido> getToppingByDetallePedidoId(int DetallePedidoId) throws SQLException {
-        List<ToppingPedido> toppingPedidos = new ArrayList<>();
 
+    public static List<ToppingPedido> getToppingByDetallePedidoId(int DetallePedidoId) throws SQLException {
+        List<ToppingPedido> toppingPedidos = new ArrayList<>();
         String query = "SELECT * FROM topping_pedido WHERE detalle_pedido_id = ?";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -23,10 +23,9 @@ public class ToppingPedidoDAO {
 
                 toppingPedidos.add(new ToppingPedido(id, idDetallePedido, idTopping, agregado));
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    return toppingPedidos;
+        return toppingPedidos;
     }
 }

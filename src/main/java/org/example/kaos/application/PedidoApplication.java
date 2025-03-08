@@ -5,10 +5,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.example.kaos.controller.DatoClienteController;
-import org.example.kaos.controller.DetalleController;
-import org.example.kaos.controller.DetallePedidoHistoricoController;
-import org.example.kaos.controller.HamburguesaController;
+import org.example.kaos.controller.*;
+import org.example.kaos.entity.Extra;
 import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.Pedido;
 import org.example.kaos.service.DetalleService;
@@ -90,6 +88,23 @@ public class PedidoApplication {
                 stage.setTitle("Agregar Hamburguesa");
             }
             stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void openExtraPromo() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/ExtraYPromo.fxml"));
+            Parent root = loader.load();
+            ExtraPromoController controller = loader.getController();
+            controller.setPedidoService(pedidoService);
+            controller.cargarCombos();
+            Stage stage = new Stage();
+            stage.setTitle("Extra");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root, 320, 280));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
