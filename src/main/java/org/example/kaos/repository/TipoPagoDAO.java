@@ -4,9 +4,30 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.example.kaos.entity.TipoPago;
 
 public class TipoPagoDAO {
+    public static ObservableList<TipoPago> getAllFPago() {
+        ObservableList<TipoPago> tipoPagoCbo = FXCollections.observableArrayList();
+        String sql = "SELECT id, nombre FROM tipo_pago";
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String nombre = rs.getString("nombre");
+                    TipoPago tipoPago = new TipoPago(id, nombre);
+                    tipoPagoCbo.add(tipoPago);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tipoPagoCbo;
+    }
+
     public List<TipoPago> getAllTipoPago() {
         List<TipoPago> tipoPagos = new ArrayList<>();
         String sql = "SELECT * FROM tipo_pago";

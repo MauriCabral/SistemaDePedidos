@@ -2,8 +2,6 @@ package org.example.kaos.entity;
 
 import org.example.kaos.repository.ExtraPromoDAO;
 
-import java.util.List;
-
 public class DetallePedido {
     private int id;
     private int id_pedido;

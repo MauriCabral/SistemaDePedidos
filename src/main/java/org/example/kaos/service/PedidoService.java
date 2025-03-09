@@ -17,28 +17,20 @@ import org.example.kaos.repository.TipoPagoDAO;
 import org.json.JSONArray;
 
 public class PedidoService {
-    private final HamburguesaDAO hamburguesaDAO;
-    private final HamburguesaTipoDAO hamburguesaTipoDAO;
+    private final HamburguesaDAO hamburguesaDAO = new HamburguesaDAO();
+    private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
     private final PedidoDAO pedidoDAO = new PedidoDAO();
     private static final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
     private PedidoController pedidoController;
 
-    private final List<DetallePedido> detallesPedidosList;
-    private final List<ToppingPedido> detalleToppingPedidoList;
-    private List<Topping> toppingList;
-    private List<Extra> listaDetalleExtra;
-    private List<DetallePedido> detallesExtraPedidosList;
+    private final List<DetallePedido> detallesPedidosList = new ArrayList<>();
+    private final List<ToppingPedido> detalleToppingPedidoList = new ArrayList<>();
+    private List<Topping> toppingList = new ArrayList<>();
+    private List<Extra> listaDetalleExtra = new ArrayList<>();
+    private List<DetallePedido> detallesExtraPedidosList = new ArrayList<>();
     private Map<Integer, List<Topping>> toppingsPorDetalle = new HashMap<>();
 
-    public PedidoService(HamburguesaDAO hamburguesaDAO, HamburguesaTipoDAO hamburguesaTipoDAO) {
-        this.hamburguesaDAO = hamburguesaDAO;
-        this.hamburguesaTipoDAO = hamburguesaTipoDAO;
-        this.detallesPedidosList = new ArrayList<>();
-        this.detalleToppingPedidoList = new ArrayList<>();
-        this.toppingList = new ArrayList<>();
-        this.listaDetalleExtra = new ArrayList<>();
-        this.detallesExtraPedidosList = new ArrayList<>();
-    }
+    public PedidoService(HamburguesaDAO hamburguesaDAO, HamburguesaTipoDAO hamburguesaTipoDAO) {}
 
     public PedidoService() {
         this(new HamburguesaDAO(), new HamburguesaTipoDAO());
@@ -98,8 +90,8 @@ public class PedidoService {
         return detalleToppingPedidoList;
     }
 
-    public int insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson, JSONArray detallesExtraJson) {
-        int idPedido = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson, detallesExtraJson);
+    public int insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
+        int idPedido = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson);
         return idPedido;
     }
 
@@ -197,10 +189,6 @@ public class PedidoService {
         this.toppingList = listTopping;
     }
 
-    public List<Topping> getToppingList(){
-        return toppingList;
-    }
-
     public void addDetalleExtra(List<Extra> extraList) {
         listaDetalleExtra.addAll(extraList);
     }
@@ -230,16 +218,6 @@ public class PedidoService {
         this.listaDetalleExtra = extraList;
     }
 
-    public List<DetallePedido> getDetalleExtra() {
-        return detallesExtraPedidosList;
-    }
-
-    public DetallePedido addDetalleExtraPedido(int id, int cantidad, int precio, int idExtra) {
-        DetallePedido detallePedidoExtra = new DetallePedido(id, cantidad, precio, idExtra);
-        detallesExtraPedidosList.add(detallePedidoExtra);
-        return detallePedidoExtra;
-    }
-
     public void agregarToppingsADetalle(int detalleId, List<Topping> toppings) {
         toppingsPorDetalle.put(detalleId, toppings);
         System.out.println("Toppings almacenados para detalle " + detalleId + ": " + toppings);
@@ -254,5 +232,15 @@ public class PedidoService {
     public void agregarDetallePedido(DetallePedido detallePedido) {
         detallesPedidosList.add(detallePedido);
         System.out.println("Detalle agregado: " + detallePedido);
+    }
+
+    public List<Pedido> buscarPedidosPorNombre(String nombre) {
+        List<Pedido> pedidoBuscar = PedidoDAO.getPedidoByName(nombre);
+        return pedidoBuscar;
+    }
+
+    public int updateFPagoPedido(int id, int fPago) {
+        int res = PedidoDAO.setFPagpPedido(id, fPago);
+        return res;
     }
 }

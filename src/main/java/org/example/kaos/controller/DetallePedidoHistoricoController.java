@@ -1,22 +1,24 @@
 package org.example.kaos.controller;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.example.kaos.entity.*;
 import org.example.kaos.repository.*;
 import org.example.kaos.service.ExtraService;
+import org.example.kaos.service.FormaPagoService;
 import org.example.kaos.service.PedidoService;
+import org.example.kaos.service.ToppingService;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -26,14 +28,27 @@ public class DetallePedidoHistoricoController implements Initializable {
     private VBox vboxPedidosDetalle;
     @FXML
     private Button btnCancelar;
+    @FXML
+    private ComboBox comboFPago;
+    @FXML
+    private Pane panelEditarPedido;
+    @FXML
+    private TextField nombrePedido, direcPedido;
+    @FXML
+    private Label lblTitulo;
+    @FXML
+    private ScrollPane detalleScroll;
 
     private final DetallePedidoDAO detallePedidoDAO = new DetallePedidoDAO();
     private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
     private final HamburguesaDAO hamburguesaDAO = new HamburguesaDAO();
     private final ToppingPedidoDAO toppingPedidoDAO = new ToppingPedidoDAO();
-    private final ToppingDAO toppingDAO = new ToppingDAO();
+    private final ToppingService toppingService = new ToppingService();
     private PedidoService pedidoService;
-    private ExtraService extraService = new ExtraService();
+    private final ExtraService extraService = new ExtraService();
+    private final FormaPagoService formaPagoservice = new FormaPagoService();
+
+    int idPedido = 0;
 
     public DetallePedidoHistoricoController() {}
 
@@ -46,81 +61,75 @@ public class DetallePedidoHistoricoController implements Initializable {
         this.pedidoService = pedidoService;
     }
 
-    public void cargarDetallePedido(int id) {
-        try {
-            Pedido pedido = pedidoService.getPedidoId(id);
-            List<DetallePedido> detallesPedido = detallePedidoDAO.getDetallesByPedidoId(pedido.getId());
-            vboxPedidosDetalle.getChildren().clear();
-            for (DetallePedido detallePedido : detallesPedido) {
-                VBox detalleBox = new VBox(10);
-                detalleBox.setPadding(new Insets(5));
-                detalleBox.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-radius: 5; -fx-border-color: #dcdcdc;");
-                if(detallePedido.getTipoHamburguesa() > 0) {
-                    HamburguesaTipo hamburguesaTipo = hamburguesaTipoDAO.getHamburguesaTipoByID(detallePedido.getTipoHamburguesa());
-                    Hamburguesa hamburguesa = hamburguesaDAO.getMenuById(hamburguesaTipo.getHamburguesa_id());
-                    HBox hamburguesaBox = new HBox(20);
-                    hamburguesaBox.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-radius: 5; -fx-border-color: #dcdcdc;");
-                    Label labelTipo = new Label("Hamburguesa: " + hamburguesa.getNombre());
-                    labelTipo.setFont(new Font(16));
-                    labelTipo.setTextFill(Color.BLACK);
-                    Label labelCantidad = new Label("Cantidad: " + detallePedido.getCantidad());
-                    labelCantidad.setFont(new Font(16));
-                    labelCantidad.setTextFill(Color.BLACK);
-                    Label labelPrecio = new Label("Precio: $" + detallePedido.getPrecio_unitario());
-                    labelPrecio.setFont(new Font(16));
-                    labelPrecio.setTextFill(Color.BLACK);
-                    hamburguesaBox.getChildren().addAll(labelTipo, labelCantidad, labelPrecio);
-                    vboxPedidosDetalle.getChildren().add(hamburguesaBox);
-                }
-                if (detallePedido.getObservacion() != null && !detallePedido.getObservacion().isEmpty()) {
-                    Label labelObservacion = new Label("Observación: " + detallePedido.getObservacion());
-                    labelObservacion.setFont(new Font(14));
-                    labelObservacion.setTextFill(Color.DARKBLUE);
-                    detalleBox.getChildren().add(labelObservacion);
-                }
-                List<ToppingPedido> toppingPedidosList = toppingPedidoDAO.getToppingByDetallePedidoId(detallePedido.getId());
-                VBox toppingsBox = new VBox(5);
-                for (ToppingPedido toppingPedido : toppingPedidosList) {
-                    Topping topping = null;
-                    try {
-                        topping = toppingDAO.getToppingById(toppingPedido.getIdTopping(), toppingPedido.isAgregado());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    Label toppingLabel;
-                    if (topping != null) {
-                        if (toppingPedido.isAgregado()) {
-                            toppingLabel = new Label("Topping: " + topping.getNombre() + " - Precio: $" + topping.getPrecio());
-                            toppingLabel.setTextFill(Color.GREEN);
-                        } else {
-                            toppingLabel = new Label("Sin Topping: " + topping.getNombre());
-                            toppingLabel.setTextFill(Color.RED);
-                        }
-                    } else {
-                        toppingLabel = new Label("Sin Topping");
-                        toppingLabel.setTextFill(Color.GRAY);
-                    }
-                    toppingLabel.setFont(new Font(14));
-                    toppingsBox.getChildren().add(toppingLabel);
-                }
-                if (!toppingsBox.getChildren().isEmpty()) {
-                    detalleBox.getChildren().add(toppingsBox);
-                }
-                for (DetallePedido detallePedido1 : detallesPedido) {
-                    Label extra = null;
-                    if (detallePedido1.getExtra_id() > 0) {
-                        Extra extras;
-                        extras = extraService.getExtra(detallePedido1.getExtra_id());
-                        extra = new Label("Extra: " + extras.getNombre() + " - Precio: $" + extras.getPrecio());
-                        extra.setTextFill(Color.ORANGE);
-                        extra.setFont(new Font(14));
-                        toppingsBox.getChildren().add(extra);
-                    }
-                }
-                vboxPedidosDetalle.getChildren().add(detalleBox);
+    public void cargarDetallePedido(int id, boolean editar) {
+        if(!editar) {
+            panelEditarPedido.setVisible(false);
+        }
+        Pedido pedido = pedidoService.getPedidoId(id);
+        List<DetallePedido> detallesPedido = detallePedidoDAO.getDetallesByPedidoId(pedido.getId());
+        vboxPedidosDetalle.getChildren().clear();
+        for (DetallePedido detallePedido : detallesPedido) {
+            VBox detalleBox = new VBox(10);
+            detalleBox.setPadding(new Insets(5));
+            detalleBox.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-radius: 5; -fx-border-color: #dcdcdc;");
+            if(detallePedido.getTipoHamburguesa() > 0) {
+                HamburguesaTipo hamburguesaTipo = hamburguesaTipoDAO.getHamburguesaTipoByID(detallePedido.getTipoHamburguesa());
+                Hamburguesa hamburguesa = hamburguesaDAO.getMenuById(hamburguesaTipo.getHamburguesa_id());
+                HBox hamburguesaBox = new HBox(20);
+                hamburguesaBox.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-radius: 5; -fx-border-color: #dcdcdc;");
+                Label labelTipo = new Label("Hamburguesa: " + hamburguesa.getNombre());
+                labelTipo.setFont(new Font(16));
+                labelTipo.setTextFill(Color.BLACK);
+                Label labelCantidad = new Label("Cantidad: " + detallePedido.getCantidad());
+                labelCantidad.setFont(new Font(16));
+                labelCantidad.setTextFill(Color.BLACK);
+                Label labelPrecio = new Label("Precio: $" + detallePedido.getPrecio_unitario());
+                labelPrecio.setFont(new Font(16));
+                labelPrecio.setTextFill(Color.BLACK);
+                hamburguesaBox.getChildren().addAll(labelTipo, labelCantidad, labelPrecio);
+                vboxPedidosDetalle.getChildren().add(hamburguesaBox);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            if (detallePedido.getObservacion() != null && !detallePedido.getObservacion().isEmpty()) {
+                Label labelObservacion = new Label("Observación: " + detallePedido.getObservacion());
+                labelObservacion.setFont(new Font(14));
+                labelObservacion.setTextFill(Color.DARKBLUE);
+                detalleBox.getChildren().add(labelObservacion);
+            }
+            List<ToppingPedido> toppingPedidosList = toppingPedidoDAO.getToppingByDetallePedidoId(detallePedido.getId());
+            VBox toppingsBox = new VBox(5);
+            for (ToppingPedido toppingPedido : toppingPedidosList) {
+                Topping topping = toppingService.getToppingById(toppingPedido.getIdTopping(), toppingPedido.isAgregado());
+                Label toppingLabel;
+                if (topping != null) {
+                    if (toppingPedido.isAgregado()) {
+                        toppingLabel = new Label("Topping: " + topping.getNombre() + " - Precio: $" + topping.getPrecio());
+                        toppingLabel.setTextFill(Color.GREEN);
+                    } else {
+                        toppingLabel = new Label("Sin Topping: " + topping.getNombre());
+                        toppingLabel.setTextFill(Color.RED);
+                    }
+                } else {
+                    toppingLabel = new Label("Sin Topping");
+                    toppingLabel.setTextFill(Color.GRAY);
+                }
+                toppingLabel.setFont(new Font(14));
+                toppingsBox.getChildren().add(toppingLabel);
+            }
+            if (!toppingsBox.getChildren().isEmpty()) {
+                detalleBox.getChildren().add(toppingsBox);
+            }
+            for (DetallePedido detallePedido1 : detallesPedido) {
+                Label extra = null;
+                if (detallePedido1.getExtra_id() > 0) {
+                    Extra extras;
+                    extras = extraService.getExtra(detallePedido1.getExtra_id());
+                    extra = new Label("Extra: " + extras.getNombre() + " - Precio: $" + extras.getPrecio());
+                    extra.setTextFill(Color.ORANGE);
+                    extra.setFont(new Font(14));
+                    toppingsBox.getChildren().add(extra);
+                }
+            }
+            vboxPedidosDetalle.getChildren().add(detalleBox);
         }
     }
 
@@ -131,4 +140,52 @@ public class DetallePedidoHistoricoController implements Initializable {
             stage.close();
         }
     }
+
+    public void aceptarPedido(ActionEvent actionEvent) {
+        TipoPago tipoPago = (TipoPago) comboFPago.getSelectionModel().getSelectedItem();
+        int res = pedidoService.updateFPagoPedido(idPedido, tipoPago.getId());
+        if (res > 0){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setContentText("Forma de pago actualizada.");
+            alert.showAndWait();
+
+            this.closeWindow();
+        }
+    }
+
+    public void cargarEditarPedido(Pedido pedido, boolean editar) {
+        if(editar){
+            idPedido = pedido.getId();
+            botonesIniciar(true);
+            comboFPago.setItems(formaPagoservice.getFPago());
+
+            nombrePedido.setText(pedido.getCliente_nombre());
+            direcPedido.setText(pedido.getDireccion());
+
+            nombrePedido.setDisable(true);
+            direcPedido.setDisable(true);
+
+            int idPagoPedido = pedido.getId_pago();
+            for (TipoPago formaPago : formaPagoservice.getFPago()) {
+                if (formaPago.getId() == idPagoPedido) {
+                    comboFPago.getSelectionModel().select(formaPago);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void botonesIniciar(boolean visible) {
+        panelEditarPedido.setVisible(visible);
+        if (visible) {
+            panelEditarPedido.toFront();
+        } else {
+            detalleScroll.toFront();
+        }
+        lblTitulo.setVisible(!visible);
+        detalleScroll.setVisible(!visible);
+        btnCancelar.setVisible(!visible);
+    }
+
 }

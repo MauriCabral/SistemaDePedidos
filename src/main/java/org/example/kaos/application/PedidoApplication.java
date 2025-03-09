@@ -60,13 +60,17 @@ public class PedidoApplication {
         }
     }
 
-    public void abrirVentanaDetallePedido(Pedido pedido) {
+    public void abrirVentanaDetallePedido(Pedido pedido, boolean editar) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/kaos/window/DetallePedidoHistorico.fxml"));
             Parent root = loader.load();
             DetallePedidoHistoricoController detalleController = loader.getController();
             detalleController.setPedidoService(this.pedidoService);
-            detalleController.cargarDetallePedido(pedido.getId());
+            if(!editar) {
+                detalleController.cargarDetallePedido(pedido.getId(), editar);
+            } else {
+                detalleController.cargarEditarPedido(pedido, editar);
+            }
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();

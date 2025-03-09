@@ -14,7 +14,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.File;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -35,16 +34,14 @@ public class PedidoController {
     private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
     private final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
     private boolean deleteButtonsVisible = false;
-    private List<DetallePedido> detallesPedidosList;
-    private List<Extra> extraList;
-    private List<DetallePedido> detalleExtraList;
-    private PedidoService pedidoService;
-    private DetalleService detalleService;
+    private List<DetallePedido> detallesPedidosList = new ArrayList<>();
+    private List<Extra> extraList = new ArrayList<>();
+    private List<DetallePedido> detalleExtraList = new ArrayList<>();
+    private PedidoService pedidoService = new PedidoService();
+    private DetalleService detalleService = new DetalleService();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    private static int detalleId = 0, indexExtra = 0;;
+    private static int detalleId = 0;;
     private List<Topping> listTopping = new ArrayList<>();
-
-    double total = 0;
 
     @FXML
     private Pane menuPane, rightPane, pnHistorico;
@@ -72,7 +69,7 @@ public class PedidoController {
     private TableColumn<Pedido, Integer> colTotal;
 
     @FXML
-    private TextField idPedido;
+    private TextField nombreCliente;
     @FXML
     private ImageView editando;
     @FXML
@@ -84,13 +81,6 @@ public class PedidoController {
         rightPane.setVisible(false);
         pnHistorico.setVisible(false);
 
-        detallesPedidosList = new ArrayList<>();
-        extraList = new ArrayList<>();
-        if (pedidoService == null) {
-            pedidoService = new PedidoService();
-        }
-        detalleService = new DetalleService();
-        detalleExtraList = new ArrayList<>();
         pedidoService.setPedidoController(this);
     }
 
@@ -179,6 +169,16 @@ public class PedidoController {
         pedidoService.agregarDetallePedido(detallePedido);
 
         pedidoService.agregarToppingsADetalle(detalleId, toppingList);
+
+        /*for(Topping top : toppingList){
+            if(top.getPrecio() != null) {
+                ToppingPedido toppingPedido = new ToppingPedido(0, detalleId, top.getId(), true);
+                pedidoService.agregarToppingsADetalle1(toppingPedido);
+            } else {
+                ToppingPedido toppingPedido = new ToppingPedido(0, detalleId, top.getId(), false);
+                pedidoService.agregarToppingsADetalle1(toppingPedido);
+            }
+        }*/
 
         detalleId++;
 
@@ -357,7 +357,7 @@ public class PedidoController {
             if (event.getClickCount() == 2) {
                 Pedido selectedItem = tableHistorico.getSelectionModel().getSelectedItem();
                 if (selectedItem != null) {
-                    pedidoApp.abrirVentanaDetallePedido(selectedItem);
+                    pedidoApp.abrirVentanaDetallePedido(selectedItem, false);
                 }
             }
         });
@@ -429,32 +429,17 @@ public class PedidoController {
     }
 
     public void search(ActionEvent actionEvent) {
-        filtrarPedidosPorId();
+        filtrarPedidosPorNombre();
     }
 
     @FXML
-    private void filtrarPedidosPorId() {
-        List<Pedido> pedidos = pedidoService.getAllPedidos();
-        String idTexto = idPedido.getText().trim();
-        if (!idTexto.isEmpty()) {
-            try {
-                int id = Integer.parseInt(idTexto);
-                ObservableList<Pedido> filteredList = FXCollections.observableArrayList();
-                for (Pedido pedido : pedidos) {
-                    if (pedido.getId() == id) {
-                        filteredList.add(pedido);
-                    }
-                }
-                tableHistorico.setItems(filteredList);
-            } catch (NumberFormatException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error de Entrada");
-                alert.setHeaderText(null);
-                alert.setContentText("Por favor ingrese un ID de pedido válido.");
-                alert.showAndWait();
-            }
-        } else {
+    private void filtrarPedidosPorNombre() {
+        String nombre = nombreCliente.getText().trim();
+        if(!nombre.isEmpty()) {
+            List<Pedido> pedidos = pedidoService.buscarPedidosPorNombre(nombre);
             tableHistorico.setItems(FXCollections.observableArrayList(pedidos));
+        } else {
+            filtrarPedidosDaily(chkHoy.isSelected());
         }
     }
 
@@ -510,32 +495,33 @@ public class PedidoController {
     public void actualizarDetalleExtras(int contPapas, int contPromo, int contSalsa, List<Extra> ListaExtra) {
         VBox vBoxExtras = new VBox(5);
         vBoxExtras.setPadding(new Insets(2, 8, 0, 8));
-        int idActual = indexExtra;
+        int idActual = detalleId;
         if (contPapas > 0) {
             Extra extraPapa = detalleService.getExtraById(1);
-            Label lblPapasTitulo = new Label("(x" + contPapas + ") Papas Extra" + " " + "($" + extraPapa.getPrecio() + ")");
+            Label lblPapasTitulo = new Label("(x" + contPapas + ") Papas Extra" + " " + "($" + (contPapas * extraPapa.getPrecio()) + ")");
             vBoxExtras.getChildren().add(lblPapasTitulo);
 
-            detalleExtraList.add(pedidoService.addDetalleExtraPedido(idActual, contPapas, extraPapa.getPrecio(), extraPapa.getId_extra()));
-            extraList.add(extraPapa);
+            DetallePedido detallePedido = new DetallePedido(detalleId, contPapas, (contPapas * extraPapa.getPrecio()), extraPapa.getId_extra());
+            detallesPedidosList.add(detallePedido);
+            pedidoService.agregarDetallePedido(detallePedido);
         }
-        if(!extraList.isEmpty()){
-            for(Extra extralist1 : ListaExtra){
-                if(extralist1.getId_tipo() == 2){
-                    Label lblSalsasTitulo = new Label("(x" + contSalsa + ") Salsa Extra: " + extralist1.getNombre() + " " + "($" + extralist1.getPrecio() + ")");
-                    vBoxExtras.getChildren().add(lblSalsasTitulo);
-                    detalleExtraList.add(pedidoService.addDetalleExtraPedido(idActual, contSalsa, extralist1.getPrecio(), extralist1.getId_extra()));
-                    extraList.add(extralist1);
-                }
-                else if(extralist1.getId_tipo() == 3){
-                    Label lblPromoTitulo = new Label("(x" + contPromo + ") Promo: " + extralist1.getNombre() + " " + "($" + extralist1.getPrecio() + ")");
-                    vBoxExtras.getChildren().add(lblPromoTitulo);
-                    detalleExtraList.add(pedidoService.addDetalleExtraPedido(idActual, contPromo, extralist1.getPrecio(), extralist1.getId_extra()));
-                    extraList.add(extralist1);
-                }
+        for(Extra extralist1 : ListaExtra){
+            if(extralist1.getId_tipo() == 2){
+                Label lblSalsasTitulo = new Label("(x" + contSalsa + ") Salsa Extra " + extralist1.getNombre() + " " + "($" + (contSalsa * extralist1.getPrecio()) + ")");
+                vBoxExtras.getChildren().add(lblSalsasTitulo);
+                DetallePedido detallePedido = new DetallePedido(detalleId, contSalsa, (contSalsa * extralist1.getPrecio()), extralist1.getId_extra());
+                detallesPedidosList.add(detallePedido);
+                pedidoService.agregarDetallePedido(detallePedido);
+            }
+            else if(extralist1.getId_tipo() == 3){
+                Label lblPromoTitulo = new Label("(x" + contPromo + ") Promo " + extralist1.getNombre() + " " + "($" + (contPromo * extralist1.getPrecio()) + ")");
+                vBoxExtras.getChildren().add(lblPromoTitulo);
+                DetallePedido detallePedido = new DetallePedido(detalleId, contPapas, (contPromo * extralist1.getPrecio()), extralist1.getId_extra());
+                detallesPedidosList.add(detallePedido);
+                pedidoService.agregarDetallePedido(detallePedido);
             }
         }
-        indexExtra++;
+        detalleId++;
 
         pedidoService.addDetalleExtra(extraList);
         int precioTotal = (int) pedidoService.actualizarTotal();
@@ -572,6 +558,20 @@ public class PedidoController {
         vBoxExtras.getChildren().add(deleteButton);
         if (contPapas > 0 || ListaExtra.stream().count() > 0) {
             detallePedidos.getChildren().add(vBoxExtras);
+        }
+    }
+
+    public void editarPedido(ActionEvent actionEvent) {
+        Pedido selectedItem = tableHistorico.getSelectionModel().getSelectedItem();
+
+        if (selectedItem != null) {
+            pedidoApp.abrirVentanaDetallePedido(selectedItem, true);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Advertencia");
+            alert.setHeaderText(null);
+            alert.setContentText("Por favor, seleccione un pedido para editar.");
+            alert.showAndWait();
         }
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ToppingPedidoDAO {
 
-    public static List<ToppingPedido> getToppingByDetallePedidoId(int DetallePedidoId) throws SQLException {
+    public static List<ToppingPedido> getToppingByDetallePedidoId(int DetallePedidoId) {
         List<ToppingPedido> toppingPedidos = new ArrayList<>();
         String query = "SELECT * FROM topping_pedido WHERE detalle_pedido_id = ?";
         try (Connection conn = DataBase.getConnection();
@@ -20,7 +20,6 @@ public class ToppingPedidoDAO {
                 int idDetallePedido = rs.getInt("detalle_pedido_id");
                 int idTopping = rs.getInt("topping_id");
                 boolean agregado = rs.getInt("agregado") == 1;
-
                 toppingPedidos.add(new ToppingPedido(id, idDetallePedido, idTopping, agregado));
             }
         } catch (SQLException e) {

@@ -9,10 +9,52 @@ import org.example.kaos.entity.Pedido;
 import org.json.JSONArray;
 
 public class PedidoDAO {
-    public int insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson, JSONArray detallesExtraJson) {
+    public static List<Pedido> getPedidoByName(String nombre) {
+        List<Pedido> pedidos = new ArrayList<>();
+        String sql = "SELECT * FROM pedido WHERE LOWER(cliente_nombre) LIKE LOWER(?)";
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + nombre + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String clienteNombre = rs.getString("cliente_nombre");
+                String direccion = rs.getString("direccion");
+                LocalDateTime fechaPedido = rs.getTimestamp("fecha").toLocalDateTime();
+                int idPago = rs.getInt("id_tipo_pago");
+                int precioEnvio = rs.getInt("precio_envio");
+                double precioTotal = rs.getDouble("precio_total");
+
+                Pedido pedido = new Pedido(id, clienteNombre, direccion, fechaPedido, idPago, precioEnvio, precioTotal);
+                pedidos.add(pedido);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return pedidos;
+    }
+
+    public static int setFPagpPedido(int id, int fPago) {
+        int actualizado = -1;
+        try (Connection conn = DataBase.getConnection()) {
+            CallableStatement stmt = conn.prepareCall("{call SetFPagoPedido(?, ?, ?)}");
+            stmt.setInt(1, id);
+            stmt.setInt(2, fPago);
+
+            stmt.registerOutParameter(3, Types.INTEGER);
+            stmt.execute();
+            actualizado = stmt.getInt(3);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return actualizado;
+    }
+
+    public int insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
         int pedidoId = -1;
         try (Connection conn = DataBase.getConnection()) {
-            CallableStatement stmt = conn.prepareCall("{call CrearPedidoConDetallesYtoppings(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            CallableStatement stmt = conn.prepareCall("{call CrearPedidoConDetallesYtoppings(?, ?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, nombreCliente);
             stmt.setString(2, direccion);
             stmt.setTimestamp(3, fecha);
@@ -20,14 +62,10 @@ public class PedidoDAO {
             stmt.setDouble(5, costoEnvio);
             stmt.setDouble(6, precioTotal);
             stmt.setString(7, detallesJson.toString());
-            stmt.setString(8, detallesExtraJson.toString());
-            stmt.registerOutParameter(9, Types.INTEGER);
-            stmt.registerOutParameter(10, Types.INTEGER);
-            stmt.execute();
 
-            int filasAfectadas = stmt.getInt(9);
-            System.out.println("Filas afectadas: " + filasAfectadas);
-            pedidoId = stmt.getInt(10);
+            stmt.registerOutParameter(8, Types.INTEGER);
+            stmt.execute();
+            pedidoId = stmt.getInt(8);
             System.out.println("Pedido insertado con ID: " + pedidoId);
 
         } catch (SQLException e) {

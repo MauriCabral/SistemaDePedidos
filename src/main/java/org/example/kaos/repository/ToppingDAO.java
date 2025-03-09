@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ToppingDAO {
-    public static Topping getToppingById(int toppingId, boolean agregado) throws SQLException {
+    public static Topping getToppingById(int toppingId, boolean agregado) {
         String query = "SELECT * FROM Topping WHERE id = ?";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -17,10 +17,11 @@ public class ToppingDAO {
                 String nombre = rs.getString("nombre");
                 Double precio = agregado ? rs.getDouble("precio") : null;
                 return new Topping(toppingId, nombre, precio);
-            } else {
-                return null;
             }
+        }  catch (SQLException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     public List<Topping> getPreciosToppings() {

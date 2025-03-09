@@ -20,6 +20,7 @@ public class DetalleService {
     private final ToppingDAO toppingDAO = new ToppingDAO();
     private final ExtraPromoDAO extraPromoDAO = new ExtraPromoDAO();
     private final DetallePedidoDAO detallePedidoDAO = new DetallePedidoDAO();
+    private final ToppingService toppingService = new ToppingService();
 
     @FXML
     private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf;
@@ -61,34 +62,30 @@ public class DetalleService {
 
     public List<Topping> getSelectedToppings() {
         List<Topping> toppingList = new ArrayList<>();
-        try {
-            addToppingIfSelected(cmbCheddar, 1, toppingList, true);
-            addToppingIfSelected(cmbBacon, 2, toppingList, true);
-            addToppingIfSelected(cmbLechuga, 3, toppingList, true);
-            addToppingIfSelected(cmbTomate, 4, toppingList, true);
-            addToppingIfSelected(cmbCebolla, 5, toppingList, true);
-            addToppingIfSelected(cmbCebollaCrisp, 6, toppingList, true);
-            addToppingIfSelected(cmbTomateConf, 7, toppingList, true);
-            addToppingIfSelected(cmbCheddar1, 1, toppingList, false);
-            addToppingIfSelected(cmbBacon1, 2, toppingList, false);
-            addToppingIfSelected(cmbLechuga1, 3, toppingList, false);
-            addToppingIfSelected(cmbTomate1, 4, toppingList, false);
-            addToppingIfSelected(cmbCebolla1, 5, toppingList, false);
-            addToppingIfSelected(cmbCebollaCrisp1, 6, toppingList, false);
-            addToppingIfSelected(cmbTomateConf1, 7, toppingList, false);
+        addToppingIfSelected(cmbCheddar, 1, toppingList, true);
+        addToppingIfSelected(cmbBacon, 2, toppingList, true);
+        addToppingIfSelected(cmbLechuga, 3, toppingList, true);
+        addToppingIfSelected(cmbTomate, 4, toppingList, true);
+        addToppingIfSelected(cmbCebolla, 5, toppingList, true);
+        addToppingIfSelected(cmbCebollaCrisp, 6, toppingList, true);
+        addToppingIfSelected(cmbTomateConf, 7, toppingList, true);
+        addToppingIfSelected(cmbCheddar1, 1, toppingList, false);
+        addToppingIfSelected(cmbBacon1, 2, toppingList, false);
+        addToppingIfSelected(cmbLechuga1, 3, toppingList, false);
+        addToppingIfSelected(cmbTomate1, 4, toppingList, false);
+        addToppingIfSelected(cmbCebolla1, 5, toppingList, false);
+        addToppingIfSelected(cmbCebollaCrisp1, 6, toppingList, false);
+        addToppingIfSelected(cmbTomateConf1, 7, toppingList, false);
 
-            if (quitarSalsa.isSelected()) {
-                toppingList.add(new Topping(8, "Salsa"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (quitarSalsa.isSelected()) {
+            toppingList.add(new Topping(8, "Salsa"));
         }
         return toppingList;
     }
 
-    private void addToppingIfSelected(CheckBox checkBox, int id, List<Topping> toppingList, boolean agregado) throws SQLException {
+    private void addToppingIfSelected(CheckBox checkBox, int id, List<Topping> toppingList, boolean agregado) {
         if (checkBox.isSelected()) {
-            toppingList.add(toppingDAO.getToppingById(id, agregado));
+            toppingList.add(toppingService.getToppingById(id, agregado));
         }
     }
 
