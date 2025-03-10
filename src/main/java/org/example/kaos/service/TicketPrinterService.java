@@ -37,7 +37,7 @@ public class TicketPrinterService implements Printable {
         PrinterJob job = PrinterJob.getPrinterJob();
         PrintService[] printers = PrinterJob.lookupPrintServices();
         for (PrintService printer : printers) {
-            if (printer.getName().equals("Microsoft Print to PDF")) {
+            if (printer.getName().equals("POS-80-Series")) {
                 try {
                     job.setPrintService(printer);
                     break;
@@ -48,10 +48,17 @@ public class TicketPrinterService implements Printable {
             }
         }
         job.setPrintable(this);
-        try {
+        /*try {
             job.print();
         } catch (PrinterException e) {
             e.printStackTrace();
+        }*/
+        for (int i = 0; i < 2; i++) {
+            try {
+                job.print();
+            } catch (PrinterException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -73,8 +80,8 @@ public class TicketPrinterService implements Printable {
         int y = 20;
 
         if (logo != null) {
-            g.drawImage(logo, 45, y, 100, 20, null);
-            y += 30;
+            g.drawImage(logo, 45, y, 93, 20, null);
+            y += 40;
         }
 
         g2d.setFont(boldFont);

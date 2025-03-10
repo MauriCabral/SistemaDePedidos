@@ -10,41 +10,35 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="288.0" prefWidth="327.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.ExtraPromoController">
-   <Pane fx:id="panelEditarPromo" layoutX="22.0" layoutY="145.0" prefHeight="80.0" prefWidth="284.0">
-      <children>
-         <ComboBox fx:id="comboBoxPromo1" layoutX="64.0" layoutY="6.5" prefHeight="26.0" prefWidth="130.0" />
-         <TextField fx:id="precioPromo" layoutX="210.0" layoutY="8.0" prefHeight="25.0" prefWidth="51.0" />
-         <TextField fx:id="precioPromoAgregar" layoutX="210.0" layoutY="44.0" prefHeight="25.0" prefWidth="51.0" />
-         <TextField fx:id="nombrePromo" layoutX="66.0" layoutY="44.0" prefHeight="25.0" prefWidth="130.0" />
-         <Label fx:id="labelAgregar" layoutX="6.0" layoutY="47.0" text="Agregar">
-            <font>
-               <Font size="14.0" />
-            </font>
-         </Label>
-      </children>
-   </Pane>
-     <Button fx:id="agregar" layoutX="231.0" layoutY="16.0" onAction="#agregarExtra">
-         <graphic>
-             <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
-                 <Image url="@../image/agregar.png" />
-             </ImageView>
-         </graphic>
-         <style>
-                -fx-background-color: transparent; -fx-text-fill: white;
-            </style>
-     </Button>
-     
-     <Button fx:id="editar" layoutX="273.0" layoutY="16.0" onAction="#editarExtra">
-         <graphic>
-             <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
-                 <Image url="@../image/edit2.png" />
-             </ImageView>
-         </graphic>
-         <style>
-                -fx-background-color: transparent; -fx-text-fill: white;
-        </style>
-     </Button>
+<AnchorPane prefHeight="288.0" prefWidth="327.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.ExtraPromoController" stylesheets="@../style/Style.css">
+    <Pane fx:id="panelEditarPromo" layoutX="22.0" layoutY="145.0" prefHeight="80.0" prefWidth="284.0">
+        <children>
+            <ComboBox fx:id="comboBoxPromo1" layoutX="64.0" layoutY="6.5" prefHeight="26.0" prefWidth="130.0" />
+            <TextField fx:id="precioPromo" layoutX="210.0" layoutY="8.0" prefHeight="25.0" prefWidth="51.0" />
+            <TextField fx:id="precioPromoAgregar" layoutX="210.0" layoutY="44.0" prefHeight="25.0" prefWidth="51.0" />
+            <TextField fx:id="nombrePromo" layoutX="66.0" layoutY="44.0" prefHeight="25.0" prefWidth="130.0" />
+            <Label fx:id="labelAgregar" layoutX="6.0" layoutY="47.0" text="Agregar">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+        </children>
+    </Pane>
+    <Button fx:id="agregar" layoutX="231.0" layoutY="16.0" onAction="#agregarExtra" styleClass="button-transparent">
+        <graphic>
+            <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
+                <Image url="@../image/Recurso 20.png" />
+            </ImageView>
+        </graphic>
+    </Button>
+
+    <Button fx:id="editar" layoutX="273.0" layoutY="16.0" onAction="#editarExtra" styleClass="button-transparent">
+        <graphic>
+            <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
+                <Image url="@../image/Recurso 21.png" />
+            </ImageView>
+        </graphic>
+    </Button>
     <Pane fx:id="panelEdit" layoutX="14.0" layoutY="48.0" prefHeight="179.0" prefWidth="295.0">
         <Label fx:id="counterLabelPapa" layoutX="100.0" layoutY="10.0" prefHeight="18.0" prefWidth="7.0" style="-fx-font-size: 12;" text="0" />
         <Button fx:id="papasMas" layoutX="112.0" layoutY="6.0" onAction="#incrementCounter" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="+" />
@@ -60,39 +54,33 @@
                 <Font size="14.0" />
             </font>
         </Label>
-      <TextField fx:id="precioSalsa" layoutX="215.0" layoutY="57.0" prefHeight="25.0" prefWidth="51.0" />
-    <ComboBox fx:id="comboBoxPromo" layoutX="72.0" layoutY="104.0" prefHeight="26.0" prefWidth="130.0" />
-    <Label fx:id="lblPromo" layoutX="12.0" layoutY="107.0" text="Promo">
-        <font>
-            <Font size="14.0" />
-        </font>
-    </Label>
-    <Label fx:id="counterLabelPromo" layoutX="246.0" layoutY="108.0" prefHeight="18.0" prefWidth="7.0" style="-fx-font-size: 12;" text="0" />
-    <Button fx:id="promoContMas" layoutX="258.0" layoutY="104.0" onAction="#incrementCounterPromo" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="+" />
-    <Button fx:id="promoContMenos" layoutX="214.0" layoutY="104.0" onAction="#decrementCounterPromo" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="-" />
-      <Label fx:id="counterLabelSalsa" layoutX="247.0" layoutY="61.0" prefHeight="18.0" prefWidth="7.0" style="-fx-font-size: 12;" text="0" />
-      <Button fx:id="incrementS" layoutX="259.0" layoutY="57.0" onAction="#incrementCounterS" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="+" />
-      <Button fx:id="decrementS" layoutX="215.0" layoutY="57.0" onAction="#decrementCounterS" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="-" />
-      <TextField fx:id="precioPapa" layoutX="68.0" layoutY="7.0" prefHeight="25.0" prefWidth="51.0" />
+        <TextField fx:id="precioSalsa" layoutX="215.0" layoutY="57.0" prefHeight="25.0" prefWidth="51.0" />
+        <ComboBox fx:id="comboBoxPromo" layoutX="72.0" layoutY="104.0" prefHeight="26.0" prefWidth="130.0" />
+        <Label fx:id="lblPromo" layoutX="12.0" layoutY="107.0" text="Promo">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="counterLabelPromo" layoutX="246.0" layoutY="108.0" prefHeight="18.0" prefWidth="7.0" style="-fx-font-size: 12;" text="0" />
+        <Button fx:id="promoContMas" layoutX="258.0" layoutY="104.0" onAction="#incrementCounterPromo" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="+" />
+        <Button fx:id="promoContMenos" layoutX="214.0" layoutY="104.0" onAction="#decrementCounterPromo" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="-" />
+        <Label fx:id="counterLabelSalsa" layoutX="247.0" layoutY="61.0" prefHeight="18.0" prefWidth="7.0" style="-fx-font-size: 12;" text="0" />
+        <Button fx:id="incrementS" layoutX="259.0" layoutY="57.0" onAction="#incrementCounterS" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="+" />
+        <Button fx:id="decrementS" layoutX="215.0" layoutY="57.0" onAction="#decrementCounterS" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="-" />
+        <TextField fx:id="precioPapa" layoutX="68.0" layoutY="7.0" prefHeight="25.0" prefWidth="51.0" />
     </Pane>
-    <Button fx:id="cancelar" layoutX="185.0" layoutY="230.0" onAction="#cerrar">
+    <Button fx:id="cancelar" layoutX="185.0" layoutY="230.0" onAction="#cerrar" styleClass="button-transparent">
         <graphic>
             <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
-                <Image url="@../image/cancel.png" />
+                <Image url="@../image/Recurso 16.png" />
             </ImageView>
         </graphic>
-        <style>
-            -fx-background-color: transparent; -fx-text-fill: white;
-        </style>
     </Button>
-    <Button fx:id="aceptar" layoutX="90.0" layoutY="230.0" onAction="#aceptar">
+    <Button fx:id="aceptar" layoutX="90.0" layoutY="230.0" onAction="#aceptar" styleClass="button-transparent">
         <graphic>
             <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
-                <Image url="@../image/accept.png" />
+                <Image url="@../image/Recurso 17.png" />
             </ImageView>
         </graphic>
-        <style>
-            -fx-background-color: transparent; -fx-text-fill: white;
-        </style>
     </Button>
 </AnchorPane>

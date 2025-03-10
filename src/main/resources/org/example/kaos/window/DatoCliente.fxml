@@ -8,20 +8,20 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="202.0" prefWidth="241.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.DatoClienteController">
+<VBox prefHeight="202.0" prefWidth="241.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.DatoClienteController" stylesheets="@../style/Style.css">
     <Label text="Nombre del Cliente:" />
     <TextField fx:id="txtNombreCliente" />
     <Label text="Dirección:">
-      <VBox.margin>
-         <Insets top="15.0" />
-      </VBox.margin></Label>
+        <VBox.margin>
+            <Insets top="15.0" />
+        </VBox.margin></Label>
     <TextField fx:id="txtDireccion" />
     <HBox alignment="CENTER_LEFT" spacing="10">
         <Label text="Forma de Pago:" />
         <ComboBox fx:id="cmbFormaPago" layoutX="100.0" layoutY="100.0" />
-      <padding>
-         <Insets top="15.0" />
-      </padding>
+        <padding>
+            <Insets top="15.0" />
+        </padding>
     </HBox>
     <HBox alignment="CENTER_LEFT" spacing="10">
         <Label text="Costo envio:" />
@@ -33,11 +33,11 @@
     <HBox alignment="TOP_CENTER" spacing="10">
         <Button onAction="#aceptarDatos" text="Aceptar" />
         <Button onAction="#cancelarVentana" text="Cancelar" />
-      <padding>
-         <Insets top="20.0" />
-      </padding>
+        <padding>
+            <Insets top="20.0" />
+        </padding>
     </HBox>
-   <padding>
-      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-   </padding>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
 </VBox>

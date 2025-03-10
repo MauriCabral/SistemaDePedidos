@@ -14,7 +14,7 @@ public class PedidoDAO {
         String sql = "SELECT * FROM pedido WHERE LOWER(cliente_nombre) LIKE LOWER(?)";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, "%" + nombre + "%");
+            stmt.setString(1, nombre + "%");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("id");

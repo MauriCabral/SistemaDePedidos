@@ -4,10 +4,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.scene.input.MouseEvent;
 import org.example.kaos.controller.PedidoController;
 import org.example.kaos.manager.ControllerManager;
-import org.example.kaos.manager.Update;
 import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.service.PedidoService;
@@ -30,25 +28,14 @@ public class MainApplication extends Application {
         try {
             pedidoService = new PedidoService(new HamburguesaDAO(), new HamburguesaTipoDAO());
             pedidoApp = new PedidoApplication();
-            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/kaos/window/Main.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 1000, 620);
-            scene.setOnMouseClicked((MouseEvent event) -> {
-                try {
-                    openNewWindow();
-                    stage.close();
-                } catch (IOException e) {
-                    logger.log(Level.SEVERE, "Failed to open new window", e);
-                }
-            });
-            stage.setTitle("Kaos");
-            stage.setScene(scene);
-            stage.show();
+            openNewWindow();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to load the main FXML file", e);
+            logger.log(Level.SEVERE, "Failed to open the pedidos window", e);
         }
     }
 
     private void openNewWindow() throws IOException {
+        // Cargar el archivo FXML de la ventana de pedidos
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/kaos/window/Pedido.fxml"));
         Scene newScene = new Scene(fxmlLoader.load(), 1000, 620);
         PedidoController controller = fxmlLoader.getController();
@@ -57,9 +44,8 @@ public class MainApplication extends Application {
             controller.setPedidoApp(pedidoApp);
             ControllerManager.getInstance().setPedidoController(controller);
         } else {
-            System.out.println("El controlador de pedidos es null.");
+            logger.severe("El controlador de pedidos es null.");
         }
-
         Stage newStage = new Stage();
         newStage.setTitle("Pedidos");
         newStage.setScene(newScene);

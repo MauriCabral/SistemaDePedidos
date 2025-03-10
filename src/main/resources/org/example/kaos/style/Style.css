@@ -1,11 +1,59 @@
-.bodybg{
-    -fx-background-image: url("../image/backgroundMain.png");
-    -fx-background-position: center center;
-    -fx-background-repeat: stretch;
+/* Colores y estilos generales */
+.left-panel {
+    -fx-background-color: #e9500e;
 }
 
-.transparent-scroll-pane {
+.right-panel, .scroll-pane {
+    -fx-background-color: #d3d3d3;
+}
+
+/* Estilos para botones */
+/*.menu-button, .image-button, .icon-button, .button {
+    -fx-text-fill: white;
+}*/
+
+/* Estilos para etiquetas */
+.title-label {
+    -fx-font-size: 24px;
+}
+
+.subtitle-label {
+    -fx-font-size: 13px;
+}
+
+.topping-label, .label {
+    -fx-font-size: 14px;
+}
+
+.counter-label {
+    -fx-font-size: 12px;
+}
+
+/* Estilos para campos de texto y combos */
+.text-field, .combo-box {
+    -fx-pref-height: 26px;
+    -fx-pref-width: 150px;
+}
+
+/* Estilos para botones de contador */
+.counter-button {
+    -fx-font-size: 12px;
+    -fx-pref-height: 25px;
+    -fx-pref-width: 25px;
+}
+
+/* Estilos específicos para iconos */
+/*.icon-button {
+    -fx-text-fill: white;
+}*/
+
+/* Estilos para etiquetas de total */
+.total-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.button-transparent {
     -fx-background-color: transparent;
-    -fx-background: transparent;
-    -fx-background-insets: 0;
+    -fx-text-fill: white;
 }

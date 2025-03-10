@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.DetallePedidoHistoricoController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.DetallePedidoHistoricoController" stylesheets="@../style/Style.css">
     <Label fx:id="lblTitulo" layoutX="14.0" layoutY="14.0" text="Detalle del Pedido">
         <font>
             <Font size="18.0" />
@@ -23,51 +23,45 @@
 
         </VBox>
     </ScrollPane>
-   <Button fx:id="btnCancelar" layoutX="273.0" layoutY="371.0" mnemonicParsing="false" onAction="#closeWindow" text="Cerrar" />
+    <Button fx:id="btnCancelar" layoutX="273.0" layoutY="371.0" mnemonicParsing="false" onAction="#closeWindow" text="Cerrar" />
 
     <Pane fx:id="panelEditarPedido" layoutX="7.0" layoutY="7.0" prefHeight="385.0" prefWidth="587.0">
-       <Button fx:id="aceptar" layoutX="193.0" layoutY="329.0" mnemonicParsing="false" onAction="#aceptarPedido">
-           <graphic>
-               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                   <Image url="@../image/accept.png" />
-               </ImageView>
-           </graphic>
-           <style>
-               -fx-background-color: transparent; -fx-text-fill: white;
-           </style>
-       </Button>
-       <Button fx:id="cancelar" layoutX="344.0" layoutY="329.0" mnemonicParsing="false" onAction="#closeWindow">
-           <graphic>
-               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                   <Image url="@../image/cancel.png" />
-               </ImageView>
-           </graphic>
-           <style>
-               -fx-background-color: transparent; -fx-text-fill: white;
-           </style>
-       </Button>
-      <Label layoutX="13.0" layoutY="9.0" text="Editar Pedido">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label layoutX="22.0" layoutY="62.0" text="Nombre">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <Label layoutX="22.0" layoutY="97.0" text="Dirección">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <Label layoutX="22.0" layoutY="133.0" text="F. Pago">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <TextField fx:id="nombrePedido" layoutX="119.0" layoutY="59.0" />
-      <TextField fx:id="direcPedido" layoutX="118.0" layoutY="94.0" />
-      <ComboBox fx:id="comboFPago" layoutX="118.0" layoutY="130.0" prefWidth="150.0" />
-   </Pane>
+        <Button fx:id="aceptar" layoutX="193.0" layoutY="329.0" mnemonicParsing="false" onAction="#aceptarPedido" styleClass="button-transparent">
+            <graphic>
+                <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../image/Recurso 17.png" />
+                </ImageView>
+            </graphic>
+        </Button>
+        <Button fx:id="cancelar" layoutX="344.0" layoutY="329.0" mnemonicParsing="false" onAction="#closeWindow" styleClass="button-transparent">
+            <graphic>
+                <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../image/Recurso 16.png" />
+                </ImageView>
+            </graphic>
+        </Button>
+        <Label layoutX="13.0" layoutY="9.0" text="Editar Pedido">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Label>
+        <Label layoutX="22.0" layoutY="62.0" text="Nombre">
+            <font>
+                <Font size="13.0" />
+            </font>
+        </Label>
+        <Label layoutX="22.0" layoutY="97.0" text="Dirección">
+            <font>
+                <Font size="13.0" />
+            </font>
+        </Label>
+        <Label layoutX="22.0" layoutY="133.0" text="F. Pago">
+            <font>
+                <Font size="13.0" />
+            </font>
+        </Label>
+        <TextField fx:id="nombrePedido" layoutX="119.0" layoutY="59.0" />
+        <TextField fx:id="direcPedido" layoutX="118.0" layoutY="94.0" />
+        <ComboBox fx:id="comboFPago" layoutX="118.0" layoutY="130.0" prefWidth="150.0" />
+    </Pane>
 </AnchorPane>

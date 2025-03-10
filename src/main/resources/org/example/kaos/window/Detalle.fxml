@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pnlDetalle" prefHeight="482.0" prefWidth="445.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.DetalleController">
+<AnchorPane fx:id="pnlDetalle" prefHeight="482.0" prefWidth="445.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.DetalleController" stylesheets="@../style/Style.css">
    <Pane fx:id="paneleditar" layoutX="6.0" layoutY="8.0" prefHeight="433.0" prefWidth="432.0">
       <Label fx:id="nombre" layoutX="19.0" layoutY="10.0" text="Nombre del Menú">
          <font>
@@ -68,15 +68,12 @@
 
       <Label layoutX="30.0" layoutY="341.0" text="Observaciones" />
       <TextArea fx:id="txtObservaciones" layoutX="30.0" layoutY="361.0" prefHeight="69.0" prefWidth="386.0" wrapText="true" />
-      <Button fx:id="editarTopping" layoutX="388.0" layoutY="11.0" onAction="#editarTopping">
+      <Button fx:id="editarTopping" layoutX="388.0" layoutY="11.0" onAction="#editarTopping" styleClass="button-transparent">
          <graphic>
             <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
-               <Image url="@../image/edit2.png" />
+               <Image url="@../image/Recurso 21.png" />
             </ImageView>
          </graphic>
-         <style>
-            -fx-background-color: transparent; -fx-text-fill: white;
-         </style>
       </Button>
       <Pane fx:id="panelPreciosTopping" layoutX="169.0" layoutY="116.0" prefHeight="216.0" prefWidth="78.0">
          <children>
@@ -90,24 +87,18 @@
          </children>
       </Pane>
    </Pane>
-   <Button fx:id="btnAceptar" layoutX="118.0" layoutY="440.0" mnemonicParsing="false" onAction="#aceptarPedido">
+   <Button fx:id="btnAceptar" layoutX="118.0" layoutY="440.0" mnemonicParsing="false" onAction="#aceptarPedido" styleClass="button-transparent">
       <graphic>
          <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-            <Image url="@../image/accept.png" />
+            <Image url="@../image/Recurso 17.png" />
          </ImageView>
       </graphic>
-      <style>
-         -fx-background-color: transparent; -fx-text-fill: white;
-      </style>
    </Button>
-   <Button fx:id="btnCancelar" layoutX="269.0" layoutY="440.0" mnemonicParsing="false" onAction="#closeWindow">
+   <Button fx:id="btnCancelar" layoutX="269.0" layoutY="440.0" mnemonicParsing="false" onAction="#closeWindow" styleClass="button-transparent">
       <graphic>
          <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-            <Image url="@../image/cancel.png" />
+            <Image url="@../image/Recurso 16.png" />
          </ImageView>
       </graphic>
-      <style>
-         -fx-background-color: transparent; -fx-text-fill: white;
-      </style>
    </Button>
 </AnchorPane>
