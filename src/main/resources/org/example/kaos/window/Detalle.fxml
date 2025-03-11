@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pnlDetalle" prefHeight="482.0" prefWidth="445.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.DetalleController" stylesheets="@../style/Style.css">
+<AnchorPane fx:id="pnlDetalle" prefHeight="482.0" prefWidth="445.0" stylesheets="@../style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.DetalleController">
    <Pane fx:id="paneleditar" layoutX="6.0" layoutY="8.0" prefHeight="433.0" prefWidth="432.0">
       <Label fx:id="nombre" layoutX="19.0" layoutY="10.0" text="Nombre del Menú">
          <font>
@@ -34,13 +34,13 @@
       <Button layoutX="20.0" layoutY="73.0" onAction="#decrementCounter" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="-" />
       <ComboBox fx:id="comboBoxTipo" layoutX="125.0" layoutY="73.0" onAction="#handleComboBoxAction" prefHeight="26.0" prefWidth="130.0" />
       <Label layoutX="19.0" layoutY="112.0" text="Agregar Toppings: " />
-      <Label layoutX="32.0" layoutY="139.0" text="Cheddar" />
-      <Label layoutX="32.0" layoutY="164.0" text="Bacon" />
-      <Label layoutX="32.0" layoutY="189.0" text="Lechuga" />
-      <Label layoutX="32.0" layoutY="214.0" text="Tomate" />
-      <Label layoutX="32.0" layoutY="239.0" text="Cebolla" />
-      <Label layoutX="32.0" layoutY="264.0" text="Cebolla Crispy" />
-      <Label layoutX="32.0" layoutY="289.0" text="Tomate Confitado" />
+      <Label layoutX="19.0" layoutY="139.0" text="Cheddar" />
+      <Label layoutX="19.0" layoutY="164.0" text="Bacon" />
+      <Label layoutX="19.0" layoutY="189.0" text="Lechuga" />
+      <Label layoutX="19.0" layoutY="214.0" text="Tomate" />
+      <Label layoutX="19.0" layoutY="239.0" text="Cebolla" />
+      <Label layoutX="19.0" layoutY="264.0" text="Cebolla Crispy" />
+      <Label layoutX="19.0" layoutY="289.0" text="Tomate Confitado" />
       <CheckBox fx:id="cmbCheddar" layoutX="139.0" layoutY="139.0" mnemonicParsing="false" />
       <CheckBox fx:id="cmbBacon" layoutX="139.0" layoutY="164.0" mnemonicParsing="false" />
       <CheckBox fx:id="cmbLechuga" layoutX="139.0" layoutY="189.0" mnemonicParsing="false" />
@@ -49,14 +49,14 @@
       <CheckBox fx:id="cmbCebollaCrisp" layoutX="139.0" layoutY="264.0" mnemonicParsing="false" />
       <CheckBox fx:id="cmbTomateConf" layoutX="139.0" layoutY="289.0" mnemonicParsing="false" />
       <Label layoutX="276.0" layoutY="112.0" text="Quitar Toppings:" />
-      <Label layoutX="291.0" layoutY="139.0" text="Cheddar" />
-      <Label layoutX="291.0" layoutY="164.0" text="Bacon" />
-      <Label layoutX="291.0" layoutY="189.0" text="Lechuga" />
-      <Label layoutX="291.0" layoutY="214.0" text="Tomate" />
-      <Label layoutX="291.0" layoutY="239.0" text="Cebolla" />
-      <Label layoutX="291.0" layoutY="264.0" text="Cebolla Crispy" />
-      <Label layoutX="291.0" layoutY="289.0" text="Tomate Confitado" />
-      <Label layoutX="291.0" layoutY="314.0" text="Salsa" />
+      <Label layoutX="276.0" layoutY="138.0" text="Cheddar" />
+      <Label layoutX="276.0" layoutY="163.0" text="Bacon" />
+      <Label layoutX="276.0" layoutY="188.0" text="Lechuga" />
+      <Label layoutX="276.0" layoutY="213.0" text="Tomate" />
+      <Label layoutX="276.0" layoutY="238.0" text="Cebolla" />
+      <Label layoutX="276.0" layoutY="263.0" text="Cebolla Crispy" />
+      <Label layoutX="276.0" layoutY="288.0" text="Tomate Confitado" />
+      <Label layoutX="276.0" layoutY="313.0" text="Salsa" />
       <CheckBox fx:id="cmbCheddar1" layoutX="401.0" layoutY="139.0" mnemonicParsing="false" />
       <CheckBox fx:id="cmbBacon1" layoutX="401.0" layoutY="164.0" mnemonicParsing="false" />
       <CheckBox fx:id="cmbLechuga1" layoutX="401.0" layoutY="189.0" mnemonicParsing="false" />
@@ -75,17 +75,19 @@
             </ImageView>
          </graphic>
       </Button>
+
       <Pane fx:id="panelPreciosTopping" layoutX="169.0" layoutY="116.0" prefHeight="216.0" prefWidth="78.0">
          <children>
-            <TextField fx:id="toppingCh" layoutX="12.0" layoutY="17.0" prefHeight="20.0" prefWidth="54.0" />
-            <TextField fx:id="toppingB" layoutX="12.0" layoutY="43.0" prefHeight="20.0" prefWidth="54.0" />
-            <TextField fx:id="toppingL" layoutX="12.0" layoutY="69.0" prefHeight="20.0" prefWidth="54.0" />
-            <TextField fx:id="toppingT" layoutX="12.0" layoutY="95.0" prefHeight="20.0" prefWidth="54.0" />
-            <TextField fx:id="toppingC" layoutX="12.0" layoutY="173.0" prefHeight="20.0" prefWidth="54.0" />
-            <TextField fx:id="toppingCC" layoutX="12.0" layoutY="147.0" prefHeight="20.0" prefWidth="54.0" />
-            <TextField fx:id="toppingTC" layoutX="12.0" layoutY="121.0" prefHeight="20.0" prefWidth="54.0" />
+            <TextField fx:id="toppingCh" layoutX="12.0" layoutY="17.0" prefHeight="20.0" prefWidth="50.0" />
+            <TextField fx:id="toppingB" layoutX="12.0" layoutY="43.0" prefHeight="20.0" prefWidth="50.0" />
+            <TextField fx:id="toppingL" layoutX="12.0" layoutY="69.0" prefHeight="20.0" prefWidth="50.0" />
+            <TextField fx:id="toppingT" layoutX="12.0" layoutY="95.0" prefHeight="20.0" prefWidth="50.0" />
+            <TextField fx:id="toppingC" layoutX="12.0" layoutY="173.0" prefHeight="20.0" prefWidth="50.0" />
+            <TextField fx:id="toppingCC" layoutX="12.0" layoutY="147.0" prefHeight="20.0" prefWidth="50.0" />
+            <TextField fx:id="toppingTC" layoutX="12.0" layoutY="121.0" prefHeight="20.0" prefWidth="50.0" />
          </children>
       </Pane>
+
    </Pane>
    <Button fx:id="btnAceptar" layoutX="118.0" layoutY="440.0" mnemonicParsing="false" onAction="#aceptarPedido" styleClass="button-transparent">
       <graphic>
