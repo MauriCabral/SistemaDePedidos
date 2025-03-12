@@ -96,6 +96,9 @@ public class DatoClienteController {
         System.out.println("precio total pedido service: " + precioTotal);
         if (precioTotal <= 0) {
             System.out.println("El precio total es inválido: " + precioTotal);
+            errores.append("No hay productos en el pedido.\n");
+            showError(errores.toString());
+            this.cancelarVentana();
             return;
         }
 

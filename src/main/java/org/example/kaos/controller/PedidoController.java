@@ -545,15 +545,18 @@ public class PedidoController {
             Integer id = (Integer) deleteButton.getUserData();
             System.out.println("Eliminando conjunto de extras con ID: " + id);
 
-            for(DetallePedido detalleExtra : detalleExtraList){
-                if(detalleExtra.getId() == id){
-                    pedidoService.removeDetalleExtra(detalleExtra);
+            Iterator<DetallePedido> iterator = detallesPedidosList.iterator();
+            while (iterator.hasNext()) {
+                DetallePedido detalleExtra = iterator.next();
+                if (detalleExtra.getId() == id) {
+                    pedidoService.removeDetallePedido(detalleExtra);
+                    iterator.remove();
                     detallePedidos.getChildren().remove(vBoxExtras);
-                    int precioTotalActualizado = (int) pedidoService.actualizarTotal();
-                    lblTotal.setText("TOTAL: $" + precioTotalActualizado);
-                    System.out.println("Total después de la eliminación y actualización: $" + precioTotalActualizado);
                 }
             }
+            int precioTotalActualizado = (int) pedidoService.actualizarTotal();
+            lblTotal.setText("TOTAL: $" + precioTotalActualizado);
+            System.out.println("Total después de la eliminación y actualización: $" + precioTotalActualizado);
         });
         vBoxExtras.getChildren().add(deleteButton);
         if (contPapas > 0 || ListaExtra.stream().count() > 0) {

@@ -75,8 +75,8 @@ public class TicketPrinterService implements Printable {
         }
         Graphics2D g2d = (Graphics2D) g;
         g2d.translate(pf.getImageableX(), pf.getImageableY());
-        Font boldFont = new Font("Monospaced", Font.BOLD, 9);
-        Font plainFont = new Font("Monospaced", Font.PLAIN, 9);
+        Font boldFont = new Font("Monospaced", Font.BOLD, 12);
+        Font plainFont = new Font("Monospaced", Font.PLAIN, 12);
         int y = 20;
 
         if (logo != null) {

@@ -16,7 +16,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="622.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.PedidoController" stylesheets="@../style/Style.css">
+<AnchorPane prefHeight="622.0" prefWidth="1000.0" stylesheets="@../style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.kaos.controller.PedidoController">
    <AnchorPane fx:id="leftPanel" prefHeight="600.0" prefWidth="178.0" style="-fx-background-color: #e9500e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
       <VBox alignment="TOP_CENTER" prefHeight="506.0" prefWidth="178.0" spacing="20.0" AnchorPane.bottomAnchor="61.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
          <ImageView fitHeight="28.0" fitWidth="131.42" pickOnBounds="true" preserveRatio="true">
@@ -24,7 +24,7 @@
                <Image url="@../image/logo.png" />
             </image>
          </ImageView>
-         <Button fx:id="pedidosButton" onAction="#handlePedidosButtonClick" text="Pedidos" styleClass="button-transparent">
+         <Button fx:id="pedidosButton" onAction="#handlePedidosButtonClick" styleClass="button-transparent" text="Pedidos">
             <font>
                <Font size="17.0" />
             </font>
@@ -32,7 +32,7 @@
                <Color fx:value="#FFFFFF" />
             </textFill>
          </Button>
-         <Button fx:id="historialButton" onAction="#historico" text="Historico" styleClass="button-transparent">
+         <Button fx:id="historialButton" onAction="#historico" styleClass="button-transparent" text="Historico">
             <font>
                <Font size="17.0" />
             </font>
@@ -40,7 +40,7 @@
                <Color fx:value="#FFFFFF" />
             </textFill>
          </Button>
-         <Button fx:id="dashboardButton" onAction="#dashboard" text="Dashboard" styleClass="button-transparent">
+         <Button fx:id="dashboardButton" onAction="#dashboard" styleClass="button-transparent" text="Dashboard">
             <font>
                <Font size="17.0" />
             </font>
@@ -48,7 +48,7 @@
                <Color fx:value="#FFFFFF" />
             </textFill>
          </Button>
-         <Button fx:id="exitButton" onAction="#exit" text="Salir" styleClass="button-transparent">
+         <Button fx:id="exitButton" onAction="#exit" styleClass="button-transparent" text="Salir">
             <font>
                <Font size="17.0" />
             </font>
@@ -68,70 +68,70 @@
       <VBox fx:id="counterBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0">
          <HBox alignment="CENTER" spacing="5.0" />
       </VBox>
-      <Button fx:id="cbButton" layoutX="20.0" layoutY="70.0" onAction="#handleImageButtonClick" userData="cb" styleClass="button-transparent">
+      <Button fx:id="cbButton" layoutX="20.0" layoutY="70.0" onAction="#handleImageButtonClick" styleClass="button-transparent" userData="cb">
          <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/Recurso 32.png" />
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="diButton" layoutX="170.0" layoutY="200.0" onAction="#handleImageButtonClick" userData="di" styleClass="button-transparent">
+      <Button fx:id="diButton" layoutX="170.0" layoutY="200.0" onAction="#handleImageButtonClick" styleClass="button-transparent" userData="di">
          <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="179.0" layoutY="233.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/Recurso 28.png" />
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="kkButton" layoutX="170.0" layoutY="70.0" onAction="#handleImageButtonClick" userData="kk" styleClass="button-transparent">
+      <Button fx:id="kkButton" layoutX="170.0" layoutY="70.0" onAction="#handleImageButtonClick" styleClass="button-transparent" userData="kk">
          <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="179.0" layoutY="77.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/Recurso 31.png" />
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="klButton" layoutX="20.0" layoutY="200.0" onAction="#handleImageButtonClick" userData="kl" styleClass="button-transparent">
+      <Button fx:id="klButton" layoutX="20.0" layoutY="200.0" onAction="#handleImageButtonClick" styleClass="button-transparent" userData="kl">
          <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="29.0" layoutY="233.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/Recurso 29.png" />
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="mnButton" layoutX="320.0" layoutY="200.0" onAction="#handleImageButtonClick" userData="mn" styleClass="button-transparent">
+      <Button fx:id="mnButton" layoutX="320.0" layoutY="200.0" onAction="#handleImageButtonClick" styleClass="button-transparent" userData="mn">
          <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="331.0" layoutY="233.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/Recurso 27.png" />
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="rmButton" layoutX="320.0" layoutY="70.0" onAction="#handleImageButtonClick" userData="rm" styleClass="button-transparent">
+      <Button fx:id="rmButton" layoutX="320.0" layoutY="70.0" onAction="#handleImageButtonClick" styleClass="button-transparent" userData="rm">
          <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="331.0" layoutY="77.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/Recurso 30.png" />
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="tnButton" layoutX="20.0" layoutY="330.0" onAction="#handleImageButtonClick" userData="tn" styleClass="button-transparent">
+      <Button fx:id="tnButton" layoutX="20.0" layoutY="330.0" onAction="#handleImageButtonClick" styleClass="button-transparent" userData="tn">
          <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="29.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/Recurso 26.png" />
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="vButton" layoutX="320.0" layoutY="330.0" onAction="#handleImageButtonClick" userData="v" styleClass="button-transparent">
+      <Button fx:id="vButton" layoutX="320.0" layoutY="330.0" onAction="#handleImageButtonClick" styleClass="button-transparent" userData="v">
          <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="331.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/Recurso 24.png" />
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="vrButton" layoutX="170.0" layoutY="330.0" onAction="#handleImageButtonClick" userData="vr" styleClass="button-transparent">
+      <Button fx:id="vrButton" layoutX="170.0" layoutY="330.0" onAction="#handleImageButtonClick" styleClass="button-transparent" userData="vr">
          <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/Recurso 25.png" />
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="extraButton" layoutX="20.0" layoutY="460.0" onAction="#handleImageButtonClick" userData="extra" styleClass="button-transparent">
+      <Button fx:id="extraButton" layoutX="20.0" layoutY="460.0" onAction="#handleImageButtonClick" styleClass="button-transparent" userData="extra">
          <graphic>
             <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="29.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
                <Image url="@../image/Recurso 23.png" />
@@ -194,7 +194,7 @@
             <font>
                <Font name="System Bold" size="12.0" />
             </font></Label>
-         <CheckBox fx:id="chkHoy" layoutX="450.0" layoutY="37.0" mnemonicParsing="false" onAction="#pedidosDelDia" text="Hoy" />
+         <CheckBox fx:id="chkHoy" layoutX="476.0" layoutY="36.0" mnemonicParsing="false" onAction="#pedidosDelDia" text="Hoy" />
          <Label layoutX="9.0" layoutY="28.0" text="Historico de pedidos">
             <font>
                <Font size="24.0" />
@@ -214,7 +214,7 @@
                </ImageView>
             </graphic>
          </Button>
-         <Button fx:id="excel" layoutX="670.0" layoutY="34.0" onAction="#excel">
+         <Button fx:id="excel" layoutX="683.0" layoutY="33.0" onAction="#excel">
             <graphic>
                <ImageView fitHeight="14.0" fitWidth="61.0" layoutX="260.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
                   <Image url="@../image/excel.png" />
@@ -222,8 +222,8 @@
             </graphic>
          </Button>
 
-         <TextField fx:id="nombreCliente" layoutX="510.0" layoutY="33.0" prefHeight="25.0" prefWidth="97.0" promptText="Nombre cliente" />
-         <Button fx:id="search" layoutX="610.0" layoutY="29.0" onAction="#search" styleClass="button-transparent">
+         <TextField fx:id="nombreCliente" layoutX="540.0" layoutY="33.0" prefHeight="25.0" prefWidth="97.0" promptText="Nombre cliente" />
+         <Button fx:id="search" layoutX="630.0" layoutY="30.0" onAction="#search" styleClass="button-transparent">
             <graphic>
                <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                   <Image url="@../image/Recurso 18.png" />
@@ -242,7 +242,7 @@
                <TableColumn fx:id="colTotal" prefWidth="70.0" text="Total" />
             </columns>
          </TableView>
-         <Label layoutX="327.0" layoutY="38.0" text="MP:" textFill="#e9500e">
+         <Label layoutX="379.0" layoutY="38.0" text="MP:" textFill="#e9500e">
             <font>
                <Font name="System Bold" size="12.0" />
             </font>
@@ -252,7 +252,7 @@
                <Font name="System Bold" size="12.0" />
             </font>
          </Label>
-         <Label fx:id="TotalMp" layoutX="355.0" layoutY="38.0" text="0" textFill="#e9500e">
+         <Label fx:id="TotalMp" layoutX="407.0" layoutY="38.0" text="0" textFill="#e9500e">
             <font>
                <Font name="System Bold" size="12.0" />
             </font>
