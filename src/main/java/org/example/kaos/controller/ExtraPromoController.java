@@ -47,6 +47,7 @@ public class ExtraPromoController implements Initializable {
             counterLabelPromo.setText("0");
         }
         cargarCombos();
+        Platform.runLater(() -> aceptar.requestFocus());
     }
 
     private void aceptarExtra() {

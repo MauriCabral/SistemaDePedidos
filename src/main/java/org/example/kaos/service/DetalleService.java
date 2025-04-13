@@ -23,7 +23,7 @@ public class DetalleService {
     private final ToppingService toppingService = new ToppingService();
 
     @FXML
-    private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf;
+    private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf,cmbMedallon;
     @FXML
     private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
 
@@ -50,14 +50,15 @@ public class DetalleService {
         this.cmbCebolla = checkBoxes[4];
         this.cmbCebollaCrisp = checkBoxes[5];
         this.cmbTomateConf = checkBoxes[6];
-        this.cmbCheddar1 = checkBoxes[7];
-        this.cmbBacon1 = checkBoxes[8];
-        this.cmbLechuga1 = checkBoxes[9];
-        this.cmbTomate1 = checkBoxes[10];
-        this.cmbCebolla1 = checkBoxes[11];
-        this.cmbCebollaCrisp1 = checkBoxes[12];
-        this.cmbTomateConf1 = checkBoxes[13];
-        this.quitarSalsa = checkBoxes[14];
+        this.cmbMedallon = checkBoxes[7];
+        this.cmbCheddar1 = checkBoxes[8];
+        this.cmbBacon1 = checkBoxes[9];
+        this.cmbLechuga1 = checkBoxes[10];
+        this.cmbTomate1 = checkBoxes[11];
+        this.cmbCebolla1 = checkBoxes[12];
+        this.cmbCebollaCrisp1 = checkBoxes[13];
+        this.cmbTomateConf1 = checkBoxes[14];
+        this.quitarSalsa = checkBoxes[15];
     }
 
     public List<Topping> getSelectedToppings() {
@@ -69,6 +70,8 @@ public class DetalleService {
         addToppingIfSelected(cmbCebolla, 5, toppingList, true);
         addToppingIfSelected(cmbCebollaCrisp, 6, toppingList, true);
         addToppingIfSelected(cmbTomateConf, 7, toppingList, true);
+        addToppingIfSelected(cmbMedallon, 8, toppingList, true);
+
         addToppingIfSelected(cmbCheddar1, 1, toppingList, false);
         addToppingIfSelected(cmbBacon1, 2, toppingList, false);
         addToppingIfSelected(cmbLechuga1, 3, toppingList, false);
@@ -78,7 +81,7 @@ public class DetalleService {
         addToppingIfSelected(cmbTomateConf1, 7, toppingList, false);
 
         if (quitarSalsa.isSelected()) {
-            toppingList.add(new Topping(8, "Salsa"));
+            toppingList.add(new Topping(9, "Salsa"));
         }
         return toppingList;
     }

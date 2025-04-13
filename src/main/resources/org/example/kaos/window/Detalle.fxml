@@ -29,8 +29,8 @@
          </font>
       </Label>
 
-      <Label fx:id="counterLabel" layoutX="52.0" layoutY="77.0" prefHeight="18.0" prefWidth="7.0" style="-fx-font-size: 12;" text="1" />
-      <Button layoutX="64.0" layoutY="73.0" onAction="#incrementCounter" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="+" />
+      <Label fx:id="counterLabel" layoutX="57.0" layoutY="77.0" prefHeight="18.0" prefWidth="7.0" style="-fx-font-size: 12;" text="1" />
+      <Button layoutX="74.0" layoutY="73.0" onAction="#incrementCounter" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="+" />
       <Button layoutX="20.0" layoutY="73.0" onAction="#decrementCounter" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="-" />
       <ComboBox fx:id="comboBoxTipo" layoutX="125.0" layoutY="73.0" onAction="#handleComboBoxAction" prefHeight="26.0" prefWidth="130.0" />
       <Label layoutX="19.0" layoutY="112.0" text="Agregar Toppings: " />
@@ -41,6 +41,8 @@
       <Label layoutX="19.0" layoutY="239.0" text="Cebolla" />
       <Label layoutX="19.0" layoutY="264.0" text="Cebolla Crispy" />
       <Label layoutX="19.0" layoutY="289.0" text="Tomate Confitado" />
+      <Label layoutX="19.0" layoutY="316.0" text="Medallón" />
+
       <CheckBox fx:id="cmbCheddar" layoutX="139.0" layoutY="139.0" mnemonicParsing="false" />
       <CheckBox fx:id="cmbBacon" layoutX="139.0" layoutY="164.0" mnemonicParsing="false" />
       <CheckBox fx:id="cmbLechuga" layoutX="139.0" layoutY="189.0" mnemonicParsing="false" />
@@ -48,6 +50,8 @@
       <CheckBox fx:id="cmbCebolla" layoutX="139.0" layoutY="239.0" mnemonicParsing="false" />
       <CheckBox fx:id="cmbCebollaCrisp" layoutX="139.0" layoutY="264.0" mnemonicParsing="false" />
       <CheckBox fx:id="cmbTomateConf" layoutX="139.0" layoutY="289.0" mnemonicParsing="false" />
+      <CheckBox fx:id="cmbMedallon" layoutX="139.0" layoutY="316.0" mnemonicParsing="false" />
+
       <Label layoutX="276.0" layoutY="112.0" text="Quitar Toppings:" />
       <Label layoutX="276.0" layoutY="138.0" text="Cheddar" />
       <Label layoutX="276.0" layoutY="163.0" text="Bacon" />
@@ -76,27 +80,28 @@
          </graphic>
       </Button>
 
-      <Pane fx:id="panelPreciosTopping" layoutX="169.0" layoutY="116.0" prefHeight="216.0" prefWidth="78.0">
+      <Pane fx:id="panelPreciosTopping" layoutX="169.0" layoutY="116.0" prefHeight="226.0" prefWidth="78.0">
          <children>
             <TextField fx:id="toppingCh" layoutX="12.0" layoutY="17.0" prefHeight="20.0" prefWidth="50.0" />
             <TextField fx:id="toppingB" layoutX="12.0" layoutY="43.0" prefHeight="20.0" prefWidth="50.0" />
             <TextField fx:id="toppingL" layoutX="12.0" layoutY="69.0" prefHeight="20.0" prefWidth="50.0" />
             <TextField fx:id="toppingT" layoutX="12.0" layoutY="95.0" prefHeight="20.0" prefWidth="50.0" />
-            <TextField fx:id="toppingC" layoutX="12.0" layoutY="173.0" prefHeight="20.0" prefWidth="50.0" />
+            <TextField fx:id="toppingTC" layoutX="12.0" layoutY="173.0" prefHeight="20.0" prefWidth="50.0" />
             <TextField fx:id="toppingCC" layoutX="12.0" layoutY="147.0" prefHeight="20.0" prefWidth="50.0" />
-            <TextField fx:id="toppingTC" layoutX="12.0" layoutY="121.0" prefHeight="20.0" prefWidth="50.0" />
+            <TextField fx:id="toppingC" layoutX="12.0" layoutY="121.0" prefHeight="20.0" prefWidth="50.0" />
+            <TextField fx:id="toppingM" layoutX="12.0" layoutY="198.0" prefHeight="20.0" prefWidth="50.0" />
          </children>
       </Pane>
 
    </Pane>
-   <Button fx:id="btnAceptar" layoutX="118.0" layoutY="440.0" mnemonicParsing="false" onAction="#aceptarPedido" styleClass="button-transparent">
+   <Button fx:id="btnAceptar" defaultButton="true" layoutX="118.0" layoutY="440.0" mnemonicParsing="false" onAction="#aceptarPedido" styleClass="button-transparent1" text="✓">
       <graphic>
          <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
             <Image url="@../image/Recurso 17.png" />
          </ImageView>
       </graphic>
    </Button>
-   <Button fx:id="btnCancelar" layoutX="269.0" layoutY="440.0" mnemonicParsing="false" onAction="#closeWindow" styleClass="button-transparent">
+   <Button fx:id="btnCancelar" cancelButton="true" layoutX="269.0" layoutY="440.0" mnemonicParsing="false" onAction="#closeWindow" styleClass="button-transparent">
       <graphic>
          <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
             <Image url="@../image/Recurso 16.png" />

@@ -11,7 +11,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.example.kaos.application.PedidoApplication;
 import org.example.kaos.entity.*;
+import org.example.kaos.manager.ControllerManager;
 import org.example.kaos.repository.*;
 import org.example.kaos.service.ExtraService;
 import org.example.kaos.service.FormaPagoService;
@@ -33,9 +35,9 @@ public class DetallePedidoHistoricoController implements Initializable {
     @FXML
     private Pane panelEditarPedido;
     @FXML
-    private TextField nombrePedido, direcPedido;
+    private TextField nombrePedido, direcPedido, envio, totalPedido, txtEf, txtMp;
     @FXML
-    private Label lblTitulo;
+    private Label lblTitulo, lblEf, lblMp;
     @FXML
     private ScrollPane detalleScroll;
 
@@ -55,6 +57,14 @@ public class DetallePedidoHistoricoController implements Initializable {
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
         btnCancelar.setOnAction(event -> closeWindow());
+        cargarFormaPagoAmbas(false);
+    }
+
+    private void cargarFormaPagoAmbas(boolean visible){
+        lblEf.setVisible(visible);
+        lblMp.setVisible(visible);
+        txtEf.setVisible(visible);
+        txtMp.setVisible(visible);
     }
 
     public void setPedidoService(PedidoService pedidoService) {
@@ -143,14 +153,53 @@ public class DetallePedidoHistoricoController implements Initializable {
 
     public void aceptarPedido(ActionEvent actionEvent) {
         TipoPago tipoPago = (TipoPago) comboFPago.getSelectionModel().getSelectedItem();
-        int res = pedidoService.updateFPagoPedido(idPedido, tipoPago.getId());
-        if (res > 0){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText(null);
-            alert.setContentText("Forma de pago actualizada.");
-            alert.showAndWait();
+        int resTotal = 0;
 
-            this.closeWindow();
+        Pedido pedido = pedidoService.getPedidoId(idPedido);
+        double totalPedidoDouble = Double.parseDouble(envio.getText().trim()) + (pedido.getPrecio_total());
+        int totalPedidoValue = (int) Math.round(totalPedidoDouble);
+        if (tipoPago != null) {
+            if (tipoPago.getId() == 1) {
+                txtEf.setText(String.valueOf(totalPedidoValue));
+                txtMp.setText("0");
+            } else if (tipoPago.getId() == 2) {
+                txtMp.setText(String.valueOf(totalPedidoValue));
+                txtEf.setText("0");
+            }
+        }
+        try {
+            resTotal = Integer.parseInt(txtEf.getText()) + Integer.parseInt(txtMp.getText());
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("Por favor, ingrese valores numéricos válidos para efectivo y transferencia.");
+            alert.showAndWait();
+            return;
+        }
+
+        if (resTotal == totalPedidoValue) {
+            int res = pedidoService.updateFPagoPedido(idPedido, tipoPago.getId(), Integer.parseInt(envio.getText()), Integer.parseInt(txtEf.getText()), Integer.parseInt(txtMp.getText()));
+
+            if (res > 0) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText(null);
+                alert.setContentText("Forma de pago actualizada.");
+                alert.showAndWait();
+
+                this.closeWindow();
+
+                PedidoController pedidoController = ControllerManager.getInstance().getPedidoController();
+                if (pedidoController != null) {
+                    javafx.application.Platform.runLater(() -> {
+                        pedidoController.recargarHistorico();
+                    });
+                }
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("El total de efectivo y transferencia no coincide con el total del pedido.");
+            alert.showAndWait();
         }
     }
 
@@ -162,17 +211,34 @@ public class DetallePedidoHistoricoController implements Initializable {
 
             nombrePedido.setText(pedido.getCliente_nombre());
             direcPedido.setText(pedido.getDireccion());
+            envio.setText(String.valueOf(pedido.getPrecio_envio()));
+            totalPedido.setText(String.valueOf(pedido.getPrecio_total() + pedido.getPrecio_envio()));
+            txtEf.setText(String.valueOf(pedido.getTotal_efectivo()));
+            txtMp.setText(String.valueOf(pedido.getTotal_transferencia()));
 
             nombrePedido.setDisable(true);
             direcPedido.setDisable(true);
+            envio.setDisable(false);
+            totalPedido.setDisable(true);
 
             int idPagoPedido = pedido.getId_pago();
             for (TipoPago formaPago : formaPagoservice.getFPago()) {
                 if (formaPago.getId() == idPagoPedido) {
                     comboFPago.getSelectionModel().select(formaPago);
+                    if(formaPago.getId() == 3){
+                        cargarFormaPagoAmbas(true);
+                    } else {
+                        cargarFormaPagoAmbas(false);
+                    }
                     break;
                 }
             }
+            comboFPago.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
+                if (newIndex.intValue() >= 0) {
+                    TipoPago formaPagoSeleccionada = formaPagoservice.getFPago().get(newIndex.intValue());
+                    cargarFormaPagoAmbas(formaPagoSeleccionada.getId() == 3);
+                }
+            });
         }
     }
 
@@ -187,5 +253,4 @@ public class DetallePedidoHistoricoController implements Initializable {
         detalleScroll.setVisible(!visible);
         btnCancelar.setVisible(!visible);
     }
-
 }

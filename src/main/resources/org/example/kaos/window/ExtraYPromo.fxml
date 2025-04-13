@@ -69,14 +69,14 @@
         <Button fx:id="decrementS" layoutX="215.0" layoutY="57.0" onAction="#decrementCounterS" prefHeight="25" prefWidth="25" style="-fx-font-size: 12px;" text="-" />
         <TextField fx:id="precioPapa" layoutX="68.0" layoutY="7.0" prefHeight="25.0" prefWidth="51.0" />
     </Pane>
-    <Button fx:id="cancelar" layoutX="185.0" layoutY="230.0" onAction="#cerrar" styleClass="button-transparent">
+    <Button fx:id="cancelar" layoutX="185.0" layoutY="230.0" onAction="#cerrar" styleClass="button-transparent" cancelButton="true">
         <graphic>
             <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
                 <Image url="@../image/Recurso 16.png" />
             </ImageView>
         </graphic>
     </Button>
-    <Button fx:id="aceptar" layoutX="90.0" layoutY="230.0" onAction="#aceptar" styleClass="button-transparent">
+    <Button fx:id="aceptar" layoutX="90.0" layoutY="230.0" onAction="#aceptar" styleClass="button-transparent1" defaultButton="true" text="✓">
         <graphic>
             <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="179.0" layoutY="390.0" pickOnBounds="true" preserveRatio="true">
                 <Image url="@../image/Recurso 17.png" />

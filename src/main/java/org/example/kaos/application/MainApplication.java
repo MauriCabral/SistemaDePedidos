@@ -3,6 +3,7 @@ package org.example.kaos.application;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.example.kaos.controller.PedidoController;
 import org.example.kaos.manager.ControllerManager;
@@ -35,7 +36,6 @@ public class MainApplication extends Application {
     }
 
     private void openNewWindow() throws IOException {
-        // Cargar el archivo FXML de la ventana de pedidos
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/kaos/window/Pedido.fxml"));
         Scene newScene = new Scene(fxmlLoader.load(), 1000, 620);
         PedidoController controller = fxmlLoader.getController();
@@ -49,6 +49,7 @@ public class MainApplication extends Application {
         Stage newStage = new Stage();
         newStage.setTitle("Pedidos");
         newStage.setScene(newScene);
+        newStage.getIcons().add(new Image(MainApplication.class.getResourceAsStream("/org/example/kaos/image/Recurso_35.png")));
         newStage.show();
     }
 }

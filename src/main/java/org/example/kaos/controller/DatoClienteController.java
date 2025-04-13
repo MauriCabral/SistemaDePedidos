@@ -1,9 +1,9 @@
 package org.example.kaos.controller;
 
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.kaos.entity.*;
 import org.example.kaos.manager.ControllerManager;
@@ -12,7 +12,6 @@ import org.example.kaos.service.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -22,15 +21,18 @@ public class DatoClienteController {
     private PedidoService pedidoService = new PedidoService();
     private DetalleService detalleService = new DetalleService();
     private TicketPrinterService ticketPrinterService = new TicketPrinterService();
-    private ToppingService toppingService = new ToppingService();
     private ExtraService extraService = new ExtraService();
     private Stage stage;
     private int idPedidoImprimir = 0;
 
     @FXML
-    private TextField txtNombreCliente, txtDireccion, txtCostoEnvio;
+    private TextField txtNombreCliente, txtDireccion, txtCostoEnvio, txtDescuento;
     @FXML
     private ComboBox<String> cmbFormaPago;
+    @FXML
+    private Button btnAceptar;
+    @FXML
+    private CheckBox chkDescuento;
 
     @FXML
     public void initialize() {
@@ -40,6 +42,8 @@ public class DatoClienteController {
                 txtCostoEnvio.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+        txtDescuento.setVisible(false);
+        Platform.runLater(() -> btnAceptar.requestFocus());
     }
 
     public void setPedidoService(PedidoService pedidoService) {
@@ -93,6 +97,12 @@ public class DatoClienteController {
         int idTipoPago = tipoPagoDAO.getIdTipoPagoFromNombre(formaPago);
         System.out.println(nombreCliente + " " + direccion + " " + formaPago + " " + costoEnvio + " " + idTipoPago);
         int precioTotal = (int) pedidoService.getPrecioTotalPedido();
+        int precioDescuento = txtDescuento.getText().isEmpty() ? 0 : Integer.parseInt(txtDescuento.getText());
+        if(chkDescuento.isSelected() && !txtDescuento.getText().isEmpty()) {
+
+            precioTotal -= precioDescuento;
+        }
+
         System.out.println("precio total pedido service: " + precioTotal);
         if (precioTotal <= 0) {
             System.out.println("El precio total es inválido: " + precioTotal);
@@ -138,6 +148,8 @@ public class DatoClienteController {
             }
         }
 
+        System.out.println("Detalles del Pedido (detallesJson): " + detallesJson);
+
         int idPedido = pedidoService.insertarPedido(
                 nombreCliente,
                 direccion,
@@ -145,6 +157,7 @@ public class DatoClienteController {
                 idTipoPago,
                 costoEnvio,
                 precioTotal,
+                precioDescuento,
                 detallesJson
         );
         idPedidoImprimir = idPedido;
@@ -194,5 +207,13 @@ public class DatoClienteController {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    public void descuentoPedido(ActionEvent actionEvent) {
+        if (chkDescuento.isSelected()){
+            txtDescuento.setVisible(true);
+        } else {
+            txtDescuento.setVisible(false);
+        }
     }
 }

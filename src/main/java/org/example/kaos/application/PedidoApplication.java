@@ -9,6 +9,7 @@ import org.example.kaos.controller.*;
 import org.example.kaos.entity.Extra;
 import org.example.kaos.entity.HamburguesaTipo;
 import org.example.kaos.entity.Pedido;
+import org.example.kaos.manager.ControllerManager;
 import org.example.kaos.service.DetalleService;
 import org.example.kaos.service.PedidoService;
 
@@ -71,6 +72,7 @@ public class PedidoApplication {
             } else {
                 detalleController.cargarEditarPedido(pedido, editar);
             }
+
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();

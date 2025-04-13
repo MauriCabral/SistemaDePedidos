@@ -44,7 +44,7 @@ public class HamburguesaController {
                 textField.setText(newValue.replaceAll("[^\\d]", ""));
             }
             if (textField.getText().isEmpty()) {
-                textField.setText("0");
+                textField.setText("");
             }
         });
     }

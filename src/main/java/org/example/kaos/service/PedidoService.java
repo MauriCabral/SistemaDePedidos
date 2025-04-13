@@ -17,7 +17,6 @@ import org.example.kaos.repository.TipoPagoDAO;
 import org.json.JSONArray;
 
 public class PedidoService {
-    private final HamburguesaDAO hamburguesaDAO = new HamburguesaDAO();
     private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
     private final PedidoDAO pedidoDAO = new PedidoDAO();
     private static final TipoPagoDAO tipoPagoDAO = new TipoPagoDAO();
@@ -90,8 +89,8 @@ public class PedidoService {
         return detalleToppingPedidoList;
     }
 
-    public int insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, JSONArray detallesJson) {
-        int idPedido = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, detallesJson);
+    public int insertarPedido(String nombreCliente, String direccion, Timestamp fecha, int idTipoPago, double costoEnvio, double precioTotal, int precioDescuento, JSONArray detallesJson) {
+        int idPedido = pedidoDAO.insertarPedido(nombreCliente, direccion, fecha, idTipoPago, costoEnvio, precioTotal, precioDescuento, detallesJson);
         return idPedido;
     }
 
@@ -139,7 +138,7 @@ public class PedidoService {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Histórico de Pedidos");
         Row headerRow = sheet.createRow(0);
-        String[] columnas = {"ID", "Cliente", "Dirección", "Forma de Pago", "Fecha", "Costo Envío", "Total"};
+        String[] columnas = {"ID", "Cliente", "Dirección", "Forma de Pago", "Fecha", "Total Efectivo", "Total Trasnferencia", "Costo Envío", "Total"};
         CellStyle headerStyle = getHeaderStyle(workbook);
         for (int i = 0; i < columnas.length; i++) {
             Cell cell = headerRow.createCell(i);
@@ -157,8 +156,10 @@ public class PedidoService {
 
             row.createCell(3).setCellValue(formaPago);
             row.createCell(4).setCellValue(pedido.getFecha_pedido().toString());
-            row.createCell(5).setCellValue(pedido.getPrecio_envio());
-            row.createCell(6).setCellValue(pedido.getPrecio_total());
+            row.createCell(5).setCellValue(pedido.getTotal_efectivo());
+            row.createCell(6).setCellValue(pedido.getTotal_transferencia());
+            row.createCell(7).setCellValue(pedido.getPrecio_envio());
+            row.createCell(8).setCellValue(pedido.getPrecio_total());
         }
         for (int i = 0; i < columnas.length; i++) {
             sheet.autoSizeColumn(i);
@@ -193,27 +194,6 @@ public class PedidoService {
         listaDetalleExtra.addAll(extraList);
     }
 
-    public void removeDetalleExtra(DetallePedido extras) {
-        int index = -1;
-        for (int i = 0; i < detallesExtraPedidosList.size(); i++) {
-            if (detallesExtraPedidosList.get(i).getId() == extras.getId()) {
-                index = i;
-                break;
-            }
-        }
-        if (index != -1) {
-            Iterator<ToppingPedido> iterator = detalleToppingPedidoList.iterator();
-            while (iterator.hasNext()) {
-                ToppingPedido toppingPedido = iterator.next();
-                if (toppingPedido.getIdDetallePedido() == extras.getId()) {
-                    iterator.remove();
-                }
-            }
-            detallesExtraPedidosList.remove(index);
-            actualizarTotal();
-        }
-    }
-
     public void setDetalleExtra(List<Extra> extraList) {
         this.listaDetalleExtra = extraList;
     }
@@ -239,8 +219,16 @@ public class PedidoService {
         return pedidoBuscar;
     }
 
-    public int updateFPagoPedido(int id, int fPago) {
-        int res = PedidoDAO.setFPagpPedido(id, fPago);
+    public int updateFPagoPedido(int id, int fPago, int envio, int total_ef, int total_transf) {
+        int res = PedidoDAO.setFPagpPedido(id, fPago, envio, total_ef, total_transf);
         return res;
+    }
+
+    public int getEfectivoDiario(boolean esDiario) {
+        return pedidoDAO.getEfectivoDiario(esDiario);
+    }
+
+    public int getTransferenciaDiario(boolean esDiario) {
+        return pedidoDAO.getTransferenciaDiario(esDiario);
     }
 }

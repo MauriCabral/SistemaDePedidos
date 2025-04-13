@@ -2,3 +2,8 @@
     -fx-background-color: transparent;
     -fx-text-fill: white;
 }
+
+.button-transparent1 {
+    -fx-background-color: transparent;
+    -fx-text-fill: transparent;
+}

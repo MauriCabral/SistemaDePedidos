@@ -8,17 +8,37 @@ public class Pedido {
     private String direccion;
     private LocalDateTime fecha_pedido;
     private int id_pago;
+    private int total_efectivo;
+    private int total_transferencia;
     private int precio_envio;
     private double precio_total;
 
-    public Pedido(int id, String cliente_nombre, String direccion, LocalDateTime fecha_pedido, int id_pago, int precio_envio, double precio_total) {
+    public Pedido(int id, String cliente_nombre, String direccion, int id_pago, LocalDateTime fecha_pedido, int total_efectivo, int total_transferencia, int precio_envio, double precio_total) {
         this.id = id;
         this.cliente_nombre = cliente_nombre;
         this.direccion = direccion;
-        this.fecha_pedido = fecha_pedido;
         this.id_pago = id_pago;
+        this.fecha_pedido = fecha_pedido;
+        this.total_efectivo = total_efectivo;
+        this.total_transferencia = total_transferencia;
         this.precio_envio = precio_envio;
         this.precio_total = precio_total;
+    }
+
+    public int getTotal_efectivo() {
+        return total_efectivo;
+    }
+
+    public void setTotal_efectivo(int total_efectivo) {
+        this.total_efectivo = total_efectivo;
+    }
+
+    public int getTotal_transferencia() {
+        return total_transferencia;
+    }
+
+    public void setTotal_transferencia(int total_transferencia) {
+        this.total_transferencia = total_transferencia;
     }
 
     public int getId() {
@@ -85,6 +105,8 @@ public class Pedido {
                 ", direccion='" + direccion + '\'' +
                 ", fecha_pedido=" + fecha_pedido +
                 ", id_pago=" + id_pago +
+                ", total_efectivo=" + total_efectivo +
+                ", total_transferencia=" + total_transferencia +
                 ", precio_envio=" + precio_envio +
                 ", precio_total=" + precio_total +
                 '}';

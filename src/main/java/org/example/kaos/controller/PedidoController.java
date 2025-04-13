@@ -1,11 +1,22 @@
 package org.example.kaos.controller;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -14,8 +25,13 @@ import javafx.geometry.Insets;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -25,6 +41,7 @@ import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.repository.TipoPagoDAO;
 import org.example.kaos.service.DetalleService;
+import org.example.kaos.service.HamburguesaService;
 import org.example.kaos.service.PedidoService;
 
 public class PedidoController {
@@ -36,19 +53,19 @@ public class PedidoController {
     private boolean deleteButtonsVisible = false;
     private List<DetallePedido> detallesPedidosList = new ArrayList<>();
     private List<Extra> extraList = new ArrayList<>();
-    private List<DetallePedido> detalleExtraList = new ArrayList<>();
     private PedidoService pedidoService = new PedidoService();
     private DetalleService detalleService = new DetalleService();
+    private HamburguesaService hamburguesaService = new HamburguesaService();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static int detalleId = 0;;
     private List<Topping> listTopping = new ArrayList<>();
 
     @FXML
-    private Pane menuPane, rightPane, pnHistorico;
+    private Pane menuPane, rightPane, pnHistorico, pnDashboard;
     @FXML
     private VBox detallePedidos;
     @FXML
-    private Label lblTotal, TotalMp, TotalEf;
+    private Label lblTotal, TotalMp, TotalEf, TotalPedidosCount;
     @FXML
     private TableView<Pedido> tableHistorico;
     @FXML
@@ -62,26 +79,37 @@ public class PedidoController {
     @FXML
     private TableColumn<Pedido, String> colFormaPago;
     @FXML
+    private TableColumn<Pedido, Integer> colTotalTransferencia;
+    @FXML
+    private TableColumn<Pedido, Integer> colTotalEfectivo;
+    @FXML
     private TableColumn<Pedido, String> colFecha;
     @FXML
     private TableColumn<Pedido, Integer> colTotalPedido;
     @FXML
     private TableColumn<Pedido, Integer> colTotal;
+    @FXML
+    private ScrollPane spnDashboard;
 
     @FXML
     private TextField nombreCliente;
     @FXML
     private ImageView editando;
     @FXML
-    private CheckBox chkHoy;
+    private CheckBox chkHoy, chkFpAmbas;
+    @FXML
+    private Button btnAceptar, exitButton;
 
     @FXML
     private void initialize() {
         menuPane.setVisible(false);
         rightPane.setVisible(false);
         pnHistorico.setVisible(false);
+        pnDashboard.setVisible(false);
 
         pedidoService.setPedidoController(this);
+
+        Platform.runLater(() -> btnAceptar.requestFocus());
     }
 
     public VBox getDetallePedidos() {
@@ -106,12 +134,19 @@ public class PedidoController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            Alert info = new Alert(Alert.AlertType.INFORMATION);
+            /*Alert info = new Alert(Alert.AlertType.INFORMATION);
             info.setTitle("INFORMATION");
             info.setHeaderText(null);
             info.setContentText("Enviar msj con monto ganado a wsp");
-            info.showAndWait();
+            info.showAndWait();*/
             System.exit(0);
+        }
+    }
+
+    public void close(){
+        Stage stage = (Stage) exitButton.getScene().getWindow();
+        if (stage != null) {
+            stage.close();
         }
     }
 
@@ -120,6 +155,7 @@ public class PedidoController {
         menuPane.setVisible(true);
         rightPane.setVisible(true);
         pnHistorico.setVisible(false);
+        pnDashboard.setVisible(false);
     }
 
     @FXML
@@ -158,8 +194,29 @@ public class PedidoController {
         vBox.setPadding(new Insets(2, 8, 0, 8));
         HBox pedidoBox = new HBox(5);
 
-        double totalDetalle = precio + pedidoService.getPrecioTotalTopping(toppingList);
+        Map<String, Integer> toppingsMultiplicados = new HashMap<>();
 
+        if (txtObservaciones != null && !txtObservaciones.trim().isEmpty()) {
+            Pattern pattern = Pattern.compile("(\\d+)x([\\w\\s]+)");
+            Matcher matcher = pattern.matcher(txtObservaciones);
+            while (matcher.find()) {
+                int cantidadTop = Integer.parseInt(matcher.group(1));
+                String nombre = matcher.group(2).replaceAll("\\s+", "").toLowerCase();
+                toppingsMultiplicados.put(nombre, cantidadTop);
+            }
+        }
+
+        double totalToppings = 0;
+
+        for (Topping topping : toppingList) {
+            String nombreTopping = topping.getNombre().replaceAll("\\s+", "").toLowerCase();
+            int cantidadTop = toppingsMultiplicados.getOrDefault(nombreTopping, 1);
+            if (topping.getPrecio() != null) {
+                totalToppings += topping.getPrecio() * cantidadTop;
+            }
+        }
+
+        double totalDetalle = precio + totalToppings;
         int idActual = detalleId;
         int hamburguesaID = pedidoService.getHamburguesaTipo(nombreHamburguesa, tipoHamburguesa);
 
@@ -167,26 +224,13 @@ public class PedidoController {
         detallesPedidosList.add(detallePedido);
 
         pedidoService.agregarDetallePedido(detallePedido);
-
         pedidoService.agregarToppingsADetalle(detalleId, toppingList);
-
-        /*for(Topping top : toppingList){
-            if(top.getPrecio() != null) {
-                ToppingPedido toppingPedido = new ToppingPedido(0, detalleId, top.getId(), true);
-                pedidoService.agregarToppingsADetalle1(toppingPedido);
-            } else {
-                ToppingPedido toppingPedido = new ToppingPedido(0, detalleId, top.getId(), false);
-                pedidoService.agregarToppingsADetalle1(toppingPedido);
-            }
-        }*/
-
         detalleId++;
 
-        Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " " + "($" + (int) precio + ")");
+        Label pedidoLabel = new Label("(x" + cantidad + ") " + nombreHamburguesa + " " + tipoHamburguesa + " ($" + (int) precio + ")");
         Label precioLabel = new Label(String.format("$%d", (int) totalDetalle));
-
         int precioTotal = (int) pedidoService.actualizarTotal();
-        lblTotal.setText("TOTAL: $" + (precioTotal));
+        lblTotal.setText("TOTAL: $" + precioTotal);
 
         Button deleteButton = new Button();
         try {
@@ -203,7 +247,6 @@ public class PedidoController {
         deleteButton.setOnAction(event -> {
             Integer id = (Integer) deleteButton.getUserData();
             System.out.println("Intentando eliminar detalle con ID: " + id);
-
             DetallePedido detalleEliminar = detallesPedidosList.stream()
                     .filter(detalle -> detalle.getId() == id)
                     .findFirst()
@@ -221,25 +264,31 @@ public class PedidoController {
                 System.out.println("No se encontró el detalle con ID: " + id);
             }
         });
+
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         pedidoBox.getChildren().addAll(pedidoLabel, spacer, precioLabel, deleteButton);
         vBox.getChildren().add(pedidoBox);
+
         if (toppingList != null && !toppingList.isEmpty()) {
             VBox toppingsBox = new VBox(5);
             toppingsBox.setPadding(new Insets(5, 0, 0, 0));
+
             for (Topping topping : toppingList) {
+                String nombreTopping = topping.getNombre().replaceAll("\\s+", "").toLowerCase();
+                int cantidadTop = toppingsMultiplicados.getOrDefault(nombreTopping, 1);
                 if (topping.getPrecio() != null) {
-                    int precioTop = (int) Math.round(topping.getPrecio());
-                    Label toppingLabel = new Label("Extra: " + topping.getNombre() + ": ($" + precioTop + ")");
+                    int precioTop = (int) Math.round(topping.getPrecio() * cantidadTop);
+                    Label toppingLabel = new Label("Extra: " + topping.getNombre() + " ($" + precioTop + ")");
                     toppingsBox.getChildren().add(toppingLabel);
                 } else {
-                    Label toppingLabel = new Label("Sin : " + topping.getNombre());
+                    Label toppingLabel = new Label("Sin: " + topping.getNombre());
                     toppingsBox.getChildren().add(toppingLabel);
                 }
             }
             vBox.getChildren().add(toppingsBox);
         }
+
         if (txtObservaciones != null && !txtObservaciones.trim().isEmpty()) {
             Label observacionesLabel = new Label("Observaciones: " + txtObservaciones);
             observacionesLabel.setStyle("-fx-font-style: italic; -fx-text-fill: #555555;");
@@ -327,18 +376,28 @@ public class PedidoController {
     public void historico(ActionEvent actionEvent) {
         menuPane.setVisible(false);
         rightPane.setVisible(false);
+        pnDashboard.setVisible(false);
         pnHistorico.setVisible(true);
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colId.setVisible(false);
         colNombre.setCellValueFactory(new PropertyValueFactory<>("cliente_nombre"));
         colDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
         colFormaPago.setCellValueFactory(cellData -> {
             int idTipoPago = cellData.getValue().getId_pago();
             String nombreTipoPago = tipoPagoDAO.getNameTipoPagoFromId(idTipoPago);
-            return new SimpleStringProperty(nombreTipoPago);
+            String primeraLetra = nombreTipoPago.length() > 0 ? nombreTipoPago.substring(0, 1) : "";
+            return new SimpleStringProperty(primeraLetra);
         });
+        colTotalEfectivo.setCellValueFactory(new PropertyValueFactory<>("total_efectivo"));
+        colTotalTransferencia.setCellValueFactory(new PropertyValueFactory<>("total_transferencia"));
         colCostoEnvio.setCellValueFactory(new PropertyValueFactory<>("precio_envio"));
-        colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha_pedido"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        colFecha.setCellValueFactory(cellData -> {
+            LocalDateTime fecha = cellData.getValue().getFecha_pedido();
+            String fechaFormateada = (fecha != null) ? fecha.format(formatter) : "";
+            return new SimpleStringProperty(fechaFormateada);
+        });
         colTotalPedido.setCellValueFactory(cellData -> {
             double precioTotal = cellData.getValue().getPrecio_total();
             return new SimpleIntegerProperty((int) precioTotal).asObject();
@@ -348,6 +407,18 @@ public class PedidoController {
             double precioTotal = cellData.getValue().getPrecio_total();
             int suma = (int) (precioEnvio + precioTotal);
             return new SimpleIntegerProperty(suma).asObject();
+        });
+        colTotal.setCellFactory(col -> new TableCell<Pedido, Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText("$" + item);
+                    setStyle("-fx-font-weight: bold; -fx-alignment: CENTER-RIGHT;");
+                }
+            }
         });
 
         cargarTablaPedidosHoy();
@@ -366,9 +437,6 @@ public class PedidoController {
     private void cargarTablaPedidos() {
         List<Pedido> pedidos = pedidoService.getAllPedidos();
         tableHistorico.getItems().setAll(pedidos);
-    }
-
-    public void dashboard(ActionEvent actionEvent) {
     }
 
     public void deletePedidosCreados() {
@@ -454,28 +522,38 @@ public class PedidoController {
     @FXML
     private void filtrarPedidosDaily(boolean esHoy) {
         try {
+            int contEf = 0, contMp = 0, contPedidos = 0;
+            List<Pedido> pedidos;
             if (esHoy) {
-                int contEf = 0, contMp = 0;
-                List<Pedido> pedidos = pedidoService.getAllPedidosDaily();
-                ObservableList<Pedido> filteredList = FXCollections.observableArrayList();
-                for (Pedido pedido : pedidos) {
-                    filteredList.add(pedido);
-                    if(pedido.getId_pago() == 1){
-                        contEf += pedido.getPrecio_total() + pedido.getPrecio_envio();
-                    }
-                    else {
-                        contMp += pedido.getPrecio_total() + pedido.getPrecio_envio();
-                    }
-                }
-                tableHistorico.setItems(filteredList);
-                TotalEf.setText("$" + String.valueOf(contEf));
-                TotalMp.setText("$" + String.valueOf(contMp));
+                pedidos = pedidoService.getAllPedidosDaily();
             } else {
-                List<Pedido> pedidos = pedidoService.getAllPedidos();
-                tableHistorico.setItems(FXCollections.observableArrayList(pedidos));
-                TotalEf.setText("$0");
-                TotalMp.setText("$0");
+                pedidos = pedidoService.getAllPedidos();
             }
+            if (chkFpAmbas.isSelected()) {
+                pedidos = pedidos.stream()
+                        .filter(p -> p.getId_pago() == 3)
+                        .collect(Collectors.toList());
+            }
+            if (!chkHoy.isSelected() && !chkFpAmbas.isSelected()) {
+                pedidos = pedidoService.getAllPedidos();
+            }
+            ObservableList<Pedido> filteredList = FXCollections.observableArrayList(pedidos);
+            for (Pedido pedido : filteredList) {
+                contPedidos++;
+                if (pedido.getId_pago() == 1) {
+                    contEf += pedido.getTotal_efectivo();
+                } else if (pedido.getId_pago() == 2){
+                    contMp += pedido.getTotal_transferencia();
+                } else if (pedido.getId_pago() == 3) {
+                    contEf += pedido.getTotal_efectivo();
+                    contMp += pedido.getTotal_transferencia();
+                }
+            }
+            tableHistorico.setItems(filteredList);
+            TotalPedidosCount.setText(String.valueOf(contPedidos));
+            TotalEf.setText("$" + String.valueOf(contEf));
+            TotalMp.setText("$" + String.valueOf(contMp));
+
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error de Entrada");
@@ -576,5 +654,279 @@ public class PedidoController {
             alert.setContentText("Por favor, seleccione un pedido para editar.");
             alert.showAndWait();
         }
+    }
+
+    public void recargarHistorico() {
+        historico(null);
+    }
+
+    public void pedidosFpAmbas(ActionEvent actionEvent) {
+        if (chkFpAmbas.isSelected()){
+            filtrarPedidosFpAmbas(true);
+        } else {
+            filtrarPedidosFpAmbas(false);
+        }
+    }
+
+    private void filtrarPedidosFpAmbas(boolean b) {
+        filtrarPedidosDaily(chkHoy.isSelected());
+    }
+
+    public void dashboard(ActionEvent actionEvent) {
+        menuPane.setVisible(false);
+        rightPane.setVisible(false);
+        pnHistorico.setVisible(false);
+        pnDashboard.setVisible(true);
+
+        cargarEstadisticas();
+    }
+
+    private void cargarEstadisticas() {
+        VBox contenidoTotal = new VBox(20);
+        contenidoTotal.setPadding(new Insets(10));
+        contenidoTotal.setAlignment(Pos.CENTER);
+        contenidoTotal.setStyle("-fx-background-color: white;");
+
+        contenidoTotal.getChildren().add(cargarGraficosHamburguesas());
+        contenidoTotal.getChildren().add(cargarHamburguesaMasVendida());
+        contenidoTotal.getChildren().add(cargarResumenGanancias());
+
+        spnDashboard.setContent(contenidoTotal);
+        spnDashboard.setFitToWidth(true);
+        spnDashboard.setFitToHeight(true);
+    }
+
+    private Node cargarHamburguesaMasVendida() {
+        Map<String, Integer> masVendidaDiario = hamburguesaService.getHamburguesasMasVendidasDiario(true);
+        List<Map.Entry<String, Integer>> ordenado = new ArrayList<>(masVendidaDiario.entrySet());
+        ordenado.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        Map<String, Integer> masVendidaSemanal = hamburguesaService.getHamburguesasMasVendidasDiario(false);
+        List<Map.Entry<String, Integer>> ordenado1 = new ArrayList<>(masVendidaSemanal.entrySet());
+        ordenado1.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        Label tituloMasVendidas = new Label("Mas Vendidas");
+        tituloMasVendidas.setFont(Font.font(18));
+        tituloMasVendidas.setAlignment(Pos.CENTER);
+        tituloMasVendidas.setTextFill(Color.RED);
+
+        Label diarioTitulo = new Label("Diario");
+        diarioTitulo.setFont(Font.font(16));
+        diarioTitulo.setTextFill(Color.GREEN);
+
+        VBox diarioBox = new VBox(5, diarioTitulo);
+        diarioBox.setAlignment(Pos.TOP_LEFT);
+        int cont = 0, cont1 = 0;
+        for (Map.Entry<String, Integer> entry : ordenado) {
+            String nombre = "";
+            Integer cantidad = entry.getValue();
+            switch (cont) {
+                case 0:
+                    nombre += " 1_ " + entry.getKey();
+                    break;
+                case 1:
+                    nombre += " 2_ " + entry.getKey();
+                    break;
+                case 2:
+                    nombre += " 3_ " + entry.getKey();
+                    break;
+            }
+            Label lblMasVendidaDiario = new Label(nombre + " (" + cantidad + ").");
+            lblMasVendidaDiario.setFont(Font.font(14));
+            lblMasVendidaDiario.setStyle("-fx-font-weight: bold;");
+            diarioBox.getChildren().add(lblMasVendidaDiario);
+            cont++;
+        }
+
+        Label SemanalTitulo = new Label("Semanal");
+        SemanalTitulo.setFont(Font.font(16));
+        SemanalTitulo.setTextFill(Color.GREEN);
+
+        VBox semanalBox = new VBox(5, SemanalTitulo);
+        semanalBox.setAlignment(Pos.TOP_LEFT);
+        for (Map.Entry<String, Integer> entry : ordenado1) {
+            String nombre = "";
+            Integer cantidad = entry.getValue();
+            switch (cont1) {
+                case 0:
+                    nombre += " 1_ " + entry.getKey();
+                    break;
+                case 1:
+                    nombre += " 2_ " + entry.getKey();
+                    break;
+                case 2:
+                    nombre += " 3_ " + entry.getKey();
+                    break;
+            }
+            Label lblMasVendidaSemanal= new Label(nombre + " (" + cantidad + ").");
+            lblMasVendidaSemanal.setFont(Font.font(14));
+            lblMasVendidaSemanal.setStyle("-fx-font-weight: bold;");
+            semanalBox.getChildren().add(lblMasVendidaSemanal);
+            cont1++;
+        }
+
+        HBox resumen = new HBox(50, diarioBox, semanalBox);
+        resumen.setAlignment(Pos.CENTER);
+        resumen.setPadding(new Insets(20, 0, 0, 0));
+
+        VBox contenido = new VBox(10, tituloMasVendidas, resumen);
+        contenido.setAlignment(Pos.CENTER);
+
+        return contenido;
+    }
+
+    private Node cargarGraficosHamburguesas(){
+        VBox contenido = new VBox(20);
+        contenido.setPadding(new Insets(10));
+        contenido.setAlignment(Pos.CENTER);
+        contenido.setStyle("-fx-background-color: white;");
+
+        Node graficoDiario = crearGraficoHamburguesas("Hamburguesas Diarias", true);
+        Node graficoSemanal = crearGraficoHamburguesas("Hamburguesas Semanales", false);
+
+        HBox fila = new HBox(30, graficoDiario, graficoSemanal);
+        fila.setAlignment(Pos.CENTER);
+
+        contenido.getChildren().add(fila);
+
+        return contenido;
+    }
+
+    private Node crearGraficoHamburguesas(String titulo, boolean esDiario) {
+        PieChart pieChart = new PieChart();
+        pieChart.setLegendVisible(false);
+        pieChart.setLabelsVisible(false);
+        pieChart.setPrefSize(250, 250);
+        pieChart.setMaxSize(250, 250);
+        pieChart.setMinSize(250, 250);
+
+        Map<String, Integer> hamburguesas = hamburguesaService.getHamburguesas(esDiario);
+
+        List<Map.Entry<String, Integer>> ordenado = new ArrayList<>(hamburguesas.entrySet());
+        ordenado.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        Map<PieChart.Data, String> colorMap = new HashMap<>();
+
+        for (Map.Entry<String, Integer> entry : ordenado) {
+            String nombre = entry.getKey();
+            Integer cantidad = entry.getValue();
+            PieChart.Data data = new PieChart.Data(nombre, cantidad);
+            pieChart.getData().add(data);
+            Tooltip tooltip = new Tooltip(nombre + ": " + cantidad);
+            Tooltip.install(data.getNode(), tooltip);
+            String color = getColorHex();
+            colorMap.put(data, color);
+        }
+
+        Platform.runLater(() -> {
+            for (Map.Entry<PieChart.Data, String> entry : colorMap.entrySet()) {
+                PieChart.Data data = entry.getKey();
+                String color = entry.getValue();
+                data.getNode().setStyle("-fx-pie-color: " + color + ";");
+            }
+        });
+
+        GridPane leyendaGrid = new GridPane();
+        leyendaGrid.setHgap(20);
+        leyendaGrid.setVgap(5);
+        leyendaGrid.setPadding(new Insets(10, 0, 0, 0));
+
+        List<PieChart.Data> dataList = new ArrayList<>(pieChart.getData());
+        for (int i = 0; i < dataList.size(); i++) {
+            PieChart.Data data = dataList.get(i);
+            Region colorBox = new Region();
+            colorBox.setPrefSize(10, 10);
+            colorBox.setStyle("-fx-background-color: " + colorMap.get(data) + "; -fx-border-color: black;");
+            Label label = new Label(data.getName() + " (" + (int) data.getPieValue() + ")");
+            label.setFont(Font.font(10));
+            HBox item = new HBox(5, colorBox, label);
+            item.setAlignment(Pos.CENTER_LEFT);
+
+            int col = i < 14 ? 0 : 1;
+            int row = i < 14 ? i : i - 14;
+            leyendaGrid.add(item, col, row);
+        }
+
+        Label title = new Label(titulo);
+        title.setFont(Font.font(18));
+        title.setAlignment(Pos.CENTER);
+
+        VBox contenedor = new VBox(5);
+        contenedor.setPadding(new Insets(10));
+        contenedor.setAlignment(Pos.TOP_LEFT);
+        contenedor.getChildren().addAll(title, pieChart, leyendaGrid);
+
+        return contenedor;
+    }
+
+    private String getColorHex() {
+        Random random = new Random();
+        int r = random.nextInt(200) + 30;
+        int g = random.nextInt(200) + 30;
+        int b = random.nextInt(200) + 30;
+        return String.format("#%02X%02X%02X", r, g, b);
+    }
+
+    private Node cargarResumenGanancias() {
+        int totalEfectivoDiario = pedidoService.getEfectivoDiario(true);
+        int totalTransferenciaDiario = pedidoService.getTransferenciaDiario(true);
+        int totalEfectivoSemanal = pedidoService.getEfectivoDiario(false);
+        int totalTransferenciaSemanal = pedidoService.getTransferenciaDiario(false);
+
+        int totalEfectivo = totalEfectivoDiario + totalEfectivoSemanal;
+        int totalTransferencia = totalTransferenciaDiario + totalTransferenciaSemanal;
+
+        Label tituloGanancias = new Label("Ganancias");
+        tituloGanancias.setFont(Font.font(18));
+        tituloGanancias.setAlignment(Pos.CENTER);
+        tituloGanancias.setTextFill(Color.RED);;
+
+        Label diarioTitulo = new Label("Diario");
+        diarioTitulo.setFont(Font.font(16));
+        diarioTitulo.setTextFill(Color.GREEN);
+        Label efectivoDiario = new Label("Efectivo: $" + totalEfectivoDiario);
+        efectivoDiario.setFont(Font.font(14));
+        efectivoDiario.setStyle("-fx-font-weight: bold;");
+        Label transferenciaDiario = new Label("Transferencia: $" + totalTransferenciaDiario);
+        transferenciaDiario.setFont(Font.font(14));
+        transferenciaDiario.setStyle("-fx-font-weight: bold;");
+
+        VBox diarioBox = new VBox(5, diarioTitulo, efectivoDiario, transferenciaDiario);
+        diarioBox.setAlignment(Pos.TOP_LEFT);
+
+        Label semanalTitulo = new Label("Semanal");
+        semanalTitulo.setFont(Font.font(16));
+        semanalTitulo.setTextFill(Color.GREEN);
+        Label efectivoSemanal = new Label("Efectivo: $" + totalEfectivoSemanal);
+        efectivoSemanal.setFont(Font.font(14));
+        efectivoSemanal.setStyle("-fx-font-weight: bold;");
+        Label transferenciaSemanal = new Label("Transferencia: $" + totalTransferenciaSemanal);
+        transferenciaSemanal.setFont(Font.font(14));
+        transferenciaSemanal.setStyle("-fx-font-weight: bold;");
+
+        VBox semanalBox = new VBox(5, semanalTitulo, efectivoSemanal, transferenciaSemanal);
+        semanalBox.setAlignment(Pos.TOP_LEFT);
+
+        Label totalTitulo = new Label("Total");
+        totalTitulo.setFont(Font.font(16));
+        totalTitulo.setTextFill(Color.GREEN);
+        Label totalEfectivoLabel = new Label("$" + totalEfectivo);
+        totalEfectivoLabel.setFont(Font.font(14));
+        totalEfectivoLabel.setStyle("-fx-font-weight: bold;");
+        Label totalTransferenciaLabel = new Label("$" + totalTransferencia);
+        totalTransferenciaLabel.setFont(Font.font(14));
+        totalTransferenciaLabel.setStyle("-fx-font-weight: bold;");
+
+        VBox totalBox = new VBox(5, totalTitulo, totalEfectivoLabel, totalTransferenciaLabel);
+        totalBox.setAlignment(Pos.TOP_LEFT);
+
+        HBox resumen = new HBox(50, diarioBox, semanalBox, totalBox);
+        resumen.setAlignment(Pos.CENTER);
+        resumen.setPadding(new Insets(20, 0, 0, 0));
+
+        VBox contenido = new VBox(10, tituloGanancias, resumen);
+        contenido.setAlignment(Pos.CENTER);
+
+        return contenido;
     }
 }

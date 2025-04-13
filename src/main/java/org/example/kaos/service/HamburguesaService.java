@@ -7,6 +7,9 @@ import org.example.kaos.repository.HamburguesaDAO;
 import org.example.kaos.repository.HamburguesaTipoDAO;
 import org.example.kaos.repository.TipoHamburguesaDAO;
 
+import java.util.List;
+import java.util.Map;
+
 public class HamburguesaService {
 
     private final HamburguesaTipoDAO hamburguesaTipoDAO = new HamburguesaTipoDAO();
@@ -29,5 +32,13 @@ public class HamburguesaService {
 
     public TipoHamburguesa getTipoHamburguesa(int tipoId) {
         return TipoHamburguesaDAO.getTipoHamburguesaById(tipoId);
+    }
+
+    public Map<String, Integer> getHamburguesas(boolean esDiario) {
+        return hamburguesaDAO.obtenerCantidadHamburguesasDiarias(esDiario);
+    }
+
+    public Map<String, Integer> getHamburguesasMasVendidasDiario(boolean esDiario) {
+        return hamburguesaDAO.getHamburguesasMasVendidasDiario(esDiario);
     }
 }

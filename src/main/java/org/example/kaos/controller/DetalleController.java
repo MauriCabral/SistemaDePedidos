@@ -5,6 +5,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.example.kaos.entity.Topping;
@@ -24,17 +26,17 @@ public class DetalleController implements Initializable {
     @FXML
     private ComboBox<String> comboBoxTipo;
     @FXML
-    private Button btnCancelar, btnAceptar, editarTopping;
+    private Button btnCancelar, btnAceptar;
     @FXML
     private Label counterLabel;
     @FXML
-    private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf;
+    private CheckBox cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf, cmbMedallon;
     @FXML
     private CheckBox cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa;
     @FXML
     private TextArea txtObservaciones;
     @FXML
-    private TextField toppingCh, toppingB, toppingL, toppingT, toppingC, toppingCC, toppingTC;
+    private TextField toppingCh, toppingB, toppingL, toppingT, toppingC, toppingCC, toppingTC, toppingM;
     @FXML
     private Pane panelPreciosTopping, paneleditar;
 
@@ -49,10 +51,11 @@ public class DetalleController implements Initializable {
         detalleService = new DetalleService();
         btnCancelar.setOnAction(event -> closeWindow());
         btnAceptar.setOnAction(event -> aceptarPedido());
-        detalleService.setCheckBoxes(cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf,
+        detalleService.setCheckBoxes(cmbCheddar, cmbBacon, cmbLechuga, cmbTomate, cmbCebolla, cmbCebollaCrisp, cmbTomateConf, cmbMedallon,
                 cmbCheddar1, cmbBacon1, cmbLechuga1, cmbTomate1, cmbCebolla1, cmbCebollaCrisp1, cmbTomateConf1, quitarSalsa);
         panelPreciosTopping.setVisible(false);
         toppingList = new ArrayList<>();
+        Platform.runLater(() -> btnAceptar.requestFocus());
     }
 
     @FXML
@@ -142,6 +145,9 @@ public class DetalleController implements Initializable {
                     case 7:
                         nuevoPrecio = Double.parseDouble(toppingTC.getText());
                         break;
+                    case 8:
+                        nuevoPrecio = Double.parseDouble(toppingM.getText());
+                        break;
                     default:
                         continue;
                 }
@@ -180,9 +186,7 @@ public class DetalleController implements Initializable {
             System.out.println("Controlador de Pedido no encontrado. Verifica si está correctamente inicializado.");
             return;
         }
-        Platform.runLater(() -> {
-            pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingList, txtObservaciones);
-        });
+        Platform.runLater(() -> {pedidoCtrl.actualizarDetalles(nombre, tipo, cantidad, precio, toppingList, txtObservaciones);});
     }
 
     @FXML
@@ -228,6 +232,9 @@ public class DetalleController implements Initializable {
                     break;
                 case 7:
                     toppingTC.setText(String.valueOf(topp.getPrecio()));
+                    break;
+                case 8:
+                    toppingM.setText(String.valueOf(topp.getPrecio()));
                     break;
                 default:
                     break;
